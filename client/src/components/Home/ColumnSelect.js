@@ -1,20 +1,30 @@
 import { useRef, useState, useEffect } from "react";
 
 const ColumnSelect = (header) => {
-  const [selectedOptions, setSelectedOptions] = useState({});
-  const [selected, setSelected] = useState([]);
+  const [selectedColumns, setSelectedColumns] = useState({});
+
+  // useEffect(() => {
+  //   const items = JSON.parse(localStorage.getItem("items"));
+  //   if (items) {
+  //     setSelectedColumns(items.sele);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem('items', JSON.stringify(selectedColumns));
+  // }, [selectedColumns]);
 
   const handleSelectChange = (event) => {
     const { name, value } = event.target;
-    setSelectedOptions((prevSelectedOptions) => ({
+    setSelectedColumns((prevSelectedOptions) => ({
       ...prevSelectedOptions,
       [name]: value,
     }));
-    setSelected((prevSelected) => [...prevSelected])
+    
   };
 
   const LoopSelectOption = (columnName, key) => {
-    const selectedOption = selectedOptions[key];
+    const selectedOption = selectedColumns[key];
     return (
       <div className="m-2" key={key}>
         {columnName} :
@@ -28,7 +38,7 @@ const ColumnSelect = (header) => {
             Select an option
           </option>
           {Object.keys(header.header).map((header, index) => (
-            <option key={index} value={header} disabled={null}>
+            <option key={index} value={header} disabled={Object.values(selectedColumns).includes(header)}>
               {header}
             </option>
           ))}
@@ -45,7 +55,9 @@ const ColumnSelect = (header) => {
         {LoopSelectOption("Price Per unit", "price")}
         {LoopSelectOption("Quantity", "quantity")}
         {LoopSelectOption("Total Sales", "sales")}
-        {Object.entries(selectedOptions).map(([key, value]) => (
+        {/*<------------------------------------------ For developer ---------------------------------------> */}
+        <p>----------------Dev mode---------------</p>
+        {Object.entries(selectedColumns).map(([key, value]) => (
         <div key={key}>
           <strong>{key}:</strong> {value}
         </div>

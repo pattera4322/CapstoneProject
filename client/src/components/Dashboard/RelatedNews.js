@@ -11,6 +11,13 @@ const RelatedNews = () => {
             <p className="text-sm"> Posted Date XX/XX/XX</p>
           </div>
         </div>
+        <br />
+        <div className="text-base text-left p-4 overflow-y-auto h-full bg-gray-200 rounded-lg">
+          <div className="message">
+            <p className="pb-2 font-bold">ด่วน!! มายใส่ชุดเมท รีบดูก่อนโดนลบ</p>
+            <p className="text-sm"> Posted Date XX/XX/XX</p>
+          </div>
+        </div>
       </div>
     </div>
   );

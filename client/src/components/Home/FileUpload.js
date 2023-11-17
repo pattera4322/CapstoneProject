@@ -27,7 +27,6 @@ const FileUpload = ({ index, content, isFileUploaded, loading }) => {
       setData(content.slice(0, 10));
       setIsHasFile(true);
       console.log(`Finish set Data`);
-      console.log(content[0]);
     } else {
       setData([]);
       setIsHasFile(false);
