@@ -9,6 +9,7 @@ import ButtonDownload from "../components/Dashboard/ButtonDownload";
 import ButtonAnalyzeMore from "../components/Dashboard/ButtonAnalyzeMore";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import AnalyzeData from "../components/Dashboard/AnalyzeData";
+import ShouldStockProduct from "../components/Dashboard/ShouldStockProduct";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -72,7 +73,7 @@ const Dashboard = ({}) => {
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row">
+          <div className="flex">
             <div className="box-content p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 <p className="pb-4">Analyze data</p>
@@ -100,8 +101,8 @@ const Dashboard = ({}) => {
       </div>
 
       <div className={`box-content p-4 ${activeTab === 2 ? "flex" : "hidden"}`}>
-        <div className="grid gap-1 grid-cols-1 grid-rows-1 pl-4 pr-4">
-          <div className="flex">
+      <div className="grid gap-1 grid-cols-1 grid-rows-1 pl-4 pr-4 h-screen lg:h-auto">
+          <div className="flex flex-col lg:flex-row">
             <div className="box-content w-full lg:w-9/12 p-4 shadow-md flex-2">
                 <ChartInventory />
             </div>
@@ -112,13 +113,13 @@ const Dashboard = ({}) => {
 
           <div className="flex">
             <div className="box-content p-4 shadow-md flex-1">
-              <div className="text-base text-left p-4 overflow-y-auto h-40">
+              <div className="text-base text-left p-4">
                 <p className="pb-4">You should stock products</p>
+                <div className="text-base text-left p-4">
                 <p className="text-base">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  <ShouldStockProduct />
                 </p>
+                </div>
               </div>
             </div>
             <div className="box-content p-4 shadow-md flex-1">
