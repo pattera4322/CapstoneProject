@@ -15,7 +15,6 @@ const ColumnSelect = (header) => {
 
   const LoopSelectOption = (columnName, key) => {
     const selectedOption = selectedOptions[key];
-    const availableOptions = header.filter(option => option !== selectedOption);
     return (
       <div className="m-2" key={key}>
         {columnName} :
@@ -28,8 +27,8 @@ const ColumnSelect = (header) => {
           <option value="" disabled>
             Select an option
           </option>
-          {availableOptions.map((header, index) => (
-            <option key={index} value={header} >
+          {Object.keys(header.header).map((header, index) => (
+            <option key={index} value={header} disabled={null}>
               {header}
             </option>
           ))}
