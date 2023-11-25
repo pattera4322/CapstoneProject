@@ -24,9 +24,16 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//local
-app.listen(5000, () => {
-  console.log("started on port 5000");
+// //local
+// app.listen(5000, () => {
+//   console.log("started on port 5000");
+// });
+
+const port = 5000;
+const host = '0.0.0.0'; // This makes your application accessible externally
+
+app.listen(port, host, () => {
+  console.log(`Server started on http://${host}:${port}`);
 });
 
 // var admin = require("firebase-admin");
