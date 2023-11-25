@@ -3,19 +3,34 @@ from pmdarima import auto_arima
 import matplotlib.pyplot as plt
 
 # Read the CSV file into a pandas DataFrame
-data = pd.read_csv("./server/retail_sales_dataset.csv")
+data = pd.read_csv("./server/sales_data_sample.csv")
 
 # Convert the "Date" column to a datetime type
-data['Date'] = pd.to_datetime(data['Date'])
+data['Date'] = pd.to_datetime(data['ORDERDATE'])
 
 # Aggregate data for duplicate dates by summing "Quantity" and "Price per Unit"
-data = data.groupby('Date').agg({'Quantity': 'sum', 'Price per Unit': 'sum'}).reset_index()
+data = data.groupby('Date').agg({'QUANTITYORDERED': 'sum', 'PRICEEACH': 'sum'}).reset_index()
 
 data = data.sort_values(by='Date')
 data = data.set_index('Date')
 data = data.resample('D').ffill()
 
-data['Sales'] = data['Quantity'] * data['Price per Unit']
+data['Sales'] = data['QUANTITYORDERED'] * data['PRICEEACH']
+
+# # Read the CSV file into a pandas DataFrame
+# data = pd.read_csv("./server/retail_sales_dataset.csv")
+
+# # Convert the "Date" column to a datetime type
+# data['Date'] = pd.to_datetime(data['Date'])
+
+# # Aggregate data for duplicate dates by summing "Quantity" and "Price per Unit"
+# data = data.groupby('Date').agg({'Quantity': 'sum', 'Price per Unit': 'sum'}).reset_index()
+
+# data = data.sort_values(by='Date')
+# data = data.set_index('Date')
+# data = data.resample('D').ffill()
+
+# data['Sales'] = data['Quantity'] * data['Price per Unit']
 
 # data in month (if use this please uncomment jah) -----------------------------------------------------------
 # data = data.resample('M').sum() 

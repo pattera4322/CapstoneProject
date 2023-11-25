@@ -66,7 +66,7 @@ const Dashboard = ({}) => {
         <div className="grid gap-1 grid-cols-1 grid-rows-1 pl-4 pr-4 h-screen lg:h-auto">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-full lg:w-9/12 p-4 shadow-md flex-2">
-                <ChartRetail />
+              <ChartRetail />
             </div>
             <div className="box-content p-4 shadow-md flex-1">
               <RelatedNews />
@@ -101,10 +101,10 @@ const Dashboard = ({}) => {
       </div>
 
       <div className={`box-content p-4 ${activeTab === 2 ? "flex" : "hidden"}`}>
-      <div className="grid gap-1 grid-cols-1 grid-rows-1 pl-4 pr-4 h-screen lg:h-auto">
+        <div className="grid gap-1 grid-cols-1 grid-rows-1 pl-4 pr-4 h-screen lg:h-auto">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-full lg:w-9/12 p-4 shadow-md flex-2">
-                <ChartInventory />
+              <ChartInventory />
             </div>
             <div className="box-content p-4 shadow-md flex-1">
               <RelatedNews />
@@ -115,11 +115,7 @@ const Dashboard = ({}) => {
             <div className="box-content p-4 shadow-md flex-1">
               <div className="text-base text-left p-4">
                 <p className="pb-4">You should stock products</p>
-                <div className="text-base text-left p-4">
-                <p className="text-base">
-                  <ShouldStockProduct />
-                </p>
-                </div>
+                <ShouldStockProduct />
               </div>
             </div>
             <div className="box-content p-4 shadow-md flex-1">
@@ -132,8 +128,8 @@ const Dashboard = ({}) => {
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 <p className="pb-4">Number of Products</p>
                 <div>
-                <NumberOfProducts />
-              </div>
+                  <NumberOfProducts />
+                </div>
               </div>
             </div>
           </div>

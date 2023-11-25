@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { } from "react";
 
 const ShouldStockProduct = () => {
-  const [range, setRange] = useState([]);
+  // const [range, setRange] = useState([]);
 
   //   useEffect(() => {
   //     // Simulating data fetching from a database

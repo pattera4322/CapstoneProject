@@ -1,10 +1,12 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:5000/api/file'; 
+// const baseURL = 'http://localhost:5000/api/file'; 
+
+const baseURL = process.env.REACT_APP_API_URL;
 
 export const postFile = async (userId, index, formData) => {
   try {
-    const response = await axios.post(`${baseURL}/${userId}/${index}`, formData, {
+    const response = await axios.post(`${baseURL}/file/${userId}/${index}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -18,8 +20,9 @@ export const postFile = async (userId, index, formData) => {
 
 export const getFile = async (userId, index) => {
     try {
+      console.log(process.env.NODE_ENV)
         console.log(`fetching file...`);
-        const response = await axios.get(`${baseURL}/${userId}/${index}`, {
+        const response = await axios.get(`${baseURL}/file/${userId}/${index}`, {
           responseType: 'arraybuffer',
         });
     
