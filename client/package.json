@@ -29,6 +29,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "homepage": "./sj1",
   "eslintConfig": {
     "extends": [
       "react-app",
