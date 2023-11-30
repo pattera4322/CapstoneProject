@@ -12,7 +12,7 @@ export const postFile = async (userId, index, formData) => {
       },
     });
 
-    return response.data;
+    return response.data;  
   } catch (error) {
     throw error;
   }
