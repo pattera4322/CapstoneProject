@@ -14,7 +14,7 @@ function HomePage() {
   {/*<------------------------------ Section 1 Introduce web application ------------------------------> */}
   <div className="mt-10 text-center px-4 sm:px-8">
     <h1 className="text-4xl sm:text-5xl font-bold">
-      Step into a Smarter Retail Experience! TTTEEESSSTTTT
+      Step into a Smarter Retail Experience!
     </h1>
     <div className="text-lg sm:text-xl mt-6">
       <p>Maximize the potential of your workforce by automating</p>
