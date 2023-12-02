@@ -3,7 +3,6 @@ import { Input, Radio, Typography } from "@material-tailwind/react";
 
 const Asking = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
-    numberOfDate: 0,
     salesGoal: 0,
     riskLevel: [0, 0],
   });
@@ -69,32 +68,10 @@ const Asking = ({ onSubmit }) => {
         provide the following information.
       </h2>
       <div onSubmit={handleSubmit} className="pt-10 text-left">
+  
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            1. Please specify the number of date for which you'd like to
-            receive forecasts.
-          </label>
-          <p className="text-s text-gray-500 pl-4 pt-1.5">
-            This helps us understand the forecast duration you're interested in,
-            ensuring our predictions match your time frame. You can make predictions for a period of 1 to 90 days.
-          </p>
-          <div className="w-72 pt-4 pl-4">
-            <Input
-              type="number"
-              variant="outlined"
-              label="Date"
-              // placeholder="date"
-              name="numberOfDate"
-              min={1}
-              max={90}
-              value={formData.numberOfDate}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="pt-10 pl-10">
-          <label className="text-lg">
-            2. Please share your current sales goal with us.
+            1. Please share your current sales goal with us.
           </label>
           <p className="text-s text-gray-500 pl-4 pt-1.5">
             Your sales goal is crucial for us to align our strategies and
@@ -118,7 +95,7 @@ const Asking = ({ onSubmit }) => {
         </div>
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            3. Please let us know your comfort level when it comes to taking
+            2. Please let us know your comfort level when it comes to taking
             risks with stock predictions.
           </label>
           <p className="text-s text-gray-500 pl-4 pt-1.5">
@@ -229,3 +206,27 @@ const Asking = ({ onSubmit }) => {
 };
 
 export default Asking;
+
+      {/* <div className="pt-10 pl-10">
+          <label className="text-lg">
+            1. Please specify the number of date for which you'd like to
+            receive forecasts.
+          </label>
+          <p className="text-s text-gray-500 pl-4 pt-1.5">
+            This helps us understand the forecast duration you're interested in,
+            ensuring our predictions match your time frame. You can make predictions for a period of 1 to 90 days.
+          </p>
+          <div className="w-72 pt-4 pl-4">
+            <Input
+              type="number"
+              variant="outlined"
+              label="Date"
+              // placeholder="date"
+              name="numberOfDate"
+              min={1}
+              max={90}
+              value={formData.numberOfDate}
+              onChange={handleChange}
+            />
+          </div>
+        </div> */}
