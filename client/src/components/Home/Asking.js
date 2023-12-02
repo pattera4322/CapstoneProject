@@ -26,32 +26,6 @@ const Asking = ({ onSubmit }) => {
       [name]: value,
     });
     console.log(name, value)
-
-    // if (name === 'numberOfDate') {
-    //   // Check if the input is a valid positive integer within the range of 1 to 90
-    //   const isValidInput = /^[1-9]\d*$/.test(value);
-    //   const parsedValue = parseInt(value, 10);
-  
-    //   if (isValidInput && parsedValue >= 1 && parsedValue <= 90) {
-    //     // Update the form data with the validated value
-    //     setFormData({
-    //       ...formData,
-    //       [name]: parsedValue,
-    //     });
-    //   } else {
-    //     // Handle invalid input by clearing the field
-    //     setFormData({
-    //       ...formData,
-    //       [name]: '',
-    //     });
-    //   }
-    // } else {
-    //   // For other fields, update the form data directly
-    //   setFormData({
-    //     ...formData,
-    //     [name]: value,
-    //   });
-    // }
   };
 
   const handleSubmit = (e) => {
@@ -207,26 +181,3 @@ const Asking = ({ onSubmit }) => {
 
 export default Asking;
 
-      {/* <div className="pt-10 pl-10">
-          <label className="text-lg">
-            1. Please specify the number of date for which you'd like to
-            receive forecasts.
-          </label>
-          <p className="text-s text-gray-500 pl-4 pt-1.5">
-            This helps us understand the forecast duration you're interested in,
-            ensuring our predictions match your time frame. You can make predictions for a period of 1 to 90 days.
-          </p>
-          <div className="w-72 pt-4 pl-4">
-            <Input
-              type="number"
-              variant="outlined"
-              label="Date"
-              // placeholder="date"
-              name="numberOfDate"
-              min={1}
-              max={90}
-              value={formData.numberOfDate}
-              onChange={handleChange}
-            />
-          </div>
-        </div> */}

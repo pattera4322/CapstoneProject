@@ -30,7 +30,7 @@ export const getFile = async (userId, index) => {
     
         return fileContent;
       } catch (error) {
-        console.error('Error fetching data:', error);
+         console.error('Error fetching data:', error.response);
         //handle other error soon
         if (error.response && error.response.status === 404) {
           return null; 
