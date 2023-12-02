@@ -31,7 +31,7 @@ function HomePage() {
     </div>
   </div>
   <img
-    src="sj1/assets/Openedbox.svg"
+    src="/assets/Openedbox.svg"
     alt="open box"
     className="mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
   />
