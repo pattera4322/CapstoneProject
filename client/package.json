@@ -23,7 +23,7 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set PUBLIC_URL=sj1&& react-scripts start",
     "build": "react-scripts build",
     "build:prod": "cp .env.production .env && react-scripts build",
     "test": "react-scripts test",
