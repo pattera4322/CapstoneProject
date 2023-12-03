@@ -1,4 +1,4 @@
-import React, { } from "react";
+import React from "react";
 
 const ShouldStockProduct = () => {
   // const [range, setRange] = useState([]);
@@ -21,11 +21,14 @@ const ShouldStockProduct = () => {
   //   }, []);
 
   return (
-    <div className="w-full flex items-center justify-center">
-      <p className="text-5xl">
-        {/* {range.length > 0 ? `${range[0]} - ${range[1]}` : "Loading..."} */}
-        250 - 999
-      </p>
+    <div>
+      <p className="pb-4">You should stock products</p>
+      <div className="w-full flex items-center justify-center">
+        <p className="text-5xl">
+          {/* {range.length > 0 ? `${range[0]} - ${range[1]}` : "Loading..."} */}
+          250 - 999
+        </p>
+      </div>
     </div>
   );
 };

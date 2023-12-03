@@ -156,8 +156,8 @@ const FileUpload = ({ index, content, isFileUploaded, loading }) => {
             <div>
               <div className="py-8 text-left">Preview data</div>
               <div className="w-1/2 h-96 overflow-auto float-left">
-                <table class="w-full text-m text-left text-gray-500 dark:text-gray-400">
-                  <thead class="text-xs text-gray-700 uppercase bg-[#CAA37C] text-white">
+                <table className="w-full text-m text-left text-gray-500 dark:text-gray-400">
+                  <thead className="text-xs text-gray-700 uppercase bg-[#CAA37C]">
                     <tr>
                       {data[0] &&
                         Object.keys(data[0]).map((header, index) => (

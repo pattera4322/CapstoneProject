@@ -30,14 +30,12 @@ const ProductPieChart = () => {
     spacing: 0,
     responsive: true, // Make the chart responsive
     maintainAspectRatio: false, // Disable aspect ratio constraint
-    width: 200, // Set the desired width
-    height: 200, // Set the desired height
   };
 
   const containerStyle = {
     width: "100%",
     height: "80%",
-    marginLeft: "-20%", // Use a negative value for left margin
+    paddingRight: "100px"
   };
 
   return (

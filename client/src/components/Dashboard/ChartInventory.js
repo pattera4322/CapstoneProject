@@ -2,16 +2,9 @@ import { React, useState } from "react";
 import { Line } from "react-chartjs-2";
 
 const ChartRetail = () => {
-  const [chartHeight, setChartHeight] = useState(300); // For fixed height chart
-
   const options = {
     maintainAspectRatio: false,
     responsive: true,
-    height: chartHeight,
-  };
-
-  const handleHeightChange = (e) => {
-    setChartHeight(e.target.value);
   };
 
   const data = {
@@ -35,12 +28,9 @@ const ChartRetail = () => {
   };
 
   return (
-    <div className="h-[300px] overflow-hidden">
-      <div className="flex-grow overflow-y-auto">
-        <div></div>
-        <div style={{ height: `${chartHeight}px` }}>
-          <Line data={data} options={options} />
-        </div>
+    <div className="h-full overflow-hidden">
+      <div className="flex-grow flex items-center justify-center h-full">
+        <Line data={data} options={options} />
       </div>
     </div>
   );

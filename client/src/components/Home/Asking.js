@@ -35,7 +35,7 @@ const Asking = ({ onSubmit }) => {
   };
 
   return (
-    <div class="text-black">
+    <div className="text-black">
       <h2 className="text-xl pt-10">
         At <b>Smart Stock</b>, we aim to provide you with personalized insights
         and recommendations. To better tailor our services to your needs, please

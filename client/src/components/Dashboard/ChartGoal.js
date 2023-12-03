@@ -50,11 +50,14 @@ const ChartGoal = () => {
 
   return (
     <div className="w-full">
+      <p className="pb-4">
+                  The effort you're investing brings you closer to your goal
+                </p>
       <div
         style={{
           position: "relative",
           height: "80px",
-          width: "100%",
+          // width: "100%",
           overflow: "hidden",
         }}
       >

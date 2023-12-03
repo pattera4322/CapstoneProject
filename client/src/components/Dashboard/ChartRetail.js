@@ -29,10 +29,8 @@ const ChartRetail = () => {
 
   return (
     <div className="h-full overflow-hidden">
-      <div className="flex-grow overflow-y-auto flex items-center justify-center h-full">
-        <div className="h-72 w-full pl-4 pr-4 flex items-center">
-          <Line data={data} options={options} />
-        </div>
+      <div className="flex-grow flex items-center justify-center h-full">
+        <Line data={data} options={options} />
       </div>
     </div>
   );
