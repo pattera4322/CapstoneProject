@@ -1,28 +1,19 @@
 import React, { useEffect, useState } from "react";
-import ChartRetail from "../components/Dashboard/ChartRetail";
-import ChartInventory from "../components/Dashboard/ChartInventory";
-import ChartFromCsv from "../components/Dashboard/ChartFromCsv";
+import Chart from "../components/Dashboard/Chart";
 import RelatedNews from "../components/Dashboard/RelatedNews";
-import ChartGoal from "../components/Dashboard/ChartGoal";
+import Goal from "../components/Dashboard/Goal";
 import ProductPieChart from "../components/Dashboard/ProductPieChart";
-import ButtonDownload from "../components/Dashboard/ButtonDownload";
-import ButtonAnalyzeMore from "../components/Dashboard/ButtonAnalyzeMore";
+import ButtonComponent from "../components/Button";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
-import AnalyzeData from "../components/Dashboard/AnalyzeData";
-import ShouldStockProduct from "../components/Dashboard/ShouldStockProduct";
+import Analyzed from "../components/Dashboard/Analyzed";
+import { NavLink } from "react-router-dom";
+import html2canvas from "html2canvas";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
 } from "chart.js";
-import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
-  Tab,
-  TabPanel,
-} from "@material-tailwind/react";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
@@ -31,6 +22,23 @@ const Dashboard = ({}) => {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+  };
+
+  const handleScreenshot = () => {
+    const rootElement = document.getElementById("root");
+    if (rootElement) {
+      html2canvas(rootElement).then((canvas) => {
+        const imageData = canvas.toDataURL("image/png");
+
+        const downloadLink = document.createElement("a");
+        downloadLink.href = imageData;
+        downloadLink.download = "screenshot.png";
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      });
+    }
   };
 
   return (
@@ -62,37 +70,54 @@ const Dashboard = ({}) => {
         </li>
       </ul>
 
-      <div
-        className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}
-      >
+      <div className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}>
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-              <ChartRetail />
+              <Chart />
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
-              <RelatedNews />
+              Coming Soon
+              {/* <RelatedNews /> */}
             </div>
           </div>
 
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                <AnalyzeData />
+                Coming Soon
+                {/* <Analyzed /> */}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                <ChartGoal />
+                Coming Soon
+                {/* <Goal /> */}
               </div>
             </div>
           </div>
           <div className="flex mt-4 ml-auto">
             <div>
-              <ButtonDownload />
+              <ButtonComponent
+                onClick={handleScreenshot}
+                children={
+                  <div>
+                    <svg
+                      className="fill-current w-4 h-4 mr-2 inline"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+                    </svg>
+                    Download
+                  </div>
+                }
+              />
             </div>
             <div className="ml-2">
-              <ButtonAnalyzeMore />
+              <NavLink to="/">
+                <ButtonComponent onClick={() => {}} children={"Analyze More"} />
+              </NavLink>
             </div>
           </div>
         </div>
@@ -106,29 +131,33 @@ const Dashboard = ({}) => {
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-              <ChartInventory />
+              <Chart />
             </div>
             <div className="box-content p-4 shadow-md flex-1">
-              <RelatedNews />
+              Coming Soon
+              {/* <RelatedNews /> */}
             </div>
           </div>
 
           <div className="flex flex-col lg:flex-row">
-          <div className="box-content w-80 p-4 shadow-md flex-1">
+            <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                <ShouldStockProduct />
+                Coming Soon
+                {/* <Analyzed /> */}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 h-40">
-                <p className="pb-4">% of Products</p>
-                <ProductPieChart />
+                Coming Soon
+                {/* <p className="pb-4">% of Products</p> */}
+                {/* <ProductPieChart /> */}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 <div>
-                  <NumberOfProducts />
+                  {/* <NumberOfProducts /> */}
+                  Coming Soon
                 </div>
               </div>
             </div>
@@ -136,10 +165,26 @@ const Dashboard = ({}) => {
 
           <div className="flex mt-4 ml-auto">
             <div>
-              <ButtonDownload />
+              <ButtonComponent
+                onClick={handleScreenshot}
+                children={
+                  <div>
+                    <svg
+                      className="fill-current w-4 h-4 mr-2 inline"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+                    </svg>
+                    Download
+                  </div>
+                }
+              />
             </div>
             <div className="ml-2">
-              <ButtonAnalyzeMore />
+              <NavLink to="/">
+                <ButtonComponent onClick={() => {}} children={"Analyze More"} />
+              </NavLink>
             </div>
           </div>
         </div>

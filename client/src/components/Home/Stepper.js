@@ -1,15 +1,17 @@
-import { useRef, useState, useEffect } from "react";
+import { useState } from "react";
 import { Stepper, Step, Button, Typography } from "@material-tailwind/react";
 import { NavLink } from "react-router-dom";
 
-import SelectData from "./SelectData";
-import Asking from "./Asking";
-import Analyzing from "./Analyzing";
+import UploadFileSection from "./UploadFileSection";
+import AskingSection from "./AskingSection";
+import AnalyzeSection from "./AnalyzeSection";
 
 const StepperSection = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [isLastStep, setIsLastStep] = useState(false);
   const [isFirstStep, setIsFirstStep] = useState(false);
+  const [fileData, setFileData] = useState([]);
+  const [fileName, setFileName] = useState("");
 
   const steps = ["Question", "Import & Select data", "Analyzing Data"];
 
@@ -23,12 +25,14 @@ const StepperSection = () => {
   const handleAnalyze = () => {};
 
   const handleSubmit = (formData) => {
-    // You can do something with the form data here
     console.log("Form data submitted:", formData);
-    // For example, navigate to another page with the form data
-    // You can use React Router for navigation or pass the data as props to another component
-    // Example using React Router:
-    // history.push('/anotherpage', formData);
+  };
+
+  const receiveFileData = (data, fileName) => {
+    console.log("Data received from Select DATA:", data);
+    console.log("Data received from file name:", fileName);
+    setFileData(data);
+    setFileName(fileName);
   };
 
   return (
@@ -54,9 +58,9 @@ const StepperSection = () => {
       </Stepper>
       {/* <---------------------- Detail Section --------------------> */}
       <div className="mt-20 ">
-        {activeStep === 0 && <Asking onSubmit={handleSubmit} />}
-        {activeStep === 1 && <SelectData />}
-        {activeStep === 2 && <Analyzing />}
+        {activeStep === 0 && <AskingSection onSubmit={handleSubmit} />}
+        {activeStep === 1 && <UploadFileSection sendfileData={receiveFileData} />}
+        {activeStep === 2 && <AnalyzeSection fileName={fileName} />}
       </div>
 
       {/* <---------------------- Button Section --------------------> */}

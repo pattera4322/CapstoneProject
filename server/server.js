@@ -1,6 +1,7 @@
 const { app, port, host } = require("./config/expressSetup");
-const { uploadFile, getFile, analyze } = require("./handler/fileHandler");
+const { uploadFile, getFile, deleteFile } = require("./handler/fileHandler");
 const { upload } = require("./config/firebaseConfig");
+const { analyze }= require("./handler/analyzeHandler");
 
 app.listen(port, host, () => {
   console.log(`Server started on http://${host}:${port}`);
@@ -14,7 +15,11 @@ app.get("/api/file/:userid/:fileid", (req, res) => {
   getFile(req, res);
 });
 
-app.post("/api/analyze", upload.single("file"), (req, res) => {
+app.post("/api/analyze", (req, res) => {
   analyze(req, res);
+});
+
+app.delete("/api/file/:userid/:fileid", (req, res) => {
+  deleteFile(req, res);
 });
 
