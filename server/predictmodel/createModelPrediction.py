@@ -29,11 +29,20 @@ warnings.filterwarnings("ignore")
 pred_date = int(sys.argv[1])
 sales_goal = int(sys.argv[2])
 risk_level = list(map(int,sys.argv[3].split(',')))
-actual_file_name = sys.argv[4]
-select_data_obj = json.loads(sys.argv[5])
-model_file_name = sys.argv[6]
-actual_data = sys.argv[7]
-user = sys.argv[8]
+lead_time = sys.argv[4]
+actual_file_name = sys.argv[5]
+select_data_obj = json.loads(sys.argv[6])
+model_file_name = sys.argv[7]
+actual_data = sys.argv[8]
+user = sys.argv[9]
+# pred_date = int(sys.argv[1])
+# sales_goal = int(sys.argv[2])
+# risk_level = list(map(int,sys.argv[3].split(',')))
+# actual_file_name = sys.argv[4]
+# select_data_obj = json.loads(sys.argv[5])
+# model_file_name = sys.argv[6]
+# actual_data = sys.argv[7]
+# user = sys.argv[8]
 
 # Get value in select column data
 total_sales = select_data_obj['totalSales']
@@ -594,9 +603,6 @@ for product_name in products:
     # print(f'lower_z_score : { lower_z_score}')
     # print(f'upper_z_score : { upper_z_score}')
 
-    # Assuming lead time is 1 (you need to adjust this based on your specific scenario)
-    lead_time = 30
-
     # Calculate safety stocks for the lower and upper bounds
     lower_safety_stock = lower_z_score * demand_std_dev * np.sqrt(lead_time)
     upper_safety_stock = upper_z_score * demand_std_dev * np.sqrt(lead_time)
@@ -614,9 +620,11 @@ for product_name in products:
 total_quantity_of_actual = actual_df_copy.groupby(product_column)['quantity'].sum()
 
 ### **STEP 10 : Export data and related variable**
-transformed_predictions['sale_forecast']['Date'] = transformed_predictions['sale_forecast']['Date'].dt.strftime('%d-%m-%Y')
+transformed_predictions['sale_forecast']['Date'] = transformed_predictions['sale_forecast']['Date'].dt.strftime('%Y-%m-%d')
 transformed_predictions['sale_forecast'].drop('sales_increase', axis=1, inplace=True)
-transformed_predictions['quantity_forecast']['Date'] = transformed_predictions['quantity_forecast']['Date'].dt.strftime('%d-%m-%Y')
+transformed_predictions['quantity_forecast']['Date'] = transformed_predictions['quantity_forecast']['Date'].dt.strftime('%Y-%m-%d')
+transformed_predictions['sale_forecast'].sort_values('Date', inplace=True)
+transformed_predictions['quantity_forecast'].sort_values('Date', inplace=True)
 # data_to_save = {
 #     # 'actualData': actual_df_copy.to_dict(orient='records'),
 #     # selected predict data
@@ -628,9 +636,16 @@ transformed_predictions['quantity_forecast']['Date'] = transformed_predictions['
 #     'graph': img_dict,
 # }
 # print(data_to_save)
-print(f"{transformed_predictions['sale_forecast']}----EndOfValue")
-print(f"{transformed_predictions['quantity_forecast']}----EndOfValue")
+# transformed_predictions['sale_forecast'] = transformed_predictions['sale_forecast'].iloc[:-1]
+import time
+print(f"{transformed_predictions['sale_forecast'].to_dict(orient='records')}----EndOfValue")
+time.sleep(1)
+print(f"{transformed_predictions['quantity_forecast'].to_dict(orient='records')}----EndOfValue")
+time.sleep(1)
 print(f"{evaluation_results_total_sales}----EndOfValue")
+time.sleep(2)
 print(f"{evaluation_results_quantity}----EndOfValue")
+time.sleep(2)
 print(f"{img_dict}----EndOfValue")
+time.sleep(3)
 print(f"{models_by_product}----EndOfValue")

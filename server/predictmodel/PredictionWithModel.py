@@ -25,11 +25,12 @@ from firebase_admin import credentials, storage
 pred_date = int(sys.argv[1])
 sales_goal = int(sys.argv[2])
 risk_level = list(map(int,sys.argv[3].split(',')))
-actual_file_name = sys.argv[4]
-select_data_obj = json.loads(sys.argv[5])
-model_file_name = sys.argv[6]
-actual_data = sys.argv[7]
-user = sys.argv[8]
+lead_time = sys.argv[4]
+actual_file_name = sys.argv[5]
+select_data_obj = json.loads(sys.argv[6])
+model_file_name = sys.argv[7]
+actual_data = sys.argv[8]
+user = sys.argv[9]
 
 # Get value in select column data
 total_sales = select_data_obj['totalSales']
@@ -61,6 +62,10 @@ actual_df = pd.read_csv(bytes_io)
 pred_date = 90 if pred_date == 0 else pred_date
 confidence_level = 95
 img_dict = {}
+
+import pickle
+with open(model_file_name, 'rb') as file:
+    models_by_product = pickle.load(file)
 
 ### **STEP 3 : CLEANING DATA & DATA PROFILING**
 # Handle columns name & select columns
@@ -413,11 +418,19 @@ for product_name, results in safety_stock_results.items():
 total_quantity_of_actual = actual_df_copy.groupby(product_column)['quantity'].sum()
 
 ### **STEP 10 : Export data and related variable**
-data_to_save = {
-    # 'actualData': actual_df_copy.to_dict(orient='records'),
-    # selected predict data
-    'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
-    'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
-    'graph': img_dict,
-}
-print(data_to_save)
+# data_to_save = {
+#     # 'actualData': actual_df_copy.to_dict(orient='records'),
+#     # selected predict data
+#     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
+#     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
+#     'graph': img_dict,
+# }
+# print(data_to_save)
+transformed_predictions['sale_forecast']['Date'] = transformed_predictions['sale_forecast']['Date'].dt.strftime('%Y-%m-%d')
+transformed_predictions['sale_forecast'].drop('sales_increase', axis=1, inplace=True)
+transformed_predictions['quantity_forecast']['Date'] = transformed_predictions['quantity_forecast']['Date'].dt.strftime('%Y-%m-%d')
+transformed_predictions['sale_forecast'].sort_values('Date', inplace=True)
+transformed_predictions['quantity_forecast'].sort_values('Date', inplace=True)
+print(f"{transformed_predictions['sale_forecast'].to_dict(orient='records')}----EndOfValue")
+print(f"{transformed_predictions['quantity_forecast'].to_dict(orient='records')}----EndOfValue")
+print(f"{img_dict}----EndOfValue")

@@ -5,8 +5,31 @@ const FormComponent = ({ onSubmit, isLogin }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const validateEmail = (email) => {
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    // Password should be at least 8 characters
+    return password.length >= 8;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Validate email
+    if (!validateEmail(username)) {
+      alert("Invalid email address");
+      return;
+    }
+
+    // Validate password
+    if (!validatePassword(password)) {
+      alert("Password must be at least 8 characters");
+      return;
+    }
 
     // Check if passwords match for registration
     if (!isLogin && password !== confirmPassword) {

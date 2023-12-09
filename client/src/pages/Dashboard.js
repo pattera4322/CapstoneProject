@@ -14,10 +14,11 @@ import {
   LinearScale,
   BarElement,
 } from "chart.js";
-
+import { useDataContext } from "../context/AnalyzeDataContext";
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
 const Dashboard = ({}) => {
+  const { contextAnalyzeData, setContextAnalyzeData } = useDataContext();
   const [activeTab, setActiveTab] = useState(1);
 
   const handleTabClick = (tab) => {
@@ -74,7 +75,11 @@ const Dashboard = ({}) => {
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-              <Chart />
+            <Chart
+                predictedName={"Predicted Sales"}
+                predictedData={contextAnalyzeData.predictSalesData[0]}
+                predictedColumn={"sales"}
+              />
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               Coming Soon
@@ -131,7 +136,11 @@ const Dashboard = ({}) => {
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-              <Chart />
+            <Chart
+                predictedName={"Predicted Quantity"}
+                predictedData={contextAnalyzeData.predictQuantityData[0]}
+                predictedColumn={"quantity"}
+              />
             </div>
             <div className="box-content p-4 shadow-md flex-1">
               Coming Soon

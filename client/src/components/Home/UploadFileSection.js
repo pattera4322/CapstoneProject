@@ -96,8 +96,10 @@ const SelectData = ({ sendfileData }) => {
     delete filesInLocal[activeTab];
     localStorage.setItem("files", JSON.stringify(filesInLocal));
     deleteFile("user1",activeTab);
+    setFileData([]);
+    setIsHasFile(false);
     //TODO: - handle userid in local storage
-    //      -handle popup ask user before delete
+    //-handle popup ask user before delete
   };
 
   return (

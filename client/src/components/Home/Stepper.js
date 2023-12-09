@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import UploadFileSection from "./UploadFileSection";
 import AskingSection from "./AskingSection";
 import AnalyzeSection from "./AnalyzeSection";
+import Popup from "../Popup.js";
 
 const StepperSection = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -17,6 +18,7 @@ const StepperSection = () => {
 
   const handleNavigation = (direction) => {
     const nextStep = direction === "next" ? activeStep + 1 : activeStep - 1;
+    setShowPopup(false);
     setActiveStep(nextStep);
     setIsLastStep(nextStep === steps.length - 1);
     setIsFirstStep(nextStep === 0);
@@ -33,6 +35,12 @@ const StepperSection = () => {
     console.log("Data received from file name:", fileName);
     setFileData(data);
     setFileName(fileName);
+  };
+
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleButtonClick = () => {
+    setShowPopup(true);
   };
 
   return (
@@ -59,13 +67,15 @@ const StepperSection = () => {
       {/* <---------------------- Detail Section --------------------> */}
       <div className="mt-20 ">
         {activeStep === 0 && <AskingSection onSubmit={handleSubmit} />}
-        {activeStep === 1 && <UploadFileSection sendfileData={receiveFileData} />}
+        {activeStep === 1 && (
+          <UploadFileSection sendfileData={receiveFileData} />
+        )}
         {activeStep === 2 && <AnalyzeSection fileName={fileName} />}
       </div>
 
       {/* <---------------------- Button Section --------------------> */}
       <div className="mt-16 inline-flex">
-        {!isFirstStep && (
+        {!isFirstStep && !isLastStep && (
           <div className="flex pr-4">
             <Button
               onClick={() => handleNavigation("prev")}
@@ -78,14 +88,19 @@ const StepperSection = () => {
 
         {isLastStep ? (
           <div className="flex">
-            <NavLink to="/Dashboard">
-              <Button onClick={handleNavigation}>Go To Dashboard!</Button>
-            </NavLink>
+            {/* TODO: some progress bar in future */}
+            We have Analyzing your data. Don't change the page wait here!!!
           </div>
         ) : (
           <div className="flex">
             <Button
-              onClick={() => handleNavigation("next")}
+              onClick={() => {
+                if (isFirstStep) {
+                  handleNavigation("next");
+                } else {
+                  handleButtonClick();
+                }
+              }}
               disabled={isLastStep}
             >
               Next
@@ -93,6 +108,19 @@ const StepperSection = () => {
           </div>
         )}
       </div>
+
+      {/* Popup component */}
+      {showPopup && (
+        <Popup
+          onClose={() => setShowPopup(false)}
+          header={"Before go to analyze!"}
+          info={
+            "Please ensure that you have reviewed and confirmed the information in the selected column before proceeding. Note that changes cannot be undone. Take a moment to double-check before clicking the 'Go' button"
+          }
+          onContinue={() => handleNavigation("next")}
+          continueText={"Go to Analyze ->"}
+        />
+      )}
     </div>
   );
 };

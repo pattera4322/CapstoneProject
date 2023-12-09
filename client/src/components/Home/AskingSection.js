@@ -3,9 +3,10 @@ import { Input, Radio, Typography } from "@material-tailwind/react";
 
 const Asking = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
-    days:90,
+    days: 90,
     salesGoal: 0,
-    riskLevel: [0,0],
+    riskLevel: [0, 0],
+    leadTime: 1,
   });
 
   useEffect(() => {
@@ -36,6 +37,19 @@ const Asking = ({ onSubmit }) => {
     }
 
     console.log(name, value);
+
+    //handle if user type more than 366 days
+    handleInputChange(e)
+  };
+
+  const handleInputChange = (e) => {
+    const newValue = parseInt(e.target.value, 10);
+
+    if (!isNaN(newValue) && newValue >= 1 && newValue <= 366) {
+      setFormData({ ...formData, leadTime: newValue });
+    } else if (newValue > 366) {
+      setFormData({ ...formData, leadTime: 366 });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -47,7 +61,8 @@ const Asking = ({ onSubmit }) => {
   const isChecked = (value) => {
     if (formData.riskLevel == value) {
       return true;
-    }return false
+    }
+    return false;
   };
 
   return (
@@ -192,6 +207,33 @@ const Asking = ({ onSubmit }) => {
               ripple={false}
             />
           </div>
+        </div>
+        <div className="pt-10 pl-10">
+          <label className="text-lg">
+            3. Please kindly provide us with insights into your average lead
+            time.
+          </label>
+          <p className="text-s text-gray-500 pl-4 pt-1.5">
+            Your lead time help us understanding the duration it typically takes
+            for your processes, from initiation to completion, will enable us to
+            better comprehend the efficiency of your operations and facilitate
+            more effective collaboration.
+          </p>
+          <div className="w-72 pt-4 pl-4 inline-block">
+            <Input
+              type="number"
+              label="Lead Time"
+              // placeholder="Ex. 1000000"
+              min={1}
+              max={366}
+              variant="outlined"
+              name="leadTime"
+              value={formData.leadTime}
+              onChange={handleChange}
+              className="inline-block float-left"
+            />
+          </div>
+          <span className="inline-block pl-2.5">Day</span>
         </div>
       </div>
     </div>

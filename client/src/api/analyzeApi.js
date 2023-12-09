@@ -11,6 +11,11 @@ export const analyzeData = async (dataForAnalyze) => {
     console.log("Analyze Data...");
     return response.data;
   } catch (error) {
+    console.log(error)
+    if (error.response.status === 500) {
+      console.log("Error from wrong parameter: ",error.response.data.RespMessage);
+      throw error;
+    }
     throw error;
   }
 };

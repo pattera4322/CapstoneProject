@@ -1,9 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
+import moment from 'moment';
 import { Button } from "@material-tailwind/react";
 import * as XLSX from "xlsx";
-import { getFile, postFile } from "../../api/fileApi";
+import { postFile } from "../../api/fileApi";
 import PropagateLoader from "react-spinners/PropagateLoader";
 import ColumnSelect from "./SelectColumn";
+import Popup from "../Popup.js";
+
 
 const FileUpload = ({
   index,
@@ -109,10 +112,16 @@ const FileUpload = ({
       reader.onload = (e) => {
         const fileData = e.target.result;
         const excelData = convertFileXLSX(fileData);
-console.log(excelData.slice(0, 10))
+        console.log(excelData.slice(0, 10));
         setData(excelData.slice(0, 10));
       };
     }
+  };
+
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleButtonClick = () => {
+    setShowPopup(true);
   };
 
   return (
@@ -166,7 +175,8 @@ console.log(excelData.slice(0, 10))
                   Preview data
                   {isHasFile ? (
                     <div className="ml-auto">
-                      <button onClick={removeSelectedFile}>
+                      {/* <button onClick={removeSelectedFile}> */}
+                      <button onClick={handleButtonClick}>
                         <img
                           src={
                             process.env.PUBLIC_URL + "/assets/deleteIcon.svg"
@@ -187,7 +197,9 @@ console.log(excelData.slice(0, 10))
                     <tr>
                       {data[0] &&
                         Object.keys(data[0]).map((header, index) => (
-                          <th className="pr-12" key={index}>{header}</th>
+                          <th className="pr-12" key={index}>
+                            {header}
+                          </th>
                         ))}
                     </tr>
                   </thead>
@@ -196,10 +208,10 @@ console.log(excelData.slice(0, 10))
                       <tr key={rowIndex}>
                         {Object.values(row).map((cell, cellIndex) => (
                           <td key={cellIndex}>
-                          {cell instanceof Date
-                            ? cell.toLocaleDateString() 
-                            : cell}
-                        </td>
+                            {cell instanceof Date
+                              ? moment(cell.toLocaleDateString()).format('MM/DD/YYYY')
+                              : cell}
+                          </td>
                           // <td key={cellIndex}>{cell}</td>
                         ))}
                       </tr>
@@ -222,6 +234,21 @@ console.log(excelData.slice(0, 10))
             </div>
           )}
         </div>
+      )}
+
+      {/* Popup component */}
+      {showPopup && (
+        <Popup
+          onClose={() => setShowPopup(false)}
+          header={"Are you sure?"}
+          info={
+            " Do you want to delete this file? This file cannot be restored."
+          }
+          onContinue={() => {
+            removeSelectedFile("delete");
+            setShowPopup(false);
+          }}
+        />
       )}
     </div>
   );

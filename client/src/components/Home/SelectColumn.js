@@ -59,14 +59,14 @@ const ColumnSelect = (header) => {
               </option>
             ))}
           </select>
-          {/* Display delete icon for the current selected option */}
+          {/* To reset selected*/}
           {selectedOption && (
             <div>
               <button onClick={handleReset}>
                 <img
                   src={process.env.PUBLIC_URL + "/assets/resetIcon.svg"}
-                  className="h-6 ml-2"
-                  alt="deleteIcon"
+                  className="h-4 ml-2"
+                  alt="resetIcon"
                 />
               </button>
             </div>
@@ -94,13 +94,6 @@ const ColumnSelect = (header) => {
             {Object.entries(selectedColumns).map(([key, value]) => (
               <div key={key}>
                 <strong>{key}:</strong> {value}
-                {/* <img
-                          src={
-                            process.env.PUBLIC_URL + "/assets/deleteIcon.svg"
-                          }
-                          className="h-8 mr-2 sm:mr-4"
-                          alt="deleteIcon"
-                        /> */}
               </div>
             ))}
           </div>

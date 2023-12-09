@@ -5,10 +5,15 @@ import App from "./App.js";
 import { BrowserRouter } from "react-router-dom";
 
 import { ThemeProvider } from "@material-tailwind/react";
+import { AnalyzeDataProvider } from "./context/AnalyzeDataContext.js";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <BrowserRouter basename="/sj1">
-      <ThemeProvider><App /></ThemeProvider>
-    </BrowserRouter>
+  <BrowserRouter basename="/sj1">
+    <ThemeProvider>
+      <AnalyzeDataProvider>
+        <App />
+      </AnalyzeDataProvider>
+    </ThemeProvider>
+  </BrowserRouter>
 );

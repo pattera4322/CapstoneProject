@@ -1,5 +1,4 @@
 const { spawn } = require("child_process");
-const fs = require('fs');
 
 function analyze(req, res) {
   console.log("REQ BODY",req.body.dataForAnalyze);
@@ -8,68 +7,61 @@ function analyze(req, res) {
 
   const updatedPythonArgs = [...pythonArgs];
 
-  updatedPythonArgs[4] = JSON.stringify(req.body.dataForAnalyze[4]);
-  
-  const arrayBufferData = req.body.dataForAnalyze[6];
+  updatedPythonArgs[5] = JSON.stringify(req.body.dataForAnalyze[5]);
 
-
-  console.log("hereeeeeeee",updatedPythonArgs);
+  console.log("UpdatedPythonArgs",updatedPythonArgs);
   const pythonProcess = spawn("python", [pythonScript, ...updatedPythonArgs]);
 
   const getDataFromPython = []
+  var getErrorFromPython = "No error"
 
   pythonProcess.stdout.on("data", (data) => {
-    const values = data.toString().split(' --- EndOfValue');
-    values.forEach((value, index) => {
-      if (value.trim() !== '') {
-        console.log(`Index ${index} :`);
-        console.log(value.trim());
-        getDataFromPython[index] = value.trim();
-      }
-    });
-    // const preaseData = JSON.parse(toStringData);
-    // console.log("yoyo", preaseData)
-    // getDataFromPython.push(preaseData)
-    // console.log(`Result: ${data.toString()}`);
-    // return res.status(200).json({
-    //   data: "jubjub",
+    const values = data.toString().split('----EndOfValue');
+    console.log('split leaw',values);
+    getDataFromPython.push(values)
+    // values.forEach((value, index) => {
+    //   if (value.trim() !== '') {
+    //     console.log(`Index ${index} :`);
+    //     console.log(value.trim());
+    //     getDataFromPython[index] = value.trim();
+    //   }
     // });
   });
 
   // Handle error ka
   pythonProcess.stderr.on("data", (data) => {
     console.error(`Python stderr: ${data.toString()}`);
+    getErrorFromPython = data.toString()
+  
   });
 
   // Handle the Python script's exit
   pythonProcess.on("close", (code) => {
     if (code === 0) {
       console.log("Python script executed successfully.");
-      // getDataFromPython.forEach((value, index) => {
-      //   console.log(`Index ${index} : ${value}`)
-      // })
-      // getDataFromPython.forEach((value, index) => {
-      //   console.log(`Index ${index}`);
-      //   const stringify = JSON.stringify(value);
-      //   const parsedData = JSON.parse(stringify);
-      //   if (index === 1) {
-      //     const model = Object.keys(parsedData).map(category => ({
-      //       [category]: {
-      //         totalSales: parsedData[category].totalSales,
-      //         quantity: parsedData[category].quantity,
-      //       },
-      //     }));
-      //     console.log(`Model ===> ${model}`);
-      //   } else{
-      //     const predictValue = parsedData
-      //     console.log(`Predictions ===> ${predictValue}`)
-      //   }
-      // });
-      // return  res.status(200).json({
-      //     model: model,
-      //     predictValue: predictValue
-      //   });
-    } else {
+      console.log("--------------------------------");
+      console.log(`predictSalesData: ${getDataFromPython[0]}` );
+      console.log(`predictQuantityData: ${getDataFromPython[1]}`);
+      console.log(`evaluateSalesData: ${getDataFromPython[2][0]}`);
+      console.log(`evaluateQuantityData: ${getDataFromPython[2][1]}`);
+      console.log(`predictImage: ${getDataFromPython[2][2]}`);
+      console.log(`predictModel: ${getDataFromPython[2][3]}`);
+
+      return  res.status(200).json({
+        predictSalesData: getDataFromPython[0],
+        predictQuantityData: getDataFromPython[1],
+        evaluateSalesData: getDataFromPython[2][0],
+        evaluateQuantityData: getDataFromPython[2][1],
+        predictImage: getDataFromPython[2][2],
+        predictModel: getDataFromPython[2][3]
+        });
+    } else if(code === 1){
+      console.error(`Python script exited with code ${code}`);
+      return res.status(500).json({
+      RespCode: 500,
+      RespMessage: getErrorFromPython,
+    });
+    }else {
       console.error(`Python script exited with code ${code}`);
     }
   });
