@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const ColumnSelect = (header) => {
   const [selectedColumns, setSelectedColumns] = useState({});
@@ -45,6 +45,7 @@ const ColumnSelect = (header) => {
             name={key}
             value={selectedOption || ""}
             disabled={!!selectedOption}
+            required
           >
             <option value="" disabled>
               Select an option

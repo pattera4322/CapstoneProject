@@ -12,6 +12,22 @@ const Chart = ({
   const options = {
     maintainAspectRatio: false,
     responsive: true,
+    scales: {
+      x: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Date'
+        }
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: predictedColumn
+        }
+      }
+    }
     //   scales: {
     //     x: {
     //         type: 'time',
