@@ -63,6 +63,10 @@ function analyze(req, res) {
     });
     }else {
       console.error(`Python script exited with code ${code}`);
+      return res.status(500).json({
+        RespCode: 500,
+        RespMessage: getErrorFromPython,
+      });
     }
   });
 

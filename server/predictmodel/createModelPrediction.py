@@ -1,7 +1,10 @@
 # import tensorflow as tf
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+# import matplotlib.pyplot as plt
 import sys
 import json
 from itertools import product as iter_product
@@ -13,7 +16,10 @@ from sklearn.metrics import mean_absolute_error, r2_score, mean_squared_error
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from tensorflow.keras import layers, models
+
+# from keras.models import Sequential
+# from keras.layers import Dense
+# from tensorflow.keras import layers, models
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 import base64
@@ -35,6 +41,7 @@ select_data_obj = json.loads(sys.argv[6])
 model_file_name = sys.argv[7]
 actual_data = sys.argv[8]
 user = sys.argv[9]
+
 # pred_date = int(sys.argv[1])
 # sales_goal = int(sys.argv[2])
 # risk_level = list(map(int,sys.argv[3].split(',')))
@@ -43,6 +50,16 @@ user = sys.argv[9]
 # model_file_name = sys.argv[6]
 # actual_data = sys.argv[7]
 # user = sys.argv[8]
+
+# pred_date = 90
+# sales_goal = 100000
+# risk_level = [0,25]
+# lead_time = 7
+# actual_file_name = 3
+# select_data_obj = {"date":"Date","year":"empty","month":"empty","productName":"Product Category","totalSales":"Total Amount","cost":"Price per Unit","quantity":"Quantity"}
+# model_file_name = 'empty',
+# actual_data = []
+# user = 'user1'
 
 # Get value in select column data
 total_sales = select_data_obj['totalSales']
@@ -55,6 +72,7 @@ product_column = select_data_obj['productName']
 
 ### **STEP 2 : GET DATA & CLEANING DATA**
 cred = credentials.Certificate('./config/serviceAccountKey.json')
+# cred = credentials.Certificate('D:/CapstoneProject/server/config/serviceAccountKey.json')
 firebase_admin.initialize_app(cred, {'storageBucket': "capstoneproject-7cbb3.appspot.com"})
 
 file_path_in_storage = f'{user}/{actual_file_name}'
@@ -265,16 +283,16 @@ def eval_features():
 eval_features()
 
 ### **STEP 5 : CREATE AND TRAIN DNN MODEL**
-def build_dnn_model(input_shape):
-    model = models.Sequential()
-    model.add(layers.Dense(256, activation='relu', input_shape=(input_shape,)))
-    model.add(layers.Dense(128, activation='relu'))
-    model.add(layers.Dense(64, activation='relu'))
-    model.add(layers.Dense(32, activation='relu'))
-    model.add(layers.Dense(1, activation='linear'))
+# def build_dnn_model(input_shape):
+#     model = tf.keras.Sequential()
+#     model.add(tf.keras.layers.Dense(256, activation='relu', input_shape=(input_shape,)))
+#     model.add(tf.keras.layers.Dense(128, activation='relu'))
+#     model.add(tf.keras.layers.Dense(64, activation='relu'))
+#     model.add(tf.keras.layers.Dense(32, activation='relu'))
+#     model.add(tf.keras.layers.Dense(1, activation='linear'))
 
-    model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
-    return model
+#     model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
+#     return model
 
 def grid_search_best_params(X_train, y_train):
     param_grid = {
@@ -454,7 +472,7 @@ for product_name in products:
     plt.xlabel('Date')
     plt.ylabel('Total Sales and Quantity')
     plt.legend()
-    plt.savefig(f'{product_name}_Predicted_vs_Actual_TotalSales_and_Quantity.png')
+    # plt.savefig(f'{product_name}_Predicted_vs_Actual_TotalSales_and_Quantity.png')
     plt.close()
 
     # Get the binary data from the stream and store it in the dictionary
