@@ -2,9 +2,14 @@ import axios from "axios";
 
 const baseURL = process.env.REACT_APP_API_URL;
 
+const instance = axios.create({
+
+  timeout: 120000, 
+});
+
 export const analyzeData = async (dataForAnalyze) => {
   try {
-    const response = await axios.post(
+    const response = await instance.post(
       `${baseURL}/analyze`,
       { dataForAnalyze }
     );
