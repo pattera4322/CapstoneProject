@@ -29,6 +29,12 @@ const Asking = ({ onSubmit }) => {
         ...formData,
         riskLevel: arrayValues,
       });
+    }
+    // else if (name ==="salesGoal") {
+    //   salesGoalValidation(e)
+    // } 
+    else if (name === "leadTime") {
+      leadTimeValidation(e);
     } else {
       setFormData({
         ...formData,
@@ -37,12 +43,22 @@ const Asking = ({ onSubmit }) => {
     }
 
     console.log(name, value);
-
-    //handle if user type more than 366 days
-    handleInputChange(e)
   };
 
-  const handleInputChange = (e) => {
+  const salesGoalValidation = (event) => {
+    const inputValue = event.target.value;
+    const moneyRegex = /^\d+(\.\d{1,2})?$/;
+
+    const isValidInput = moneyRegex.test(inputValue);
+    if (isValidInput) {
+      setFormData({ ...formData, salesGoal: inputValue });
+    }
+    // setMoneyInput(inputValue);
+    // setIsValid(isValidInput);
+  };
+
+  //handle if user type more than 366 days
+  const leadTimeValidation = (e) => {
     const newValue = parseInt(e.target.value, 10);
 
     if (!isNaN(newValue) && newValue >= 1 && newValue <= 366) {
