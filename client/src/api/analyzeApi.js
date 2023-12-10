@@ -1,16 +1,16 @@
 import axios from "axios";
 
 const baseURL = process.env.REACT_APP_API_URL;
-
-const instance = axios.create({
-  // other config options
-  timeout: 300000, // Set the timeout to 10 seconds (or any value that suits your needs)
-});
+axios.defaults.timeout = 300000
+// const instance = axios.create({
+//   // other config options
+//   timeout: 300000, // Set the timeout to 10 seconds (or any value that suits your needs)
+// });
 export const analyzeData = async (dataForAnalyze) => {
   try {
-    const response = await instance.post(
+    const response = await axios.post(
       `${baseURL}/analyze`,
-      { dataForAnalyze }
+      { dataForAnalyze } 
     );
     console.log("Analyze Data...");
     return response.data;
