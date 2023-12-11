@@ -1,12 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import moment from 'moment';
+import moment from "moment";
 import { Button } from "@material-tailwind/react";
 import * as XLSX from "xlsx";
 import { postFile } from "../../api/fileApi";
 import PropagateLoader from "react-spinners/PropagateLoader";
 import ColumnSelect from "./SelectColumn";
 import Popup from "../Popup.js";
-
 
 const FileUpload = ({
   index,
@@ -72,6 +71,7 @@ const FileUpload = ({
     setIsDragging(false);
   };
 
+  const [progress, setProgress] = useState(0);
   const handleConfirm = async () => {
     try {
       const userId = "user1";
@@ -80,7 +80,13 @@ const FileUpload = ({
       formData.append("file", file);
       console.log(formData.get("file"));
 
-      const data = await postFile(userId, index, formData);
+      const data = await postFile(userId, index, formData, (progressEvent) => {
+        const progressPercentage = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        setProgress(progressPercentage);
+      });
+
       console.log("Data:", data);
 
       onConfirmButtonClick();
@@ -209,7 +215,7 @@ const FileUpload = ({
                         {Object.values(row).map((cell, cellIndex) => (
                           <td key={cellIndex}>
                             {cell instanceof Date
-                              ? moment(cell.toLocaleDateString()).format('MM/DD/YYYY')
+                              ? cell.toLocaleDateString()
                               : cell}
                           </td>
                           // <td key={cellIndex}>{cell}</td>
@@ -227,6 +233,10 @@ const FileUpload = ({
                   <Button onClick={handleConfirm}>
                     Confirm to use this data
                   </Button>
+                  <div>
+                    <p>Uploading: {progress}%</p>
+                    <progress value={progress} max="100" />
+                  </div>
                 </div>
               ) : (
                 <ColumnSelect header={data[0]} />

@@ -3,7 +3,7 @@ import axios from "axios";
 
 const baseURL = process.env.REACT_APP_API_URL;
 
-export const postFile = async (userId, index, formData) => {
+export const postFile = async (userId, index, formData, onUploadProgress) => {
   try {
     const response = await axios.post(
       `${baseURL}/file/${userId}/${index}`,
@@ -12,9 +12,9 @@ export const postFile = async (userId, index, formData) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        onUploadProgress,
       }
     );
-
     return response.data;
   } catch (error) {
     throw error;
@@ -57,3 +57,4 @@ export const deleteFile = async (userId, index) => {
     }
   }
 };
+
