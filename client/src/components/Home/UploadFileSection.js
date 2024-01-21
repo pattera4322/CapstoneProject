@@ -42,7 +42,7 @@ const SelectData = ({ sendfileData }) => {
   useEffect(() => {
     const userId = "user1";
     setLoading(true);
-    if (filesInLocal[activeTab] != undefined) {
+    if (filesInLocal[activeTab] !== undefined) {
       setLoading(false);
       console.log("Get preview file from local...");
       const data = filesInLocal[activeTab];

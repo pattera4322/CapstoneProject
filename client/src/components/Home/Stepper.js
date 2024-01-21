@@ -6,6 +6,7 @@ import UploadFileSection from "./UploadFileSection";
 import AskingSection from "./AskingSection";
 import AnalyzeSection from "./AnalyzeSection";
 import Popup from "../Popup.js";
+import DownloadTemplate from "./DownloadTemplate";
 
 const StepperSection = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -14,7 +15,12 @@ const StepperSection = () => {
   const [fileData, setFileData] = useState([]);
   const [fileName, setFileName] = useState("");
 
-  const steps = ["Question", "Import & Select data", "Analyzing Data"];
+  const steps = [
+    "Question",
+    "Download Template",
+    "Upload data",
+    "Analyzing Data",
+  ];
 
   const handleNavigation = (direction) => {
     const nextStep = direction === "next" ? activeStep + 1 : activeStep - 1;
@@ -67,10 +73,11 @@ const StepperSection = () => {
       {/* <---------------------- Detail Section --------------------> */}
       <div className="mt-20 ">
         {activeStep === 0 && <AskingSection onSubmit={handleSubmit} />}
-        {activeStep === 1 && (
+        {activeStep === 1 && <DownloadTemplate />}
+        {activeStep === 2 && (
           <UploadFileSection sendfileData={receiveFileData} />
         )}
-        {activeStep === 2 && <AnalyzeSection fileName={fileName} />}
+        {activeStep === 3 && <AnalyzeSection fileName={fileName} />}
       </div>
 
       {/* <---------------------- Button Section --------------------> */}
@@ -95,10 +102,10 @@ const StepperSection = () => {
           <div className="flex">
             <Button
               onClick={() => {
-                if (isFirstStep) {
-                  handleNavigation("next");
-                } else {
+                if (activeStep === 2) {
                   handleButtonClick();
+                } else {
+                  handleNavigation("next");
                 }
               }}
               disabled={isLastStep}
