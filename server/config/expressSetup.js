@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const {authMiddleware} = require("../handler/userHandler");
 
 const app = express();
 const corsOptions = {
@@ -11,6 +12,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+//TODO: for token in each api
+// app.use("/", authMiddleware);
 
 const port = 5000;
 const host = '0.0.0.0';
