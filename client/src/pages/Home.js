@@ -13,6 +13,7 @@ function HomePage() {
   };
   const toggleInstruction = () => {
     setToggleIn(!toggleIn);
+
   }
 
   return (
@@ -36,7 +37,7 @@ function HomePage() {
           </button> */}
           <button
             onClick={toggleInstruction}
-            class="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-lg font-medium text-gray-900 rounded-full group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"
+            class="relative inline-flex items-center justify-center p-0.5 mr-10 mb-2 me-2 overflow-hidden text-lg font-medium text-gray-900 rounded-full group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"
           >
             <span class="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0">
               Read Instructions
@@ -53,14 +54,17 @@ function HomePage() {
         </div>
       </div>
       {/* <div class="mt-24 mb-24 h-56 grid grid-cols-3 gap-4 content-center "> */} 
-      <div className={`grid grid-cols-subgrid gap-4 col-span-2 h-2/6  ${toggleIn ? "transition-transform -translate-x-6" : 'inset-0'}`}>
+      <div className={`grid grid-cols-subgrid gap-4 h-33  ${toggleIn ? "col-span-2 transition-transform -translate-x-10 duration-1000" : 'col-span-3'}`}>
         <img
           src={process.env.PUBLIC_URL + "/assets/Openedbox.svg"}
           alt="open box"
           className="mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
         />
       </div>
-      { toggleIn && <div className="pl-0 pr-14 "><DetailSection/></div>}
+      <div className={`pl-0 pr-24 pt-24 ${toggleIn ? 'opacity-100 transition-opacity duration-1000' : 'opacity-0 invisible'}`}>
+        { toggleIn && <DetailSection/>}
+      </div>
+      
 
       {/*<------------------------------ Section 2 Stepper------------------------------> */}
 

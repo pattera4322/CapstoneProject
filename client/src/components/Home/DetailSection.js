@@ -2,11 +2,11 @@ import React from "react";
 
 const DetailSection = () => {
   return (
-    <div className="shadow-lg overflow-y-auto h-2/6">
+    <div className=" overflow-y-auto h-96 grid grid-cols-subgrid gap-4 col-span-1">
       <h1 className="text-2xl">
         <b>Instructions</b>
       </h1>
-      <div className="px-4 pt-1.5 text-left">
+      <div className="px-10 py-1.5 text-left">
         <label className="text-lg text-gray-500">
           {/* <b> */}
             Welcome to our Sales and Inventory Prediction Web Application! This

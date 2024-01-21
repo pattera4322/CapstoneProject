@@ -35,10 +35,10 @@ user = sys.argv[9]
 # Get value in select column data
 total_sales = select_data_obj['totalSales']
 quantity = select_data_obj['quantity']
-price_each = select_data_obj['cost']
+price_each = select_data_obj['pricePerUnit']
 date = select_data_obj['date']
-year = select_data_obj['year']
-month = select_data_obj['month']
+# year = select_data_obj['year']
+# month = select_data_obj['month']
 product_column = select_data_obj['productName']
 
 ### **STEP 2 : GET DATA & CLEANING DATA**

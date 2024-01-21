@@ -56,7 +56,7 @@ user = sys.argv[9]
 # risk_level = [0,25]
 # lead_time = 7
 # actual_file_name = 3
-# select_data_obj = {"date":"Date","year":"empty","month":"empty","productName":"Product Category","totalSales":"Total Amount","cost":"Price per Unit","quantity":"Quantity"}
+# select_data_obj = {"date":"Date","year":"empty","month":"empty","productName":"Product Category","totalSales":"Total Amount","pricePerUnit":"Price per Unit","quantity":"Quantity"}
 # model_file_name = 'empty',
 # actual_data = []
 # user = 'user1'
@@ -64,9 +64,9 @@ user = sys.argv[9]
 # Get value in select column data
 total_sales = select_data_obj['totalSales']
 quantity = select_data_obj['quantity']
-price_each = select_data_obj['cost']
-date = select_data_obj['date']
-year = select_data_obj['year']
+price_each = select_data_obj['pricePerUnit']
+# date = select_data_obj['date']
+# year = select_data_obj['year']
 month = select_data_obj['month']
 product_column = select_data_obj['productName']
 
