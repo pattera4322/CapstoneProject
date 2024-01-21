@@ -52,20 +52,15 @@ function HomePage() {
           </button>
         </div>
       </div>
-      {/* <div class="mt-24 mb-24 h-56 grid grid-cols-3 gap-4 content-center "> */}
-      <div className="grid grid-cols-subgrid gap-4 col-span-2">
+      {/* <div class="mt-24 mb-24 h-56 grid grid-cols-3 gap-4 content-center "> */} 
+      <div className={`grid grid-cols-subgrid gap-4 col-span-2 h-2/6  ${toggleIn ? "transition-transform -translate-x-6" : 'inset-0'}`}>
         <img
           src={process.env.PUBLIC_URL + "/assets/Openedbox.svg"}
           alt="open box"
           className="mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
         />
-      {/* </div> */}
-      { toggleIn && 
-      <div className="pr-14 -pl-4">
-        <DetailSection />
       </div>
-      }
-      </div>
+      { toggleIn && <div className="pl-0 pr-14 "><DetailSection/></div>}
 
       {/*<------------------------------ Section 2 Stepper------------------------------> */}
 

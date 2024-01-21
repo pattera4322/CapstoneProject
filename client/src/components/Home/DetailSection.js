@@ -153,16 +153,16 @@ const DetailSection = () => {
         </div>
         <br />
         <br />
-        <label className="text-lg">
-          <b>
+        <label className="text-lg text-gray-500">
             Thank you for choosing our Sales and Inventory Prediction Web
             Application. We trust that this tool will empower you to make
             informed decisions and enhance the efficiency of your business. If
             you have any further questions or concerns, please refer to our
             support documentation or reach out to our customer service team.
             Happy analyzing!
-          </b>
         </label>
+        <br />
+        <br />
       </div>
     </div>
   );
