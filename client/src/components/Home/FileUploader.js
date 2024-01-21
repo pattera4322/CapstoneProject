@@ -130,6 +130,16 @@ const FileUpload = ({
     setShowPopup(true);
   };
 
+  const [toggleIn, setToggleIn] = useState(false);
+  const [toggleFileInput, setToggleFileInput] = useState(true);
+
+  const toggleUploading = () => {
+    setToggleIn(!toggleIn);
+  }
+  const toggleFileInputFunction = () => {
+    setToggleFileInput(!toggleFileInput);
+  };
+
   return (
     <div className="mt-8">
       {/* <------------------------------- Loading section --------------------------------> */}
@@ -151,15 +161,17 @@ const FileUpload = ({
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`border-dashed rounded-3xl border-4 py-32 px-4 ${
-                isDragging ? "bg-gray-200" : "bg-white"
-              }`}
+              className={`border-dashed rounded-3xl border-4 py-32 px-4 ${isDragging ? "bg-gray-200" : "bg-white"
+                }`}
             >
-              <label htmlFor="fileInput" className="cursor-pointer">
-                {isDragging
-                  ? "Drop the file here"
-                  : "Select a file or drop it here"}
-              </label>
+              {!selectedFileName && (
+                <label
+                  htmlFor="fileInput"
+                  className={`cursor-pointer ${toggleFileInput ? 'opacity-100 transition-opacity duration-1000' : 'opacity-0 invisible'}`}
+                >
+                  {isDragging ? "Drop the file here" : "Select a file or drop it here"}
+                </label>
+              )}
 
               {selectedFileName && <p>Selected File: {selectedFileName}</p>}
               {error && <p className="text-red-600">{error}</p>}
@@ -171,6 +183,7 @@ const FileUpload = ({
                 id="fileInput"
               />
             </div>
+
           )}
 
           {/* <------------------------------- Preview data section --------------------------------> */}
@@ -230,13 +243,33 @@ const FileUpload = ({
 
               {data[0] && !isHasFile ? (
                 <div className="w-1/2 h-96 float-right">
-                  <Button onClick={handleConfirm}>
+                  <Button onClick={() => { handleConfirm(); toggleUploading(); }}>
                     Confirm to use this data
                   </Button>
-                  <div>
-                    <p>Uploading: {progress}%</p>
-                    <progress value={progress} max="100" />
+                  {/* <div> */}
+                    <div className={`${toggleIn ? 'opacity-100 transition-opacity duration-1000' : 'opacity-0 invisible'}`}>
+                    {/* <p className="mb-2 text-gray-600">Uploading: {progress}%</p> */}
+                    <div className="pt-1">
+                      <div className="flex mb-2 items-center justify-between">
+                        <div>
+                          <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white bg-black">
+                            Uploading...
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-xs font-semibold inline-block text-black">
+                            {progress}%
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex mb-2 items-center justify-center">
+                        <div className="w-full overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
+                          <div style={{ width: `${progress}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-black"></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                  {/* </div> */}
                 </div>
               ) : (
                 <ColumnSelect header={data[0]} />

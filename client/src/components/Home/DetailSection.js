@@ -50,7 +50,7 @@ const DetailSection = () => {
           <p className="text-lg pt-5">
             <b>Data Input Template</b>
           </p>
-          <ol class="list-decimal pl-4">
+          <ol className="list-decimal pl-4">
             <li>
               Download Template: Click <u>here</u> or download template in step
               2 to download the data input template.
