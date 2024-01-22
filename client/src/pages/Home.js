@@ -54,7 +54,7 @@ function HomePage() {
         </div>
       </div>
       {/* <div className="mt-24 mb-24 h-56 grid grid-cols-3 gap-4 content-center "> */} 
-      <div className={`grid grid-cols-subgrid gap-4 h-33  ${toggleIn ? "col-span-2 transition-transform -translate-x-10 duration-1000" : 'col-span-3'}`}>
+      <div className={`grid grid-cols-subgrid gap-4 h-33  ${toggleIn ? "col-span-2 transition-transform -translate-x-10 duration-1000" : 'col-span-3 transition-transform translate-x-0 duration-1000'}`}>
         <img
           src={process.env.PUBLIC_URL + "/assets/Openedbox.svg"}
           alt="open box"

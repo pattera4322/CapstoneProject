@@ -42,15 +42,7 @@ model_file_name = sys.argv[7]
 actual_data = sys.argv[8]
 user = sys.argv[9]
 
-# pred_date = int(sys.argv[1])
-# sales_goal = int(sys.argv[2])
-# risk_level = list(map(int,sys.argv[3].split(',')))
-# actual_file_name = sys.argv[4]
-# select_data_obj = json.loads(sys.argv[5])
-# model_file_name = sys.argv[6]
-# actual_data = sys.argv[7]
-# user = sys.argv[8]
-
+# Example data
 # pred_date = 90
 # sales_goal = 100000
 # risk_level = [0,25]
@@ -65,9 +57,9 @@ user = sys.argv[9]
 total_sales = select_data_obj['totalSales']
 quantity = select_data_obj['quantity']
 price_each = select_data_obj['pricePerUnit']
-# date = select_data_obj['date']
+date = select_data_obj['date']
 # year = select_data_obj['year']
-month = select_data_obj['month']
+# month = select_data_obj['month']
 product_column = select_data_obj['productName']
 
 ### **STEP 2 : GET DATA & CLEANING DATA**
@@ -83,9 +75,7 @@ bucket = storage.bucket()
 
 # Download the file
 blob = bucket.blob(file_path_in_storage)
-# blob.download_to_filename(local_filename)
 content = blob.download_as_bytes()
-# print(f"File '{content}'")
 
 # # Access the Firestore database
 # db = firestore.client()
