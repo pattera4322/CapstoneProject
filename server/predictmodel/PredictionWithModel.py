@@ -27,19 +27,19 @@ sales_goal = int(sys.argv[2])
 risk_level = list(map(int,sys.argv[3].split(',')))
 lead_time = sys.argv[4]
 actual_file_name = sys.argv[5]
-select_data_obj = json.loads(sys.argv[6])
+# select_data_obj = json.loads(sys.argv[6])
 model_file_name = sys.argv[7]
-actual_data = sys.argv[8]
+# actual_data = sys.argv[8]
 user = sys.argv[9]
 
 # Get value in select column data
-total_sales = select_data_obj['totalSales']
-quantity = select_data_obj['quantity']
-price_each = select_data_obj['pricePerUnit']
-date = select_data_obj['date']
-# year = select_data_obj['year']
-# month = select_data_obj['month']
-product_column = select_data_obj['productName']
+# total_sales = select_data_obj['totalSales']
+# quantity = select_data_obj['quantity']
+# price_each = select_data_obj['pricePerUnit']
+# date = select_data_obj['date']
+# # year = select_data_obj['year']
+# # month = select_data_obj['month']
+# product_column = select_data_obj['productName']
 
 ### **STEP 2 : GET DATA & CLEANING DATA**
 cred = credentials.Certificate('./config/serviceAccountKey.json')
@@ -47,7 +47,7 @@ firebase_admin.initialize_app(cred, {'storageBucket': "capstoneproject-7cbb3.app
 
 file_path_in_storage = f'{user}/{actual_file_name}'
 
-local_filename = 'downloaded-file.txt'
+# local_filename = 'downloaded-file.txt'
 
 bucket = storage.bucket()
 
@@ -58,6 +58,13 @@ print(f"File '{content}'")
 
 bytes_io = BytesIO(content)
 actual_df = pd.read_csv(bytes_io)
+
+list_col_name = list(actual_df.columns)
+date = list_col_name[0]
+product_column = list_col_name[1]
+price_each = list_col_name[2]
+quantity = list_col_name[3]
+total_sales = list_col_name[4]
 
 pred_date = 90 if pred_date == 0 else pred_date
 confidence_level = 95
