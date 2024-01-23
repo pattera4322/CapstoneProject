@@ -9,6 +9,7 @@ import {
   signOut,
   signInWithEmailAndPassword,
 } from "./firebase";
+// import Popup from "../components/Popup.js";
 // const baseURL = 'http://localhost:5000/api/file';
 
 const baseURL = process.env.REACT_APP_API_URL;
@@ -108,9 +109,9 @@ export const useAuthenticate = () => {
         await Swal.fire({
           icon: "warning",
           title: "Wanna leave?",
-          confirmButtonColor: "#3085d6",
+          confirmButtonColor: "#1E1E1E",
           showCancelButton: true,
-          cancelButtonColor: "#d33",
+          cancelButtonColor: "#DCDBDC",
           confirmButtonText: "Sign out",
         }).then(async (result) => {
           if (result.isConfirmed) {

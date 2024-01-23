@@ -189,7 +189,7 @@ const FileUpload = ({
           {/* <------------------------------- Preview data section --------------------------------> */}
           {data[0] && (
             <div>
-              <div className="py-8 text-left">
+              <div className="py-8">
                 <span style={{ display: "flex", alignItems: "center" }}>
                   Preview data
                   {isHasFile ? (
@@ -210,9 +210,9 @@ const FileUpload = ({
                   )}
                 </span>
               </div>
-              <div className="w-1/2 h-96 overflow-auto float-left">
+              <div className="w-full overflow-auto">
                 <table className="w-full text-m text-left text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-gray-700 uppercase bg-[#F1D1AB]">
+                  <thead className="text-xs text-left text-gray-700 uppercase bg-[#F1D1AB]">
                     <tr>
                       {data[0] &&
                         Object.keys(data[0]).map((header, index) => (
@@ -241,14 +241,14 @@ const FileUpload = ({
 
               {/* <------------------------------- Upload data section --------------------------------> */}
 
-              {data[0] && !isHasFile ? (
-                <div className="w-1/2 h-96 float-right">
+              {/* data[0] &&  */}
+
+              {!isHasFile ? (
+                <div className="w-full pt-8">
                   <Button onClick={() => { handleConfirm(); toggleUploading(); }}>
                     Confirm to use this data
                   </Button>
-                  {/* <div> */}
                     <div className={`${toggleIn ? 'opacity-100 transition-opacity duration-1000' : 'opacity-0 invisible'}`}>
-                    {/* <p className="mb-2 text-gray-600">Uploading: {progress}%</p> */}
                     <div className="pt-1">
                       <div className="flex mb-2 items-center justify-between">
                         <div>
@@ -269,11 +269,12 @@ const FileUpload = ({
                       </div>
                     </div>
                   </div>
-                  {/* </div> */}
                 </div>
-              ) : (
-                <ColumnSelect header={data[0]} />
-              )}
+              ) : null
+              // (
+              //   <ColumnSelect header={data[0]} />
+              // )
+              }
             </div>
           )}
         </div>
