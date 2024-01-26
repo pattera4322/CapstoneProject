@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Input, Radio, Typography } from "@material-tailwind/react";
+import InfoPopup from "./InfoPopup";
 
 const Asking = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -81,6 +82,10 @@ const Asking = ({ onSubmit }) => {
     return false;
   };
 
+  const information1 = "ใส่จำนวนเดือนที่คุณต้องการให้เราทำนาย โดยจำนวนที่เราแนะนำคือ แต่คุณสามารถใส่สูงสุดได้ถึง";
+  const information2 = "ระดับความเสี่ยง 1 ระดับความเสี่ยง 2 ระดับความเสี่ยง 3 ระดับความเสี่ยง 4";
+  const information3 = "lead time คือเหี้ยไรวะกุลืมอีกละ ค่อยาคิด5555";
+
   return (
     <div className="text-black">
       <h2 className="text-xl pt-10">
@@ -92,7 +97,7 @@ const Asking = ({ onSubmit }) => {
         <div className="pt-10 pl-10">
           <label className="text-lg">
             1. Please share your current sales goal with us.
-          </label>
+          </label><InfoPopup infoText={information1} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
             Your sales goal is crucial for us to align our strategies and
             recommendations with your specific targets, helping you achieve your
@@ -117,7 +122,7 @@ const Asking = ({ onSubmit }) => {
           <label className="text-lg">
             2. Please let us know your comfort level when it comes to taking
             risks with stock predictions.
-          </label>
+          </label><InfoPopup infoText={information2} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
             Knowing your risk tolerance enables us to provide stock predictions
             that match your investment preferences, ensuring a more tailored and
@@ -227,7 +232,7 @@ const Asking = ({ onSubmit }) => {
         <div className="pt-10 pl-10">
           <label className="text-lg">
             3. Please kindly provide us with insights into your average lead
-            time.
+            time.<InfoPopup infoText={information3} />
           </label>
           <p className="text-s text-gray-500 pl-4 pt-1.5">
             Your lead time help us understanding the duration it typically takes
