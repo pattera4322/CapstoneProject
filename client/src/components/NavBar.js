@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import NavLinkItem from "./NavLinkItem";
 import { useAuthenticate } from "../api/userApi";
+import DropdownMenu from "./DropdownMenu";
 
 const NavBar = () => {
   const userName = localStorage.getItem("user");
@@ -28,7 +29,10 @@ const NavBar = () => {
         <div className="hidden md:flex md:w-auto">
           {userName ? (
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white">
-              <li>{userName}</li>
+              <DropdownMenu>
+                <li>{userName}</li>
+              </DropdownMenu>
+
               <li onClick={handleSignout}>Sign out</li>
             </ul>
           ) : (
