@@ -82,9 +82,9 @@ const Asking = ({ onSubmit }) => {
     return false;
   };
 
-  const information1 = "ใส่จำนวนเดือนที่คุณต้องการให้เราทำนาย โดยจำนวนที่เราแนะนำคือ แต่คุณสามารถใส่สูงสุดได้ถึง";
-  const information2 = "ระดับความเสี่ยง 1 ระดับความเสี่ยง 2 ระดับความเสี่ยง 3 ระดับความเสี่ยง 4";
-  const information3 = "lead time คือเหี้ยไรวะกุลืมอีกละ ค่อยาคิด5555";
+  const information1 = "We recommend that you enter the maximum value for the sales you desire.";
+  const information2 = "This step will not affect sales predictions. But it will affect the recommended amount for stocking products.";
+  const information3 = "Measures how long it takes to complete a process from beginning to end. If you don't know the exact time, you can estimate a nearby time period.";
 
   return (
     <div className="text-black">
@@ -232,8 +232,9 @@ const Asking = ({ onSubmit }) => {
         <div className="pt-10 pl-10">
           <label className="text-lg">
             3. Please kindly provide us with insights into your average lead
-            time.<InfoPopup infoText={information3} />
+            time.
           </label>
+          <InfoPopup infoText={information3} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
             Your lead time help us understanding the duration it typically takes
             for your processes, from initiation to completion, will enable us to
