@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard.js";
 import Login from "./pages/Login.js";
 import Register from "./pages/Register.js";
 import AboutUs from "./pages/AboutUs.js";
+import History from "./pages/History.js";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/Aboutus" element={<AboutUs />} />
+        <Route path="/History" element={<History />} />
       </Routes>
     </div>
   );

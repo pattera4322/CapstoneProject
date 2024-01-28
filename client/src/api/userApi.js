@@ -53,10 +53,10 @@ export const useAuthenticate = () => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user.displayName;
-
+        const userUid = result.user.uid;
         if (token) {
           localStorage.setItem("token", token);
-          localStorage.setItem("user", user);
+          localStorage.setItem("user", JSON.stringify({userName:user,uid:userUid}));
           console.log("Success login and this is user", user);
           await Swal.fire({
             icon: "success",
@@ -76,7 +76,7 @@ export const useAuthenticate = () => {
             const user = userCredential.user;
             const token = user.accessToken;
             localStorage.setItem("token", token);
-            localStorage.setItem("user", user.email);
+            localStorage.setItem("user",JSON.stringify({userName:user.email ,uid:user.uid}));
             console.log("Success login and this is user", user);
             await Swal.fire({
               icon: "success",

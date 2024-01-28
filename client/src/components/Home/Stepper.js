@@ -96,7 +96,7 @@ const StepperSection = () => {
         {isLastStep ? (
           <div className="flex">
             {/* TODO: some progress bar in future */}
-            We have Analyzing your data. Don't change the page wait here!!!
+            We will redirect you to the status page to view the success of your analysis process. This page will display the job currently in the queue.
           </div>
         ) : (
           <div className="flex">

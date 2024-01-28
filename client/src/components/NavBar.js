@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 import NavLinkItem from "./NavLinkItem";
 import { useAuthenticate } from "../api/userApi";
+import Dropdown  from "./DropdownNavbar";
 
 const NavBar = () => {
-  const userName = localStorage.getItem("user");
+  const user = JSON.parse(localStorage.getItem("user"));
   const { logOut, loading, error } = useAuthenticate();
 
   const handleSignout = () => {
@@ -26,10 +27,11 @@ const NavBar = () => {
         </NavLink>
         <div className="md:hidden"></div>
         <div className="hidden md:flex md:w-auto">
-          {userName ? (
-            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white">
-              <li>{userName}</li>
-              <li onClick={handleSignout}>Sign out</li>
+          {user ? (
+            <ul className="cursor-pointer font-medium flex flex-col p-4 md:p-0 mt-4 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white">
+              <li>
+                <Dropdown isDivider={true} handleSignout={handleSignout} userName={user.userName}/>
+              </li>
             </ul>
           ) : (
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white">

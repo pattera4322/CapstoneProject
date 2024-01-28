@@ -2,6 +2,7 @@
 const admin = require("firebase-admin");
 const { initializeApp, cert } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
+const { getFirestore } = require("firebase-admin/firestore");
 const multer = require("multer");
 const serviceAccount = require("./serviceAccountKey.json");
 
@@ -12,15 +13,15 @@ initializeApp({
     storageBucket: "capstoneproject-7cbb3.appspot.com",
   });
 
-
-
 const bucket = admin.storage().bucket();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 const auth = getAuth();
 
-module.exports = { bucket, upload, auth };
+const firestore = getFirestore();
+
+module.exports = { bucket, upload, auth ,firestore};
 
 
 // // const firebaseConfig = {
