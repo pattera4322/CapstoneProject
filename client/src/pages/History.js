@@ -3,12 +3,14 @@ import { getQueuesData } from "../api/analyzeApi";
 
 const History = () => {
   const [activeTab, setActiveTab] = useState(1);
+  const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     getQueuesData().then((res) => {
       console.log("queues jobbbb:", res);
+      setJobs(res.jobs);
     });
-  });
+  }, []);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -36,6 +38,27 @@ const History = () => {
         {renderTab(2, "Analyzed success")}
         {renderTab(3, "Analyze Failed")}
       </ul>
+      {jobs[0] ? (
+        <div>
+          {jobs.map((job) => (
+            <div
+              className="transition ease-in-out hover:-translate-y-1 hover:scale-10 mx-16 my-8 px-8 py-8 rounded-md text-left shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]"
+              key={job.id}
+            >
+              Job ID: {job.id}
+              {/* Job Name: {job.name} */}
+              <br />
+              Job Data: {JSON.stringify(job.data)}
+              <br />
+              Job State: {job.state}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="m-32 text-gray-500">
+          Do not have analysis in progress or in the queue.
+        </div>
+      )}
     </div>
   );
 };

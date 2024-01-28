@@ -1,4 +1,4 @@
-const { Worker } = require("bullmq");
+const { Worker, delay } = require("bullmq");
 const { spawn } = require("child_process");
 
 function setUpWorker() {
@@ -29,7 +29,9 @@ function setUpWorker() {
       });
 
       console.log(job.data);
-
+      await job.updateProgress(42);
+      delay(7000)
+      await job.updateProgress(100);
       return { result: "Job completed successfully" };
     },
     { connection: redisConfig, autorun: true }
@@ -45,7 +47,8 @@ function setUpWorker() {
   worker.on('active', (job) => {
 		console.debug(`Completed job with id ${job.id}`);
 	});
- 
 }
+
+
 
 module.exports = { setUpWorker };

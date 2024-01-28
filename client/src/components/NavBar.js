@@ -28,10 +28,8 @@ const NavBar = () => {
         <div className="md:hidden"></div>
         <div className="hidden md:flex md:w-auto">
           {user ? (
-            <ul className="cursor-pointer font-medium flex flex-col p-4 md:p-0 mt-4 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white">
-              <li>
+            <ul className="cursor-pointer font-medium flex flex-col p-4 md:p-0 mt-4 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white">  
                 <Dropdown isDivider={true} handleSignout={handleSignout} userName={user.userName}/>
-              </li>
             </ul>
           ) : (
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white">

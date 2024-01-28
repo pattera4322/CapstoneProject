@@ -16,10 +16,25 @@ async function enqueueJob(args) {
   // await queueScheduler.waitUntilReady();
 }
 
-function getQueues(req,res) {
-  const queues = [queue.name]; // Add more queues as needed
-
-  res.status(200).json({ queues });
+async function getQueues(req,res) {
+  try {
+    // Get information about the jobs in the queue
+    // await queue.obliterate();
+    const jobs = await queue.getJobs(['waiting', 'active', 'completed', 'failed', 'delayed']);
+    const jobData = await Promise.all(jobs.map(async (job) => {
+      return {
+        id: job.id,
+        name: job.name,
+        data: job.data,
+        state: await job.getState(),
+      };
+    }));
+  
+    res.status(200).json({ jobs: jobData });
+  } catch (error) {
+    console.error('Error fetching jobs:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
 
 module.exports = { enqueueJob,getQueues };
