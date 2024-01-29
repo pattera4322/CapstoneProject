@@ -16,7 +16,7 @@ from tensorflow import keras
 from tensorflow.keras import layers, models
 import base64
 import firebase_admin
-from firebase_admin import credentials, storage, db
+from firebase_admin import credentials, storage, db, firestore
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 from keras.wrappers.scikit_learn import KerasRegressor
 import warnings
@@ -40,7 +40,10 @@ print(f'pred_date : {pred_date}, Sales Goal: {sales_goal}, Risk Level: {risk_lev
 ### **STEP 2 : GET DATA & CLEANING DATA**
 if not firebase_admin._apps:
     cred = credentials.Certificate('./config/serviceAccountKey.json')
-    firebase_admin.initialize_app(cred, {'storageBucket': "capstoneproject-7cbb3.appspot.com"})
+    firebase_admin.initialize_app(cred, {
+        'storageBucket': "capstoneproject-7cbb3.appspot.com",
+        'databaseURL': "https://capstoneproject-7cbb3-default-rtdb.asia-southeast1.firebasedatabase.app"
+    })
 
 file_path_in_storage = f'{user}/{actual_file_name}'
 
@@ -64,6 +67,19 @@ total_sales = list_col_name[4]
 # Set default value
 pred_date = 90 if pred_date == 0 else pred_date
 confidence_level = 95
+
+# Upload predicted data function
+def upload_prediction_value(user_id,data_id,data_to_be_history):
+  db = firestore.client()
+  if data_id:
+    doc_ref = db.collection(user_id).document(data_id)
+  else:
+    doc_ref = db.collection(user_id).document()
+
+  # Upload data to Firestore
+  doc_ref.set(data_to_be_history)
+
+  print(f'Data uploaded to Firestore in user: {user_id}, document ID: {doc_ref.id}')
 
 ### **STEP 3 : CLEANING DATA & DATA PROFILING**
 # Handle columns name & select columns
@@ -289,7 +305,8 @@ for product_name in products:
     model_quantity = train_model(input_shape,X_train_product, y_train_quantity, best_params_quantity)
 
     # Store models in the dictionary
-    models_by_product[product_name] = {'totalSales': model_total_sales, 'quantity': model_quantity}
+    # models_by_product[product_name] = {'totalSales': model_total_sales, 'quantity': model_quantity}
+    models_by_product[product_name] = {'totalSales': best_params_total_sales , 'quantity': best_params_quantity}
 
 for product_name in products:
    print(models_by_product[product_name]['totalSales'])
@@ -436,6 +453,8 @@ def transformed_predictions_data(selected_data,transformedProduct, model):
 transformed_predictions_data(predictions_by_product, transformed_predictions, "DNN-Tensorflow")
 
 ### **STEP 9 : Export predicted data**
+transformed_predictions['quantity_forecast']['Date'] = transformed_predictions['quantity_forecast']['Date'].dt.strftime('%d-%m-%Y')
+transformed_predictions['sale_forecast']['Date'] = transformed_predictions['sale_forecast']['Date'].dt.strftime('%d-%m-%Y')
 data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
@@ -444,8 +463,4 @@ data_to_save = {
     'evalQuantity': evaluation_results_quantity,
     'models': models_by_product
 }
-data_to_be_history = data_to_save.to_dict(orient='index')
-
-ref_path = f'{user}/history/{actual_file_name}'
-ref = db.reference(ref_path)
-ref.update(data_to_be_history)
+upload_prediction_value(f'users/{user}/history',actual_file_name,data_to_save)
