@@ -1,5 +1,11 @@
 const { Worker, delay } = require("bullmq");
 const { spawn } = require("child_process");
+const { io } = require("../config/socketConfig")
+
+//remove later
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function setUpWorker() {
   const redisConfig = {
@@ -12,9 +18,11 @@ function setUpWorker() {
     "myqueue",
     async (job) => {
       console.log(`Processing job ${job.id}`);
-
+      io.emit('jobProgress', { jobId: job.id, progress: 0 });
+      //-------------------------------------------------------------
       const pythonArgs = [job.data.userid,job.data.fileid];
-      const pythonScript = "./predictmodel/test2.py";
+      // const pythonArgs = req.body.dataForAnalyze
+      const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
       const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
       pythonProcess.stdout.on("data", (data) => {
         console.log(`stdout: ${data}`);
@@ -27,11 +35,31 @@ function setUpWorker() {
       pythonProcess.on("close", (code) => {
         console.log(`child process exited with code ${code}`);
       });
-
+      //--------------------------------------------------------------
+      await job.updateProgress(70);
       console.log(job.data);
-      await job.updateProgress(42);
-      delay(7000)
-      await job.updateProgress(100);
+      io.emit('jobProgress', { jobId: job.id, progress: 42 });
+      console.log("1");
+      await sleep(2000)
+      io.emit('jobProgress', { jobId: job.id, progress: 50 });
+      console.log("1");
+      await sleep(2000)
+      io.emit('jobProgress', { jobId: job.id, progress: 60 });
+      console.log("1");
+      await sleep(3000)
+      io.emit('jobProgress', { jobId: job.id, progress: 70 });
+      console.log("1");
+      await sleep(4000)
+      io.emit('jobProgress', { jobId: job.id, progress: 80 });
+      console.log("1");
+      await sleep(2000)
+      //this is socket.io------------------------------------
+      // for (let i = 0; i <= 100; i += 10) {
+      //   await job.updateProgress(i);
+      //   // Emit progress to connected clients
+      //   io.emit('jobProgress', { jobId: job.id, progress: i });
+      // }
+      io.emit('jobProgress', { jobId: job.id, progress: 100 });
       return { result: "Job completed successfully" };
     },
     { connection: redisConfig, autorun: true }

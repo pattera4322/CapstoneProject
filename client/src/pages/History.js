@@ -1,15 +1,27 @@
 import React, { useEffect, useState } from "react";
+import { socket } from "../config/socket";
 import { getQueuesData } from "../api/analyzeApi";
+import ProgressBar from "../components/ProgressBar";
 
 const History = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [jobs, setJobs] = useState([]);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     getQueuesData().then((res) => {
       console.log("queues jobbbb:", res);
       setJobs(res.jobs);
+    });   
+
+    socket.on("jobProgress", (data) => {
+      // Update the progress in the component state
+      setProgress(data.progress);  
     });
+
+    // return () => {
+    //   socket.disconnect(); // Cleanup the socket connection on component unmount
+    // };
   }, []);
 
   const handleTabClick = (tab) => {
@@ -51,6 +63,9 @@ const History = () => {
               Job Data: {JSON.stringify(job.data)}
               <br />
               Job State: {job.state}
+              <div>
+                <ProgressBar showProgress={true} progress={progress} text={"Job progress:"}/>
+              </div>
             </div>
           ))}
         </div>

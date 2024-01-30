@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
-import moment from "moment";
 import { Button } from "@material-tailwind/react";
 import * as XLSX from "xlsx";
 import { postFile } from "../../api/fileApi";
 import PropagateLoader from "react-spinners/PropagateLoader";
 import ColumnSelect from "./SelectColumn";
+import ProgressBar from "../ProgressBar.js";
 import Popup from "../Popup.js";
 
 const FileUpload = ({
@@ -21,6 +21,7 @@ const FileUpload = ({
   const [error, setError] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
   const [isHasFile, setIsHasFile] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
 
   const override = {
     display: "block",
@@ -46,7 +47,7 @@ const FileUpload = ({
     const workbook = XLSX.read(data, { type: "buffer", cellDates: true });
     const firstSheet = workbook.SheetNames[0];
     const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-    console.log(`Finish converting file`);
+    console.log(`Finish converting file`, excelData);
     return excelData;
   };
 
@@ -74,6 +75,7 @@ const FileUpload = ({
   const [progress, setProgress] = useState(0);
   const handleConfirm = async () => {
     try {
+      setShowProgress(true);
       const userId = "user1";
 
       const formData = new FormData();
@@ -91,6 +93,7 @@ const FileUpload = ({
 
       onConfirmButtonClick();
       setIsHasFile(true);
+      setShowProgress(false);
     } catch (error) {
       console.error("Error uploading file:", error);
     }
@@ -130,16 +133,6 @@ const FileUpload = ({
     setShowPopup(true);
   };
 
-  const [toggleIn, setToggleIn] = useState(false);
-  const [toggleFileInput, setToggleFileInput] = useState(true);
-
-  const toggleUploading = () => {
-    setToggleIn(!toggleIn);
-  }
-  const toggleFileInputFunction = () => {
-    setToggleFileInput(!toggleFileInput);
-  };
-
   return (
     <div className="mt-8">
       {/* <------------------------------- Loading section --------------------------------> */}
@@ -161,15 +154,18 @@ const FileUpload = ({
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`border-dashed rounded-3xl border-4 py-32 px-4 ${isDragging ? "bg-gray-200" : "bg-white"
-                }`}
+              className={`border-dashed rounded-3xl border-4 py-32 px-4 ${
+                isDragging ? "bg-gray-200" : "bg-white"
+              }`}
             >
               {!selectedFileName && (
                 <label
                   htmlFor="fileInput"
-                  className={`cursor-pointer ${toggleFileInput ? 'opacity-100 transition-opacity duration-1000' : 'opacity-0 invisible'}`}
+                  className={`cursor-pointer opacity-100 transition-opacity duration-1000 `}
                 >
-                  {isDragging ? "Drop the file here" : "Select a file or drop it here"}
+                  {isDragging
+                    ? "Drop the file here"
+                    : "Select a file or drop it here"}
                 </label>
               )}
 
@@ -183,7 +179,6 @@ const FileUpload = ({
                 id="fileInput"
               />
             </div>
-
           )}
 
           {/* <------------------------------- Preview data section --------------------------------> */}
@@ -243,37 +238,22 @@ const FileUpload = ({
 
               {/* data[0] &&  */}
 
-              {!isHasFile ? (
-                <div className="w-full pt-8">
-                  <Button onClick={() => { handleConfirm(); toggleUploading(); }}>
-                    Confirm to use this data
-                  </Button>
-                    <div className={`${toggleIn ? 'opacity-100 transition-opacity duration-1000' : 'opacity-0 invisible'}`}>
-                    <div className="pt-1">
-                      <div className="flex mb-2 items-center justify-between">
-                        <div>
-                          <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white bg-black">
-                            Uploading...
-                          </span>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-xs font-semibold inline-block text-black">
-                            {progress}%
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex mb-2 items-center justify-center">
-                        <div className="w-full overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
-                          <div style={{ width: `${progress}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-black"></div>
-                        </div>
-                      </div>
-                    </div>
+              {
+                !isHasFile ? (
+                  <div className="w-full pt-8">
+                    <Button
+                      onClick={() => {
+                        handleConfirm();
+                      }}
+                    >
+                      Confirm to use this data
+                    </Button>
+                    <ProgressBar showProgress={showProgress} progress={progress} text={"Uploading..."}/>
                   </div>
-                </div>
-              ) : null
-              // (
-              //   <ColumnSelect header={data[0]} />
-              // )
+                ) : null
+                // (
+                //   <ColumnSelect header={data[0]} />
+                // )
               }
             </div>
           )}

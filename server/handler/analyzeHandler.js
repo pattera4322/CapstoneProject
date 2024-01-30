@@ -3,7 +3,7 @@ const { spawn } = require("child_process");
 
 function analyze(req, res) {
   console.log("REQ BODY", req.body.dataForAnalyze);
-  const pythonScript = "./predictmodel/createModelPrediction.py";
+  const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
   const pythonArgs = req.body.dataForAnalyze;
 
   const updatedPythonArgs = [...pythonArgs];
@@ -16,18 +16,18 @@ function analyze(req, res) {
   const getDataFromPython = [];
   var getErrorFromPython = "No error";
 
-  pythonProcess.stdout.on("data", (data) => {
-    const values = data.toString().split("----EndOfValue");
-    console.log("split leaw", values);
-    getDataFromPython.push(values);
-    // values.forEach((value, index) => {
-    //   if (value.trim() !== '') {
-    //     console.log(`Index ${index} :`);
-    //     console.log(value.trim());
-    //     getDataFromPython[index] = value.trim();
-    //   }
-    // });
-  });
+  // pythonProcess.stdout.on("data", (data) => {
+  //   const values = data.toString().split("----EndOfValue");
+  //   console.log("split leaw", values);
+  //   getDataFromPython.push(values);
+  //   // values.forEach((value, index) => {
+  //   //   if (value.trim() !== '') {
+  //   //     console.log(`Index ${index} :`);
+  //   //     console.log(value.trim());
+  //   //     getDataFromPython[index] = value.trim();
+  //   //   }
+  //   // });
+  // });
 
   // Handle error ka
   pythonProcess.stderr.on("data", (data) => {

@@ -19,6 +19,7 @@ import firebase_admin
 from firebase_admin import credentials, storage, db, firestore
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 from keras.wrappers.scikit_learn import KerasRegressor
+import joblib
 import warnings
 
 # Ignore all warnings
@@ -27,13 +28,14 @@ warnings.filterwarnings("ignore")
 
 ### **STEP 1 : GET ARGUMENTS OR JSON**
 # Get each data from sys or JSON
-pred_date = json_data[0] #sys.argv[1]
-sales_goal = json_data[1] #sys.argv[2]
-risk_level = json_data[2] #sys.argv[3]
-lead_time = json_data[3]
-actual_file_name = json_data[4] #sys.argv[4]
-model_file_name = json_data[5] #sys.argv[5]
-user = json_data[6] #sys.argv[6]
+pred_date = 90 #json_data[0] #sys.argv[1]
+# sales_goal = json_data[1] #sys.argv[2]
+# risk_level = json_data[2] #sys.argv[3]
+# lead_time = json_data[3]
+actual_file_name = json_data[1] #sys.argv[4]
+model_file_name = "empty" #json_data[5] #sys.argv[5]
+user = json_data[0] #sys.argv[6]
+
 
 print(f'pred_date : {pred_date}, Sales Goal: {sales_goal}, Risk Level: {risk_level}, File name: {actual_file_name}, user: {user},  Model: {model_file_name}')
 
@@ -45,17 +47,24 @@ if not firebase_admin._apps:
         'databaseURL': "https://capstoneproject-7cbb3-default-rtdb.asia-southeast1.firebasedatabase.app"
     })
 
+# file_path_in_storage = f'{user}/{actual_file_name}/{actual_file_name}' ######### file name in folder 5.csv need to changing 5 
 file_path_in_storage = f'{user}/{actual_file_name}'
 
-# Download a file
+# local_filename = 'downloaded-file.txt'
+
 bucket = storage.bucket()
+
+# Download the file
 blob = bucket.blob(file_path_in_storage)
 content = blob.download_as_bytes()
+# print(f"File '{content}'")
 
 bytes_io = BytesIO(content)
-actual_df = pd.read_csv(bytes_io) if actual_file_name.endswith('.csv') else pd.read_excel(bytes_io)
+try:
+  actual_df = pd.read_csv(bytes_io)
+except:
+  pd.read_excel(bytes_io)
 
-# Get columns name
 list_col_name = list(actual_df.columns)
 print(list_col_name)
 date = list_col_name[0]
@@ -64,29 +73,16 @@ price_each = list_col_name[2]
 quantity = list_col_name[3]
 total_sales = list_col_name[4]
 
-# Set default value
 pred_date = 90 if pred_date == 0 else pred_date
 confidence_level = 95
-
-# Upload predicted data function
-def upload_prediction_value(user_id,data_id,data_to_be_history):
-  db = firestore.client()
-  if data_id:
-    doc_ref = db.collection(user_id).document(data_id)
-  else:
-    doc_ref = db.collection(user_id).document()
-
-  # Upload data to Firestore
-  doc_ref.set(data_to_be_history)
-
-  print(f'Data uploaded to Firestore in user: {user_id}, document ID: {doc_ref.id}')
 
 ### **STEP 3 : CLEANING DATA & DATA PROFILING**
 # Handle columns name & select columns
 actual_df_copy = actual_df.copy()
 # actual_df_copy = actual_df_copy.rename(columns={total_sales:'totalSales', date: 'date', quantity: 'quantity'})
 actual_df_copy.sort_values('date', inplace=True)
-# print(actual_df_copy)
+print(actual_df_copy)
+print(actual_df_copy.dtypes)
 
 # Handle DateTime for Date,Month,Year columns (If any) & Sort data by date
 def find_date_format(date_series):
@@ -106,6 +102,7 @@ def find_date_format(date_series):
     for format_option in possible_formats:
         try:
             parsed_dates = pd.to_datetime(date_series, format=format_option)
+            actual_df_copy[date] = pd.to_datetime(actual_df[date], format=date_format)
             if not parsed_dates.hasnans:
                 return format_option
         except ValueError:
@@ -114,7 +111,7 @@ def find_date_format(date_series):
     # If none of the formats match
     return None
 date_format = find_date_format(actual_df[date])
-# print(f"The detected date format is: {date_format}")
+print(f"The detected date format is: {date_format}")
 
 # Handle Total Sales if not cal
 if total_sales == 'empty':
@@ -225,7 +222,7 @@ for product_value in products:
     plt.xlabel('Date')
     plt.ylabel('Total Sales')
     plt.legend()
-    plt.close()
+    plt.show()
 
 def eval_features():
     # X = actual_df_copy.loc[:, actual_df_copy.columns != time_series_columns]
@@ -241,7 +238,7 @@ def eval_features():
     # Display the importance of each feature
     feature_importance_df = pd.DataFrame({'Feature': X.columns, 'Importance': feature_importances})
     feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
-    # print(feature_importance_df)
+    print(feature_importance_df)
 eval_features()
 
 ### **STEP 5 : CREATE AND TRAIN DNN MODEL**
@@ -250,6 +247,7 @@ scaler = StandardScaler()
 X_train = scaler.fit_transform(train_data.drop(columns=[time_series_columns, product_column]))
 X_test = scaler.transform(test_data.drop(columns=[time_series_columns, product_column]))
 
+import tensorflow as tf
 def build_dnn_model(input_shape):
     model_dnn = tf.keras.Sequential()
     model_dnn.add(tf.keras.layers.Dense(256, activation='relu', input_shape=(input_shape,)))
@@ -262,6 +260,7 @@ def build_dnn_model(input_shape):
     model_dnn.compile(optimizer=optimizer, loss='mean_squared_error', metrics=['mae'])
     return model_dnn
 
+from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 def grid_search_best_params(X_train, y_train):
     param_grid = {
         'epochs': [50, 100, 150],
@@ -283,6 +282,7 @@ def train_model(input_shape,X_train, y_train, best_params):
 
 # Initialize a dictionary to store models
 models_by_product = {}
+best_params_all_products = {}
 # Loop through each product
 for product_name in products:
     print(f"\n--- Product: {product_name} ---")
@@ -305,8 +305,8 @@ for product_name in products:
     model_quantity = train_model(input_shape,X_train_product, y_train_quantity, best_params_quantity)
 
     # Store models in the dictionary
-    # models_by_product[product_name] = {'totalSales': model_total_sales, 'quantity': model_quantity}
-    models_by_product[product_name] = {'totalSales': best_params_total_sales , 'quantity': best_params_quantity}
+    best_params_all_products[product_name] = {'totalSales': best_params_total_sales , 'quantity': best_params_quantity}
+    models_by_product[product_name] = {'totalSales': model_total_sales , 'quantity': model_quantity}
 
 for product_name in products:
    print(models_by_product[product_name]['totalSales'])
@@ -353,13 +353,15 @@ for product_name in products:
   predictions_by_product[product_name] = predictions_df
 
 ### **STEP 7 : EVALUATE FUNCTION**
+from sklearn.metrics import mean_squared_error, r2_score
+
 # Initialize dictionaries to store evaluation results
 evaluation_results_total_sales = {}
 evaluation_results_quantity = {}
 
 # Loop through each product
 for product_name in products:
-    #print(f"\n--- Product: {product_name} ---")
+    print(f"\n--- Product: {product_name} ---")
 
     # Retrieve test data for the specific product
     test_product_data = test_data[test_data[product_column] == product_name]
@@ -380,12 +382,12 @@ for product_name in products:
     # Evaluate totalSales
     mse_total_sales = mean_squared_error(y_test_total_sales, predicted_values_total_sales)
     r2_total_sales = r2_score(y_test_total_sales, predicted_values_total_sales)
-    #print(f"Evaluation for totalSales - MSE: {mse_total_sales}, R2: {r2_total_sales}")
+    print(f"Evaluation for totalSales - MSE: {mse_total_sales}, R²: {r2_total_sales}")
 
     # Evaluate quantity
     mse_quantity = mean_squared_error(y_test_quantity, predicted_values_quantity)
     r2_quantity = r2_score(y_test_quantity, predicted_values_quantity)
-    #print(f"Evaluation for quantity - MSE: {mse_quantity}, R2: {r2_quantity}")
+    print(f"Evaluation for quantity - MSE: {mse_quantity}, R²: {r2_quantity}")
 
     # Store evaluation results in dictionaries
     evaluation_results_total_sales[product_name] = {'MSE': round(mse_total_sales), 'R2': round(r2_total_sales)}
@@ -398,11 +400,18 @@ for product_name in products:
     plt.plot(test_product_data['date'], test_product_data['totalSales'], label=f'{product_name} - Actual totalSales', linestyle='solid', color='blue')
     plt.plot(test_product_data['date'], test_product_data['quantity'], label=f'{product_name} - Actual quantity', linestyle='solid', color='orange')
 
-    plt.title(f'{product_name} - Predicted vs Actual Test Total Sales and Quantity for the Next {pred_date} Days')
+    plt.title(f'{product_name} - Predicted vs Actual Test Total Sales and Quantity for the Next 90 Days')
     plt.xlabel('Date')
     plt.ylabel('Total Sales and Quantity')
     plt.legend()
-    plt.close()
+    plt.show()
+
+# Display or use the evaluation results as needed
+print("\n Total Sales Evaluation Results:")
+print(pd.DataFrame(evaluation_results_total_sales).T)
+
+print("\n Quantity Evaluation Results:")
+print(pd.DataFrame(evaluation_results_quantity).T)
 
 ### **STEP 8 : SHOW RESULT**
 # Loop through each product
@@ -455,12 +464,34 @@ transformed_predictions_data(predictions_by_product, transformed_predictions, "D
 ### **STEP 9 : Export predicted data**
 transformed_predictions['quantity_forecast']['Date'] = transformed_predictions['quantity_forecast']['Date'].dt.strftime('%d-%m-%Y')
 transformed_predictions['sale_forecast']['Date'] = transformed_predictions['sale_forecast']['Date'].dt.strftime('%d-%m-%Y')
+import firebase_admin
+from firebase_admin import credentials, firestore, storage
+
+def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
+  # Upload predicted data to firestore database
+  db = firestore.client()
+  if data_id:
+    doc_ref = db.collection(user_id).document(data_id)
+  else:
+    doc_ref = db.collection(user_id).document()
+  doc_ref.set(data_to_be_history)
+  print(f'Data uploaded to Firestore in user: {user_id}, document ID: {doc_ref.id}')
+
+  # Upload models to storage
+  bucket = storage.bucket()
+  upload_blob = bucket.blob(f"{user}/{model_name}.pkl")
+  upload_blob.upload_from_filename(f"{model_name}.pkl")
+  print(f'{model_name} uploaded to {blob.public_url}')
+
 data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
     # Evaluate result
     'evalTotalSales': evaluation_results_total_sales,
     'evalQuantity': evaluation_results_quantity,
-    'models': models_by_product
+    'best_params_models': best_params_all_products
 }
-upload_prediction_value(f'users/{user}/history',actual_file_name,data_to_save)
+models_file_name = f'models_by_product_of_{actual_file_name}'
+joblib.dump(models_by_product, f"{models_file_name}.pkl")
+
+upload_prediction_value(f'users/{user}/history',actual_file_name,data_to_save, models_file_name)

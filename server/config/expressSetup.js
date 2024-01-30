@@ -12,6 +12,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 //TODO: for token in each api
 // app.use("/", authMiddleware);
 

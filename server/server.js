@@ -1,4 +1,5 @@
 const { app, port, host } = require("./config/expressSetup");
+const { io, httpServer } = require("./config/socketConfig")
 const { uploadFile, getFile, deleteFile } = require("./handler/fileHandler");
 const { upload } = require("./config/firebaseConfig");
 const { analyze } = require("./handler/analyzeHandler");
@@ -8,8 +9,22 @@ const { saveData } = require("./handler/userDataHandler");
 const { setUpWorker } = require("./handler/worker");
 
 app.listen(port, host, () => {
-  console.log(`Server started on http://${host}:${port}`);
+  console.log(`Server backend started on http://${host}:${port}`);
   setUpWorker();
+});
+
+// WebSocket connection handling----------------------------------
+io.on('connection', socket => {
+  console.log('Client connected');
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
+httpServer.listen(3001, () => {
+  console.log('Socket server running on port 3001');
+
 });
 
 // -------------------------------------------File------------------------------------------------
