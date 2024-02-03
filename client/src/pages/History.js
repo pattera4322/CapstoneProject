@@ -78,7 +78,7 @@ const History = () => {
         onClick={() => handleTabClick(tabNumber)}
         className={`inline-block p-2 ${
           activeTab === tabNumber
-            ? "text-white bg-brown-200 rounded-t-lg"
+            ? "text-black bg-[#F1D1AB] rounded-t-lg"
             : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
         }`}
       >
