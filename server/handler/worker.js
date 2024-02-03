@@ -46,7 +46,7 @@ function setUpWorker() {
       await sleep(2000)
       io.emit('jobProgress', { jobId: job.id, progress: 60 });
       console.log("1");
-      await sleep(3000)
+      await sleep(10000)
       io.emit('jobProgress', { jobId: job.id, progress: 70 });
       console.log("1");
       await sleep(4000)
@@ -74,6 +74,9 @@ function setUpWorker() {
   });
   worker.on('active', (job) => {
 		console.debug(`Completed job with id ${job.id}`);
+	});
+  worker.on('waiting', (job) => {
+		console.debug(`${job.id} has waiting`);
 	});
 }
 

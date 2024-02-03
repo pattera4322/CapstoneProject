@@ -60,7 +60,7 @@ app.post("/api/enqueueJob/:userid/:fileid", async (req, res) => {
   }
 });
 
-app.get("/api/queues", async (req, res) => {
+app.get("/api/queues/:userid", async (req, res) => {
   getQueues(req,res);
 
 });

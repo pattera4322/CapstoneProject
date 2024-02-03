@@ -1,28 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { socket } from "../config/socket";
-import { getQueuesData } from "../api/analyzeApi";
-import ProgressBar from "../components/ProgressBar";
+import { getQueuesDataByUser } from "../api/analyzeApi";
+import JobComponent from "../components/History/JobComponent";
 
 const History = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [jobs, setJobs] = useState([]);
-  const [progress, setProgress] = useState(0);
+  const [progressData, setProgressData] = useState({});
+  const [filteredJobs, setFilteredJobs] = useState([]);
+  const [text, setText] = useState("");
 
   useEffect(() => {
-    getQueuesData().then((res) => {
+    getQueuesDataByUser().then((res) => {
       console.log("queues jobbbb:", res);
-      setJobs(res.jobs);
-    });   
+      if(res){
+       setJobs(res.jobs); 
+      }
+    });
 
     socket.on("jobProgress", (data) => {
       // Update the progress in the component state
-      setProgress(data.progress);  
+      setProgressData(data);
+
+      if (data.progress === 100) {
+        // Fetch updated jobs when progress reaches 100
+        getQueuesDataByUser().then((res) => {
+          if(res){
+            setJobs(res.jobs); 
+           }
+        });
+      }
     });
 
     // return () => {
     //   socket.disconnect(); // Cleanup the socket connection on component unmount
     // };
   }, []);
+
+  useEffect(() => {
+    const filterJobsByState = (state) => {
+      if (state === "activeOrWaiting") {
+        const filteredJobs = jobs.filter(
+          (job) => job.state === "active" || job.state === "waiting"
+        );
+        return filteredJobs.sort((a, b) => a.id - b.id);
+      }
+      return jobs.filter((job) => job.state === state);
+    };
+
+    switch (activeTab) {
+      case 1:
+        setFilteredJobs(filterJobsByState("activeOrWaiting"));
+        setText("Analyzing data in queue yet");
+        break;
+      case 2:
+        setFilteredJobs(filterJobsByState("completed"));
+        setText("Completed data yet");
+        break;
+      case 3:
+        setFilteredJobs(filterJobsByState("failed"));
+        setText("failed data");
+        break;
+      default:
+        setFilteredJobs(jobs);
+    }
+  }, [jobs, activeTab]);
+
+  console.log("dfdfdf", filteredJobs);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -50,29 +94,14 @@ const History = () => {
         {renderTab(2, "Analyzed success")}
         {renderTab(3, "Analyze Failed")}
       </ul>
-      {jobs[0] ? (
+      {filteredJobs.length > 0 ? (
         <div>
-          {jobs.map((job) => (
-            <div
-              className="transition ease-in-out hover:-translate-y-1 hover:scale-10 mx-16 my-8 px-8 py-8 rounded-md text-left shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]"
-              key={job.id}
-            >
-              Job ID: {job.id}
-              {/* Job Name: {job.name} */}
-              <br />
-              Job Data: {JSON.stringify(job.data)}
-              <br />
-              Job State: {job.state}
-              <div>
-                <ProgressBar showProgress={true} progress={progress} text={"Job progress:"}/>
-              </div>
-            </div>
+          {filteredJobs.map((job) => (
+            <JobComponent job={job} progressData={progressData} />
           ))}
         </div>
       ) : (
-        <div className="m-32 text-gray-500">
-          Do not have analysis in progress or in the queue.
-        </div>
+        <div className="m-32 text-gray-500">Do not have {text}</div>
       )}
     </div>
   );

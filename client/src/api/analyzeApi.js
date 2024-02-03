@@ -2,6 +2,7 @@ import axios from "axios";
 
 const baseURL = process.env.REACT_APP_API_URL;
 // axios.defaults.timeout = 300000
+const user = JSON.parse(localStorage.getItem("user"));
 
 export const enqueueData = async (userId, fileId) => {
   try {
@@ -23,9 +24,9 @@ export const enqueueData = async (userId, fileId) => {
   }
 };
 
-export const getQueuesData = async () => {
+export const getQueuesDataByUser = async () => {
   try {
-    const response = await axios.get(`${baseURL}/queues`);
+    const response = await axios.get(`${baseURL}/queues/${user.uid}`);
     console.log("Get Queues success");
     return response.data;
   } catch (error) {

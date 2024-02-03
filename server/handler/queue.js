@@ -19,7 +19,8 @@ async function enqueueJob(args) {
 async function getQueues(req,res) {
   try {
     // Get information about the jobs in the queue
-    // await queue.obliterate();
+    //await queue.obliterate();
+    const uid = req.params.userid;
     const jobs = await queue.getJobs(['waiting', 'active', 'completed', 'failed', 'delayed']);
     const jobData = await Promise.all(jobs.map(async (job) => {
       return {
@@ -29,8 +30,8 @@ async function getQueues(req,res) {
         state: await job.getState(),
       };
     }));
-  
-    res.status(200).json({ jobs: jobData });
+    const jobsDataFIlterUid = jobData.filter((job) => job.data.userid === uid)
+    res.status(200).json({ jobs: jobsDataFIlterUid });
   } catch (error) {
     console.error('Error fetching jobs:', error);
     res.status(500).json({ error: 'Internal Server Error' });
