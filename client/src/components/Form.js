@@ -100,16 +100,18 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
       </div>
     
       <button
-        className="w-full text-black bg-white hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center"
+        className="w-full text-black bg-white hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5"
         type="submit"
         onClick={() => setisProvider(true)}
       >
+        <div className="text-center">
         <img
             src={process.env.PUBLIC_URL + "/assets/google.png"}
             alt="google"
             className=" me-3 h-6 w-6"
           />
         {isLogin ? "Login" : "Register"} with Google
+        </div>
       </button>
     </form>
   );
