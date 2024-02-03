@@ -19,7 +19,9 @@ const Dropdown = ({ isDivider = false, handleSignout, userName }) => {
       >
         {userName}
         <svg
-          className="w-2.5 h-2.5 ms-3"
+          className={`w-2.5 h-2.5 ms-3 transition-transform transform ${
+            isDropdownVisible ? "rotate-180" : ""
+          }`}
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
