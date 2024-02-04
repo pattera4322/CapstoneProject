@@ -1,9 +1,10 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsHeader, TabsBody, Tab } from "@material-tailwind/react";
 import FileUpload from "./FileUploader";
 import { getFile } from "../../api/fileApi";
 import * as XLSX from "xlsx";
 import { deleteFile } from "../../api/fileApi";
+import { getUserData } from "../../api/userDataApi";
 
 const SelectData = ({ sendfileData }) => {
   const [fileData, setFileData] = useState([]);
@@ -13,35 +14,50 @@ const SelectData = ({ sendfileData }) => {
   const [filesInLocal, setFilesInLocal] = useState(
     JSON.parse(localStorage.getItem("files")) || {}
   );
+  const [fileName, setFileName] = useState(
+    JSON.parse(localStorage.getItem("fileName")) || {}
+  );
 
   const [activeTab, setActiveTab] = useState(1);
   const data = [
-    //TODO: - change to file name
     {
-      label: "SLOT 1",
+      label: fileName[1] || "EMPTY",
       value: 1,
     },
     {
-      label: "SLOT 2",
+      label: fileName[2] || "EMPTY",
       value: 2,
     },
     {
-      label: "SLOT 3",
+      label: fileName[3] || "EMPTY",
       value: 3,
     },
     {
-      label: "SLOT 4",
+      label: fileName[4] || "EMPTY",
       value: 4,
     },
     {
-      label: "SLOT 5",
+      label: fileName[5] || "EMPTY",
       value: 5,
     },
   ];
+  useEffect(() => {
+    getUserData().then((res) => {
+      console.log(res.data.userData.fileName);
+      if (res.data.userData.fileName === undefined) {
+        localStorage.setItem("fileName", JSON.stringify({}));
+      } else {
+        localStorage.setItem(
+          "fileName",
+          JSON.stringify(res.data.userData.fileName)
+        );
+      }
+    });
+  }, []);
 
   useEffect(() => {
-    const userId = "user1";
     setLoading(true);
+    setFileName(JSON.parse(localStorage.getItem("fileName")));
     if (filesInLocal[activeTab] !== undefined) {
       setLoading(false);
       console.log("Get preview file from local...");
@@ -50,7 +66,7 @@ const SelectData = ({ sendfileData }) => {
       sendfileData(data, activeTab);
       setFileData(data);
     } else {
-      getFile(userId, activeTab)
+      getFile(activeTab)
         .then((data) => {
           setLoading(false);
           if (data) {
@@ -94,8 +110,10 @@ const SelectData = ({ sendfileData }) => {
 
   const removeSelectedFile = () => {
     delete filesInLocal[activeTab];
+    delete fileName[activeTab];
     localStorage.setItem("files", JSON.stringify(filesInLocal));
-    deleteFile("user1",activeTab);
+    localStorage.setItem("fileName", JSON.stringify(fileName));
+    deleteFile(activeTab);
     setFileData([]);
     setIsHasFile(false);
     //TODO: - handle userid in local storage
@@ -136,7 +154,10 @@ const SelectData = ({ sendfileData }) => {
             content={fileData}
             isFileUploaded={isHasFile}
             loading={loading}
-            onConfirmButtonClick={() => setIsConfirmClicked(true)}
+            onConfirmButtonClick={() => {
+              setIsConfirmClicked(true);
+              setFileName(JSON.parse(localStorage.getItem("fileName")));
+            }}
             removeSelectedFile={removeSelectedFile}
           />
         </TabsBody>

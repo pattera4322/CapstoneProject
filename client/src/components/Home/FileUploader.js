@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@material-tailwind/react";
 import * as XLSX from "xlsx";
 import { postFile } from "../../api/fileApi";
@@ -21,7 +21,11 @@ const FileUpload = ({
   const [error, setError] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
   const [isHasFile, setIsHasFile] = useState(false);
+  const [loadingDropFile, setLoadingDropFile] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
+  const [userData, setUserData] = useState(
+    JSON.parse(localStorage.getItem("fileName")) || {}
+  );
 
   const override = {
     display: "block",
@@ -53,6 +57,7 @@ const FileUpload = ({
 
   const handleFileChange = (e) => {
     handleFiles(e.target.files);
+    setLoadingDropFile(true);
   };
 
   const handleDrop = (e) => {
@@ -60,6 +65,7 @@ const FileUpload = ({
     e.stopPropagation();
     setIsDragging(false);
     handleFiles(e.dataTransfer.files);
+    setLoadingDropFile(true);
   };
 
   const handleDragOver = (e) => {
@@ -76,13 +82,12 @@ const FileUpload = ({
   const handleConfirm = async () => {
     try {
       setShowProgress(true);
-      const userId = "user1";
 
       const formData = new FormData();
       formData.append("file", file);
       console.log(formData.get("file"));
 
-      const data = await postFile(userId, index, formData, (progressEvent) => {
+      const data = await postFile(index, formData, (progressEvent) => {
         const progressPercentage = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
         );
@@ -91,12 +96,23 @@ const FileUpload = ({
 
       console.log("Data:", data);
 
+      updateFileName();
+
       onConfirmButtonClick();
       setIsHasFile(true);
       setShowProgress(false);
     } catch (error) {
       console.error("Error uploading file:", error);
     }
+  };
+  const updateFileName = () => {
+    const updatedUserData = {
+      ...userData,
+      [index]: selectedFileName,
+    };
+    setUserData(updatedUserData);
+    console.log("filename: ", updatedUserData);
+    localStorage.setItem("fileName", JSON.stringify(updatedUserData));
   };
 
   const handleFiles = (files) => {
@@ -123,6 +139,7 @@ const FileUpload = ({
         const excelData = convertFileXLSX(fileData);
         console.log(excelData.slice(0, 10));
         setData(excelData.slice(0, 10));
+        setLoadingDropFile(false);
       };
     }
   };
@@ -182,6 +199,17 @@ const FileUpload = ({
           )}
 
           {/* <------------------------------- Preview data section --------------------------------> */}
+          {loadingDropFile && (
+            <div className="mt-8 mb-48">
+              <PropagateLoader
+                color="#F1D1AB"
+                loading={loadingDropFile}
+                cssOverride={override}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+              />
+            </div>
+          )}
           {data[0] && (
             <div>
               <div className="py-8">
@@ -248,7 +276,11 @@ const FileUpload = ({
                     >
                       Confirm to use this data
                     </Button>
-                    <ProgressBar showProgress={showProgress} progress={progress} text={"Uploading..."}/>
+                    <ProgressBar
+                      showProgress={showProgress}
+                      progress={progress}
+                      text={"Uploading..."}
+                    />
                   </div>
                 ) : null
                 // (

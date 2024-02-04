@@ -66,16 +66,14 @@ const History = () => {
     }
   }, [jobs, activeTab]);
 
-  console.log("dfdfdf", filteredJobs);
-
-  const handleTabClick = (tab) => {
+  const onTabClick = (tab) => {
     setActiveTab(tab);
   };
 
   const renderTab = (tabNumber, label) => (
     <li className="mr-6" key={tabNumber}>
       <button
-        onClick={() => handleTabClick(tabNumber)}
+        onClick={() => onTabClick(tabNumber)}
         className={`inline-block p-2 ${
           activeTab === tabNumber
             ? "text-black bg-[#F1D1AB] rounded-t-lg"

@@ -2,11 +2,12 @@ import axios from "axios";
 // const baseURL = 'http://localhost:5000/api/file';
 
 const baseURL = process.env.REACT_APP_API_URL;
+const userId = JSON.parse(localStorage.getItem("user"));
 
-export const postFile = async (userId, index, formData, onUploadProgress) => {
+export const postFile = async ( index, formData, onUploadProgress) => {
   try {
     const response = await axios.post(
-      `${baseURL}/file/${userId}/${index}`,
+      `${baseURL}/file/${userId.uid}/${index}`,
       formData,
       {
         headers: {
@@ -21,11 +22,11 @@ export const postFile = async (userId, index, formData, onUploadProgress) => {
   }
 };
 
-export const getFile = async (userId, index) => {
+export const getFile = async (index) => {
   try {
     console.log(process.env.NODE_ENV);
     console.log(`fetching file...`);
-    const response = await axios.get(`${baseURL}/file/${userId}/${index}`, {
+    const response = await axios.get(`${baseURL}/file/${userId.uid}/${index}`, {
       responseType: "arraybuffer",
     });
     console.log(`finish fetching file...`);
@@ -42,9 +43,9 @@ export const getFile = async (userId, index) => {
   }
 };
 
-export const deleteFile = async (userId, index) => {
+export const deleteFile = async (index) => {
   try {
-    const response = await axios.delete(`${baseURL}/file/${userId}/${index}`);
+    const response = await axios.delete(`${baseURL}/file/${userId.uid}/${index}`);
     console.log(`finish deleting file...`);
     return response;
   } catch (error) {

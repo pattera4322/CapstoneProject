@@ -13,7 +13,7 @@ const StepperSection = () => {
   const [isLastStep, setIsLastStep] = useState(false);
   const [isFirstStep, setIsFirstStep] = useState(false);
   const [fileData, setFileData] = useState([]);
-  const [fileName, setFileName] = useState("");
+  const [fileId, setFileId] = useState("");
 
   const steps = [
     "Question",
@@ -36,11 +36,11 @@ const StepperSection = () => {
     console.log("Form data submitted:", formData);
   };
 
-  const receiveFileData = (data, fileName) => {
+  const receiveFileData = (data, fileId) => {
     console.log("Data received from Select DATA:", data);
-    console.log("Data received from file name:", fileName);
+    console.log("Data received from file name:", fileId);
     setFileData(data);
-    setFileName(fileName);
+    setFileId(fileId);
   };
 
   const [showPopup, setShowPopup] = useState(false);
@@ -77,7 +77,7 @@ const StepperSection = () => {
         {activeStep === 2 && (
           <UploadFileSection sendfileData={receiveFileData} />
         )}
-        {activeStep === 3 && <AnalyzeSection fileName={fileName} />}
+        {activeStep === 3 && <AnalyzeSection fileId={fileId} />}
       </div>
 
       {/* <---------------------- Button Section --------------------> */}

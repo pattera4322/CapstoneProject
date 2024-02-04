@@ -5,7 +5,7 @@ const { upload } = require("./config/firebaseConfig");
 const { analyze } = require("./handler/analyzeHandler");
 const { createUser } = require("./handler/userHandler");
 const { enqueueJob, getQueues } = require("./handler/queue");
-const { saveData } = require("./handler/userDataHandler");
+const { saveData, getData,getHistoryData } = require("./handler/userDataHandler");
 const { setUpWorker } = require("./handler/worker");
 
 app.listen(port, host, () => {
@@ -73,4 +73,12 @@ app.post("/api/signup", (req, res) => {
 // -------------------------------------------User Data------------------------------------------------
 app.post("/api/saveUserData/:userid", (req, res) => {
   saveData(req, res);
+});
+
+app.get("/api/userData/:userid", (req, res) => {
+  getData(req, res);
+});
+
+app.get("/api/userHistory/:userid/:fileid", (req, res) => {
+  getHistoryData(req, res);
 });

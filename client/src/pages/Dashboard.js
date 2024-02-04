@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Chart from "../components/Dashboard/Chart";
+import { useLocation } from "react-router-dom";
 import RelatedNews from "../components/Dashboard/RelatedNews";
 import Goal from "../components/Dashboard/Goal";
 import ProductPieChart from "../components/Dashboard/ProductPieChart";
 import ButtonComponent from "../components/Button";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
+import { getUserHistory } from "../api/userDataApi";
 import { NavLink } from "react-router-dom";
 import html2canvas from "html2canvas";
 import {
@@ -18,8 +20,20 @@ import { useDataContext } from "../context/AnalyzeDataContext";
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
 const Dashboard = ({}) => {
-  const { contextAnalyzeData, setContextAnalyzeData } = useDataContext();
+  const location = useLocation();
+  const fileId = location.state || {};
+console.log("fileIdd",fileId)
+  // const { contextAnalyzeData, setContextAnalyzeData } = useDataContext();
+  const [analyzedData, setAnalyzedData] = useState();
   const [activeTab, setActiveTab] = useState(1);
+
+
+  useEffect(() => {
+    getUserHistory(fileId).then((res) => {
+      console.log("analyzed data", res.data);
+      setAnalyzedData(res.data);
+    });
+  }, []);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -75,11 +89,11 @@ const Dashboard = ({}) => {
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-            <Chart
+              {/* <Chart
                 predictedName={"Predicted Sales"}
-                predictedData={contextAnalyzeData.predictSalesData[0]}
+                predictedData={analyzedData}
                 predictedColumn={"sales"}
-              />
+              /> */}
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               Coming Soon
@@ -136,11 +150,11 @@ const Dashboard = ({}) => {
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-            <Chart
+              {/* <Chart
                 predictedName={"Predicted Quantity"}
-                predictedData={contextAnalyzeData.predictQuantityData[0]}
+                predictedData={analyzedData}
                 predictedColumn={"quantity"}
-              />
+              /> */}
             </div>
             <div className="box-content p-4 shadow-md flex-1">
               Coming Soon
