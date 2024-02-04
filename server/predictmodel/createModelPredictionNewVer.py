@@ -464,8 +464,6 @@ transformed_predictions_data(predictions_by_product, transformed_predictions, "D
 ### **STEP 9 : Export predicted data**
 transformed_predictions['quantity_forecast']['Date'] = transformed_predictions['quantity_forecast']['Date'].dt.strftime('%d-%m-%Y')
 transformed_predictions['sale_forecast']['Date'] = transformed_predictions['sale_forecast']['Date'].dt.strftime('%d-%m-%Y')
-import firebase_admin
-from firebase_admin import credentials, firestore, storage
 
 def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
   # Upload predicted data to firestore database
