@@ -32,7 +32,12 @@ console.log("fileIdd",fileId)
     getUserHistory(fileId).then((res) => {
       console.log("analyzed data", res.data);
       setAnalyzedData(res.data);
-    });
+    }).catch((error) => {
+      console.log("Error: ",error);
+      if(error.response.status === 404){
+        console.log("Not found history data");
+      }
+    })
   }, []);
 
   const handleTabClick = (tab) => {

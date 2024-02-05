@@ -21,37 +21,39 @@ const SelectData = ({ sendfileData }) => {
   const [activeTab, setActiveTab] = useState(1);
   const data = [
     {
-      label: fileName[1] || "EMPTY",
+      label: fileName && fileName[1] ? fileName[1] : "EMPTY",
       value: 1,
     },
     {
-      label: fileName[2] || "EMPTY",
+      label: fileName && fileName[2] ? fileName[2] : "EMPTY",
       value: 2,
     },
     {
-      label: fileName[3] || "EMPTY",
+      label: fileName && fileName[3] ? fileName[3] : "EMPTY",
       value: 3,
     },
     {
-      label: fileName[4] || "EMPTY",
+      label: fileName && fileName[4] ? fileName[4] : "EMPTY",
       value: 4,
     },
     {
-      label: fileName[5] || "EMPTY",
+      label: fileName && fileName[5] ? fileName[5] : "EMPTY",
       value: 5,
     },
   ];
   useEffect(() => {
     getUserData().then((res) => {
       console.log(res.data.userData.fileName);
-      if (res.data.userData.fileName === undefined) {
-        localStorage.setItem("fileName", JSON.stringify({}));
-      } else {
-        localStorage.setItem(
-          "fileName",
-          JSON.stringify(res.data.userData.fileName)
-        );
-      }
+      if (fileName == {} || fileName == undefined) {
+        if (res.data.userData.fileName === undefined) {
+          localStorage.setItem("fileName", JSON.stringify({}));
+        } else {
+          localStorage.setItem(
+            "fileName",
+            JSON.stringify(res.data.userData.fileName)
+          );
+        }
+      } 
     });
   }, []);
 
