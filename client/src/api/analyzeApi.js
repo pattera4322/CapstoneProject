@@ -4,10 +4,10 @@ const baseURL = process.env.REACT_APP_API_URL;
 // axios.defaults.timeout = 300000
 const user = JSON.parse(localStorage.getItem("user"));
 
-export const enqueueData = async ( fileId) => {
+export const enqueueData = async (fileId, userData) => {
   try {
     const response = await axios.post(
-      `${baseURL}/enqueueJob/${user.uid}/${fileId}`
+      `${baseURL}/enqueueJob/${user.uid}/${fileId}`,{userData}
     );
     console.log("Enqueue job...");
     return response.data;

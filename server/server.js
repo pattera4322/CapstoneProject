@@ -51,6 +51,7 @@ app.post("/api/enqueueJob/:userid/:fileid", async (req, res) => {
     const args = {
       userid,
       fileid,
+      userData: req.body.userData
     };
     await enqueueJob(args);
     res.status(200).json({ message: "Job enqueued successfully." });

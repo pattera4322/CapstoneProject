@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { analyzeData,enqueueData } from "../../api/analyzeApi";
+import { enqueueData } from "../../api/analyzeApi";
 import { postUserData } from "../../api/userDataApi";
 import { useDataContext } from "../../context/AnalyzeDataContext";
 import { useNavigate } from "react-router-dom";
@@ -46,7 +46,7 @@ const Analyzing = ({ fileId }) => {
 
   useEffect(() => {
     postUserData(userData).then(async (res) => {
-      await enqueueData(fileId).then((res) => {
+      await enqueueData(fileId,userData).then((res) => {
         console.log(res)
       })
       // await delay(2000);
