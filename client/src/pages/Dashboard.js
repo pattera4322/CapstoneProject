@@ -7,7 +7,7 @@ import ProductPieChart from "../components/Dashboard/ProductPieChart";
 import ButtonComponent from "../components/Button";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
-import { getUserHistory } from "../api/userDataApi";
+import { getUserHistory, getUserData } from "../api/userDataApi";
 import { NavLink } from "react-router-dom";
 import html2canvas from "html2canvas";
 import {
@@ -21,23 +21,27 @@ ChartJS.register(CategoryScale, LinearScale, BarElement);
 
 const Dashboard = ({}) => {
   const location = useLocation();
-  const fileId = location.state || {};
-console.log("fileIdd",fileId)
-  // const { contextAnalyzeData, setContextAnalyzeData } = useDataContext();
+
+  //uncomment when can use tensorflow --------------------------------------------------------
+  // const fileId = location.state || {};
+  //console.log("fileIdd",fileId)
+  const fileId = 5;
+
   const [analyzedData, setAnalyzedData] = useState();
   const [activeTab, setActiveTab] = useState(1);
 
-
-  useEffect(() => {
-    getUserHistory(fileId).then((res) => {
-      console.log("analyzed data", res.data);
-      setAnalyzedData(res.data);
-    }).catch((error) => {
-      console.log("Error: ",error);
-      if(error.response.status === 404){
-        console.log("Not found history data");
-      }
-    })
+  useEffect( () => {
+     getUserHistory(fileId)
+      .then((res) => {
+        console.log("analyzed data", res.data);
+        setAnalyzedData(res.data);
+      })
+      .catch((error) => {
+        console.log("Error: ", error);
+        if (error.response.status === 404) {
+          console.log("Not found history data");
+        }
+      });
   }, []);
 
   const handleTabClick = (tab) => {
@@ -110,7 +114,11 @@ console.log("fileIdd",fileId)
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 Coming Soon
-                {/* <Analyzed /> */}
+                {/* <Analyzed 
+                  predictedData={analyzedData.historyData.history.predictedSalesValues}
+                    userData={analyzedData.userData}
+                    analyzedType={activeTab}
+                  /> */}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
@@ -155,11 +163,13 @@ console.log("fileIdd",fileId)
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-              {/* <Chart
+            {/* {analyzedData && (
+              <Chart
                 predictedName={"Predicted Quantity"}
-                predictedData={analyzedData}
+                predictedData={analyzedData.historyData.history.predictedQuantityValues}
                 predictedColumn={"quantity"}
-              /> */}
+              />
+              )} */}
             </div>
             <div className="box-content p-4 shadow-md flex-1">
               Coming Soon
@@ -170,8 +180,14 @@ console.log("fileIdd",fileId)
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                Coming Soon
-                {/* <Analyzed /> */}
+                {/* Coming Soon */}
+                {analyzedData && (
+                  <Analyzed
+                    predictedData={analyzedData.historyData.history.predictedQuantityValues}
+                    userData={analyzedData.userData}
+                    analyzedType={activeTab}
+                  />
+                )}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">

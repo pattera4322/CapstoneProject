@@ -27,10 +27,10 @@ export const getUserData = async () => {
   }
 };
 
-export const getUserHistory = async ( fileId) => {
+export const getUserHistory = async (fileId) => {
   try {
     const response = await axios.get(
-      `${baseURL}/userData/${user.uid}/${fileId}`,
+      `${baseURL}/userHistory/${user.uid}/${fileId}`,
     );
     return response.data;
   } catch (error) {

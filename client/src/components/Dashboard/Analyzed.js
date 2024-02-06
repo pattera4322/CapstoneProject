@@ -1,6 +1,12 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
-const Analyzed = ({}) => {
+const Analyzed = ({predictedData, userData, analyzedType}) => {
+  console.log( `Analyze Predicted Data: ${predictedData}`)
+  console.log( `Analyze user Data: ${userData}`)
+  console.log( `Analyze type: ${analyzedType}`) // 1 = Retail Sales , 2 = Inventory
+
+  // const 
+
   return (
     <div className="w-full">
       <p className="pb-4">Analyze data</p>

@@ -28,16 +28,13 @@ warnings.filterwarnings("ignore")
 
 ### **STEP 1 : GET ARGUMENTS OR JSON**
 # Get each data from sys or JSON
-pred_date = 90 #json_data[0] #sys.argv[1]
-# sales_goal = json_data[1] #sys.argv[2]
-# risk_level = json_data[2] #sys.argv[3]
-# lead_time = json_data[3]
-actual_file_name = json_data[1] #sys.argv[4]
-model_file_name = "empty" #json_data[5] #sys.argv[5]
-user = json_data[0] #sys.argv[6]
+pred_date = 90
+actual_file_name = sys.argv[2] #json_data[1] 
+model_file_name = "empty" #json_data[5] 
+user = sys.argv[1] 
 
-
-print(f'pred_date : {pred_date}, Sales Goal: {sales_goal}, Risk Level: {risk_level}, File name: {actual_file_name}, user: {user},  Model: {model_file_name}')
+print(f'10')
+print(f'pred_date : {pred_date}, File name: {actual_file_name}, user: {user},  Model: {model_file_name}')
 
 ### **STEP 2 : GET DATA & CLEANING DATA**
 if not firebase_admin._apps:
@@ -66,7 +63,7 @@ except:
   pd.read_excel(bytes_io)
 
 list_col_name = list(actual_df.columns)
-print(list_col_name)
+# print(list_col_name)
 date = list_col_name[0]
 product_column = list_col_name[1]
 price_each = list_col_name[2]
@@ -75,14 +72,15 @@ total_sales = list_col_name[4]
 
 pred_date = 90 if pred_date == 0 else pred_date
 confidence_level = 95
+print(f'15')
 
 ### **STEP 3 : CLEANING DATA & DATA PROFILING**
 # Handle columns name & select columns
 actual_df_copy = actual_df.copy()
 # actual_df_copy = actual_df_copy.rename(columns={total_sales:'totalSales', date: 'date', quantity: 'quantity'})
 actual_df_copy.sort_values('date', inplace=True)
-print(actual_df_copy)
-print(actual_df_copy.dtypes)
+# print(actual_df_copy)
+# print(actual_df_copy.dtypes)
 
 # Handle DateTime for Date,Month,Year columns (If any) & Sort data by date
 def find_date_format(date_series):
@@ -111,7 +109,7 @@ def find_date_format(date_series):
     # If none of the formats match
     return None
 date_format = find_date_format(actual_df[date])
-print(f"The detected date format is: {date_format}")
+# print(f"The detected date format is: {date_format}")
 
 # Handle Total Sales if not cal
 if total_sales == 'empty':
@@ -151,6 +149,7 @@ for x in columns_with_missing_values:
 # print(column_data_types)
 actual_df_copy = actual_df_copy.dropna()
 actual_df_copy = actual_df_copy.drop_duplicates()
+print(f'20')
 
 ## Profiling function
 def profiling():
@@ -194,6 +193,7 @@ def profiling():
         actual_df_copy.drop(outliers.index, inplace=True)
     # print("Detected outliers:", outliers) # Empty DataFrame means the data has no outlier
 profiling()
+print(f'30')
 
 ### **STEP 4 : SPLIT DATA INTO TRAIN AND TEST (70:30 split)**
 actual_df_copy.sort_values('date', inplace=True)
@@ -238,7 +238,7 @@ def eval_features():
     # Display the importance of each feature
     feature_importance_df = pd.DataFrame({'Feature': X.columns, 'Importance': feature_importances})
     feature_importance_df = feature_importance_df.sort_values(by='Importance', ascending=False)
-    print(feature_importance_df)
+    # print(feature_importance_df)
 eval_features()
 
 ### **STEP 5 : CREATE AND TRAIN DNN MODEL**
@@ -246,6 +246,7 @@ eval_features()
 scaler = StandardScaler()
 X_train = scaler.fit_transform(train_data.drop(columns=[time_series_columns, product_column]))
 X_test = scaler.transform(test_data.drop(columns=[time_series_columns, product_column]))
+print(f'35')
 
 import tensorflow as tf
 def build_dnn_model(input_shape):
@@ -285,7 +286,7 @@ models_by_product = {}
 best_params_all_products = {}
 # Loop through each product
 for product_name in products:
-    print(f"\n--- Product: {product_name} ---")
+    # print(f"\n--- Product: {product_name} ---")
 
     # Filter data for the current product
     train_product_data = train_data[train_data[product_column] == product_name]
@@ -308,9 +309,10 @@ for product_name in products:
     best_params_all_products[product_name] = {'totalSales': best_params_total_sales , 'quantity': best_params_quantity}
     models_by_product[product_name] = {'totalSales': model_total_sales , 'quantity': model_quantity}
 
-for product_name in products:
-   print(models_by_product[product_name]['totalSales'])
-   print(models_by_product[product_name]['quantity'])   
+print(f'50')
+# for product_name in products:
+#    print(models_by_product[product_name]['totalSales'])
+#    print(models_by_product[product_name]['quantity'])   
 
 ### **STEP 6: PREDICT TOTALSALES AND QUANTITY FUNCTION**
 def predict_future_for_product(product_name, models_by_product, scaler, pred_date):
@@ -345,12 +347,16 @@ def predict_future_for_product(product_name, models_by_product, scaler, pred_dat
 
     return predictions_df
 
+print(f'65')
+
 # Initialize a dictionary to store predictions
 predictions_by_product = {}
 # Loop through each product
 for product_name in products:
   predictions_df = predict_future_for_product(product_name, models_by_product, scaler, pred_date)
   predictions_by_product[product_name] = predictions_df
+
+print(f'70')
 
 ### **STEP 7 : EVALUATE FUNCTION**
 from sklearn.metrics import mean_squared_error, r2_score
@@ -361,7 +367,7 @@ evaluation_results_quantity = {}
 
 # Loop through each product
 for product_name in products:
-    print(f"\n--- Product: {product_name} ---")
+    # print(f"\n--- Product: {product_name} ---")
 
     # Retrieve test data for the specific product
     test_product_data = test_data[test_data[product_column] == product_name]
@@ -382,12 +388,12 @@ for product_name in products:
     # Evaluate totalSales
     mse_total_sales = mean_squared_error(y_test_total_sales, predicted_values_total_sales)
     r2_total_sales = r2_score(y_test_total_sales, predicted_values_total_sales)
-    print(f"Evaluation for totalSales - MSE: {mse_total_sales}, R²: {r2_total_sales}")
+    # print(f"Evaluation for totalSales - MSE: {mse_total_sales}, R²: {r2_total_sales}")
 
     # Evaluate quantity
     mse_quantity = mean_squared_error(y_test_quantity, predicted_values_quantity)
     r2_quantity = r2_score(y_test_quantity, predicted_values_quantity)
-    print(f"Evaluation for quantity - MSE: {mse_quantity}, R²: {r2_quantity}")
+    # print(f"Evaluation for quantity - MSE: {mse_quantity}, R²: {r2_quantity}")
 
     # Store evaluation results in dictionaries
     evaluation_results_total_sales[product_name] = {'MSE': round(mse_total_sales), 'R2': round(r2_total_sales)}
@@ -407,11 +413,13 @@ for product_name in products:
     plt.show()
 
 # Display or use the evaluation results as needed
-print("\n Total Sales Evaluation Results:")
-print(pd.DataFrame(evaluation_results_total_sales).T)
+# print("\n Total Sales Evaluation Results:")
+# print(pd.DataFrame(evaluation_results_total_sales).T)
 
-print("\n Quantity Evaluation Results:")
-print(pd.DataFrame(evaluation_results_quantity).T)
+# print("\n Quantity Evaluation Results:")
+# print(pd.DataFrame(evaluation_results_quantity).T)
+
+print(f'75')
 
 ### **STEP 8 : SHOW RESULT**
 # Loop through each product
@@ -460,6 +468,7 @@ def transformed_predictions_data(selected_data,transformedProduct, model):
         transformedProduct[forecast_type] = concatenated_df
 
 transformed_predictions_data(predictions_by_product, transformed_predictions, "DNN-Tensorflow")
+print(f'80')
 
 ### **STEP 9 : Export predicted data**
 transformed_predictions['quantity_forecast']['Date'] = transformed_predictions['quantity_forecast']['Date'].dt.strftime('%d-%m-%Y')
@@ -473,13 +482,14 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
   else:
     doc_ref = db.collection(user_id).document()
   doc_ref.set(data_to_be_history)
-  print(f'Data uploaded to Firestore in user: {user_id}, document ID: {doc_ref.id}')
+#   print(f'Data uploaded to Firestore in user: {user_id}, document ID: {doc_ref.id}')
 
   # Upload models to storage
   bucket = storage.bucket()
   upload_blob = bucket.blob(f"{user}/{model_name}.pkl")
   upload_blob.upload_from_filename(f"{model_name}.pkl")
-  print(f'{model_name} uploaded to {blob.public_url}')
+#   print(f'{model_name} uploaded to {blob.public_url}') 
+  print(f'90')
 
 data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
@@ -493,3 +503,4 @@ models_file_name = f'models_by_product_of_{actual_file_name}'
 joblib.dump(models_by_product, f"{models_file_name}.pkl")
 
 upload_prediction_value(f'users/{user}/history',actual_file_name,data_to_save, models_file_name)
+print(f'100')

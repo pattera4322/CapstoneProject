@@ -62,6 +62,7 @@ const getHistoryData = async (req, res) => {
         fileId: historySnapshot.id,
         history: historySnapshot.data(),
       };
+      console.log(`History data : ${historyData}`)
       res.status(200).json({ data: { userData, historyData } });
     }else {
       res.status(404).json({ error: 'User not found' });
