@@ -29,12 +29,16 @@ function setUpWorker() {
       });
 
       pythonProcess.stderr.on("data", (data) => {
-        console.error(`stderr: ${data}`);
+        console.log(`stderr: ${data}`);
       });
 
       pythonProcess.on("close", (code) => {
         console.log(`child process exited with code ${code}`);
       });
+      pythonProcess.on("error", (err) => {
+        console.error("Failed to start Python process:", err);
+      });
+      
       //--------------------------------------------------------------
       await job.updateProgress(70);
       console.log(job.data);
