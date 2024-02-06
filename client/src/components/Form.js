@@ -110,7 +110,7 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
             alt="google"
             className=" me-3 h-6 w-6"
           />
-        {isLogin ? "Login" : "Register"} with Google
+        {isLogin ? "Continue" : "Continue"} with Google
         </div>
       </button>
     </form>

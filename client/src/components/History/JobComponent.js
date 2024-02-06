@@ -37,11 +37,13 @@ const JobComponent = ({ job, progressData }) => {
           />
         )}
         {isJobWaiting && <div>Waiting for analyze...</div>}
-        <div className="mt-4 right-0">
-          <ButtonComponent
-            onClick={OnCompletedJobClick}
-            children={<div>Go to Dashboard</div>} />
-        </div>
+        {isJobCompleted && (
+          <div className="mt-4 text-right">
+            <ButtonComponent
+              onClick={OnCompletedJobClick}
+              children={<div>Go to Dashboard</div>} />
+          </div>
+        )}
       </div>
     </div>
   );

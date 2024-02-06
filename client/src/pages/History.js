@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { socket } from "../config/socket";
 import { getQueuesDataByUser } from "../api/analyzeApi";
 import JobComponent from "../components/History/JobComponent";
+import { NavLink } from "react-router-dom";
+import ButtonComponent from "../components/Button";
+import Badge from "../components/Badge";
 
 const History = () => {
   const [activeTab, setActiveTab] = useState(1);
@@ -9,12 +12,14 @@ const History = () => {
   const [progressData, setProgressData] = useState({});
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [text, setText] = useState("");
+  const [clickedTabs, setClickedTabs] = useState(Array.from({ length: numberOfTabs }, () => false));
+  console.log(clickedTabs)
 
   useEffect(() => {
     getQueuesDataByUser().then((res) => {
       console.log("queues jobbbb:", res);
-      if(res){
-       setJobs(res.jobs); 
+      if (res) {
+        setJobs(res.jobs);
       }
     });
 
@@ -25,9 +30,9 @@ const History = () => {
       if (data.progress === 100) {
         // Fetch updated jobs when progress reaches 100
         getQueuesDataByUser().then((res) => {
-          if(res){
-            setJobs(res.jobs); 
-           }
+          if (res) {
+            setJobs(res.jobs);
+          }
         });
       }
     });
@@ -68,17 +73,20 @@ const History = () => {
 
   const onTabClick = (tab) => {
     setActiveTab(tab);
+    const updatedClickedTabs = [...clickedTabs];
+    updatedClickedTabs[tabNumber] = true;
+    setClickedTabs(updatedClickedTabs);
   };
 
   const renderTab = (tabNumber, label) => (
     <li className="mr-6" key={tabNumber}>
+       {!clickedTabs[tabNumber] && <Badge />}
       <button
         onClick={() => onTabClick(tabNumber)}
-        className={`inline-block p-2 ${
-          activeTab === tabNumber
-            ? "text-black bg-[#F1D1AB] rounded-t-lg"
-            : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-        }`}
+        className={`inline-block p-2 ${activeTab === tabNumber
+          ? "text-black bg-[#F1D1AB] rounded-t-lg"
+          : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+          }`}
       >
         {label}
       </button>
@@ -92,6 +100,11 @@ const History = () => {
         {renderTab(2, "Analyzed success")}
         {renderTab(3, "Analyze Failed")}
       </ul>
+      <div className="text-right mx-16 mt-8">
+        <NavLink to="/">
+          <ButtonComponent onClick={() => { }} children={"Analyze More"} />
+        </NavLink>
+      </div>
       {filteredJobs.length > 0 ? (
         <div>
           {filteredJobs.map((job) => (

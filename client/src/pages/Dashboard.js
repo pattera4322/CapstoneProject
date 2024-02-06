@@ -7,7 +7,8 @@ import ProductPieChart from "../components/Dashboard/ProductPieChart";
 import ButtonComponent from "../components/Button";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
-import { getUserHistory, getUserData } from "../api/userDataApi";
+import { getUserHistory } from "../api/userDataApi";
+import { getFile } from "../../api/fileApi";
 import { NavLink } from "react-router-dom";
 import html2canvas from "html2canvas";
 import {
@@ -28,6 +29,7 @@ const Dashboard = ({}) => {
   const fileId = 5;
 
   const [analyzedData, setAnalyzedData] = useState();
+  const [actualData, setActualData] = useState();
   const [activeTab, setActiveTab] = useState(1);
 
   useEffect( () => {
@@ -43,6 +45,20 @@ const Dashboard = ({}) => {
         }
       });
   }, []);
+
+  useEffect( () => {
+    getFile(fileId)
+     .then((res) => {
+       console.log("actual data", res.data);
+       setActualData(res.data);
+     })
+     .catch((error) => {
+       console.log("Error: ", error);
+       if (error.response.status === 404) {
+         console.log("Not found history data");
+       }
+     });
+ }, []);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -185,6 +201,7 @@ const Dashboard = ({}) => {
                   <Analyzed
                     predictedData={analyzedData.historyData.history.predictedQuantityValues}
                     userData={analyzedData.userData}
+                    actualData={actualData}
                     analyzedType={activeTab}
                   />
                 )}
