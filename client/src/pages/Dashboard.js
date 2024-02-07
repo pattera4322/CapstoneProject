@@ -8,7 +8,7 @@ import ButtonComponent from "../components/Button";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
 import { getUserHistory } from "../api/userDataApi";
-import { getFile } from "../../api/fileApi";
+import { getFile } from "../api/fileApi";
 import { NavLink } from "react-router-dom";
 import html2canvas from "html2canvas";
 import {
@@ -197,14 +197,14 @@ const Dashboard = ({}) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 {/* Coming Soon */}
-                {analyzedData && (
+                {/* {analyzedData && (
                   <Analyzed
                     predictedData={analyzedData.historyData.history.predictedQuantityValues}
                     userData={analyzedData.userData}
                     actualData={actualData}
                     analyzedType={activeTab}
                   />
-                )}
+                )} */}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">

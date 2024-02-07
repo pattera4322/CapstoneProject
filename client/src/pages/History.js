@@ -12,8 +12,7 @@ const History = () => {
   const [progressData, setProgressData] = useState({});
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [text, setText] = useState("");
-  const [clickedTabs, setClickedTabs] = useState(Array.from({ length: numberOfTabs }, () => false));
-  console.log(clickedTabs)
+  const [clickedTabs, setClickedTabs] = useState(Array.from({ length: activeTab }, () => false));
 
   useEffect(() => {
     getQueuesDataByUser().then((res) => {
@@ -74,7 +73,7 @@ const History = () => {
   const onTabClick = (tab) => {
     setActiveTab(tab);
     const updatedClickedTabs = [...clickedTabs];
-    updatedClickedTabs[tabNumber] = true;
+    updatedClickedTabs[tab] = true;
     setClickedTabs(updatedClickedTabs);
   };
 

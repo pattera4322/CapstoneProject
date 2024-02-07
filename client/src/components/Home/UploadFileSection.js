@@ -53,7 +53,7 @@ const SelectData = ({ sendfileData }) => {
             JSON.stringify(res.data.userData.fileName)
           );
         }
-      } 
+      }
     });
   }, []);
 
@@ -76,13 +76,17 @@ const SelectData = ({ sendfileData }) => {
             sendfileData(data, activeTab);
             setIsHasFile(true);
             convertFileXLSX(data);
-          } else {
-            setIsHasFile(false);
-            setFileData([]);
-          }
+          } 
         })
         .catch((error) => {
-          console.error("Error fetching file: ", error);
+          if (error.response && error.response.status === 404) {
+            console.log("Not found")
+          }else{
+            console.error("Error fetching file: ", error);
+          }
+          setIsHasFile(false);
+          setFileData([]);
+          sendfileData(null, activeTab);
           setLoading(false);
         });
     }

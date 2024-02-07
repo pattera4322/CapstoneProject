@@ -33,13 +33,9 @@ export const getFile = async (index) => {
     const fileContent = response.data;
     return fileContent;
   } catch (error) {
-    console.error("Error fetching data:", error.response);
+    // console.error("Error fetching data:", error);
     //handle other error soon
-    if (error.response && error.response.status === 404) {
-      return null;
-    } else {
-      throw error;
-    }
+    throw error;
   }
 };
 

@@ -108,7 +108,7 @@ const StepperSection = () => {
                   handleNavigation("next");
                 }
               }}
-              disabled={isLastStep}
+              disabled={activeStep === 2? fileData === null:false}
             >
               Next
             </Button>
