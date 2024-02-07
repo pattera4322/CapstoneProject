@@ -31,9 +31,10 @@ export const getFile = async (index) => {
     });
     console.log(`finish fetching file...`);
     const fileContent = response.data;
+    console.log(fileContent)
     return fileContent;
   } catch (error) {
-    // console.error("Error fetching data:", error);
+    console.error("Error fetching data:", error);
     //handle other error soon
     throw error;
   }

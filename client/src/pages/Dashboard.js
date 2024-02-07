@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 import Chart from "../components/Dashboard/Chart";
 import { useLocation } from "react-router-dom";
 import RelatedNews from "../components/Dashboard/RelatedNews";
@@ -32,8 +33,8 @@ const Dashboard = ({}) => {
   const [actualData, setActualData] = useState();
   const [activeTab, setActiveTab] = useState(1);
 
-  useEffect( () => {
-     getUserHistory(fileId)
+  useEffect(() => {
+    getUserHistory(fileId)
       .then((res) => {
         console.log("analyzed data", res.data);
         setAnalyzedData(res.data);
@@ -46,19 +47,33 @@ const Dashboard = ({}) => {
       });
   }, []);
 
-  useEffect( () => {
+  useEffect(() => {
     getFile(fileId)
-     .then((res) => {
-       console.log("actual data", res.data);
-       setActualData(res.data);
-     })
-     .catch((error) => {
-       console.log("Error: ", error);
-       if (error.response.status === 404) {
-         console.log("Not found history data");
-       }
-     });
- }, []);
+      .then((res) => {
+        if (res) {
+          console.log("Data:", res);
+
+          const excelData = convertFileXLSX(res);
+          console.log("actual data", excelData);
+          setActualData(excelData);
+        }
+      
+      })
+      .catch((error) => {
+        console.log("Error: ", error);
+        if (error.response.status === 404) {
+          console.log("Not found data");
+        }
+      });
+  }, []);
+
+  const convertFileXLSX = (data) => {
+    const workbook = XLSX.read(data, { type: "buffer", cellDates: true });
+    const firstSheet = workbook.SheetNames[0];
+    const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+    console.log(`Finish converting file`, excelData);
+    return excelData;
+  };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -114,11 +129,15 @@ const Dashboard = ({}) => {
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-              {/* <Chart
-                predictedName={"Predicted Sales"}
-                predictedData={analyzedData}
-                predictedColumn={"sales"}
-              /> */}
+            {analyzedData && (
+                <Chart
+                  predictedName={"Predicted Sales"}
+                  predictedData={
+                    analyzedData.historyData.history.predictedSalesValues
+                  }
+                  predictedColumn={"sales"}
+                />
+              )}
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               Coming Soon
@@ -179,13 +198,15 @@ const Dashboard = ({}) => {
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-            {/* {analyzedData && (
-              <Chart
-                predictedName={"Predicted Quantity"}
-                predictedData={analyzedData.historyData.history.predictedQuantityValues}
-                predictedColumn={"quantity"}
-              />
-              )} */}
+              {analyzedData && (
+                <Chart
+                  predictedName={"Predicted Quantity"}
+                  predictedData={
+                    analyzedData.historyData.history.predictedQuantityValues
+                  }
+                  predictedColumn={"quantity"}
+                />
+              )}
             </div>
             <div className="box-content p-4 shadow-md flex-1">
               Coming Soon
@@ -197,14 +218,16 @@ const Dashboard = ({}) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 {/* Coming Soon */}
-                {/* {analyzedData && (
+                {analyzedData && actualData && (
                   <Analyzed
-                    predictedData={analyzedData.historyData.history.predictedQuantityValues}
+                    predictedData={
+                      analyzedData.historyData.history.predictedQuantityValues
+                    }
                     userData={analyzedData.userData}
                     actualData={actualData}
                     analyzedType={activeTab}
                   />
-                )} */}
+                )}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">

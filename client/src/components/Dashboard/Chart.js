@@ -1,4 +1,4 @@
-import React, { useEffect,useState  } from "react";
+import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
 const Chart = ({
@@ -7,7 +7,7 @@ const Chart = ({
   predictedColumn,
   actualData = [],
 }) => {
-  const [predictedArray, setPredictedArray] =useState([]);
+  const [predictedArray, setPredictedArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
   const options = {
     maintainAspectRatio: false,
@@ -17,17 +17,17 @@ const Chart = ({
         display: true,
         title: {
           display: true,
-          text: 'Date'
-        }
+          text: "Date",
+        },
       },
       y: {
         display: true,
         title: {
           display: true,
-          text: predictedColumn
-        }
-      }
-    }
+          text: predictedColumn,
+        },
+      },
+    },
     //   scales: {
     //     x: {
     //         type: 'time',
@@ -41,15 +41,25 @@ const Chart = ({
   };
 
   useEffect(() => {
-    const parseDataForAnalyze = JSON.parse(predictedData.replace(/'/g, '"'));
-    const array = parseDataForAnalyze.map((entry) =>
+    const array = predictedData.map((entry) =>
       predictedColumn === "quantity"
         ? entry.Predicted_quantity
         : entry.Predicted_totalSales
     );
-    const formatDate = parseDataForAnalyze.map((entry) => entry.Date);
+
+    const formatDate = predictedData.map((entry) => {
+      const timestamp = entry.Date;
+      const milliseconds =
+        timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000;
+      const date = new Date(milliseconds);
+
+      const formattedDateTime = `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+      return formattedDateTime;
+    });
     setPredictedArray(array);
-    setFormattedDates(formatDate)
+    setFormattedDates(formatDate);
   }, [predictedData, predictedColumn]);
 
   const data = {

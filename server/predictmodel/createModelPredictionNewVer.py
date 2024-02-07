@@ -13,7 +13,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
 from tensorflow import keras
-from tensorflow.keras import layers, models
+from keras import layers, models
 import base64
 import firebase_admin
 from firebase_admin import credentials, storage, db, firestore
@@ -34,7 +34,7 @@ model_file_name = "empty" #json_data[5]
 user = sys.argv[1] 
 
 print(f'10')
-print(f'pred_date : {pred_date}, File name: {actual_file_name}, user: {user},  Model: {model_file_name}')
+# print(f'pred_date : {pred_date}, File name: {actual_file_name}, user: {user},  Model: {model_file_name}')
 
 ### **STEP 2 : GET DATA & CLEANING DATA**
 if not firebase_admin._apps:
@@ -100,7 +100,7 @@ def find_date_format(date_series):
     for format_option in possible_formats:
         try:
             parsed_dates = pd.to_datetime(date_series, format=format_option)
-            actual_df_copy[date] = pd.to_datetime(actual_df[date], format=date_format)
+            actual_df_copy[date] = pd.to_datetime(actual_df[date], format='%Y-%m-%d')
             if not parsed_dates.hasnans:
                 return format_option
         except ValueError:
@@ -222,7 +222,7 @@ for product_value in products:
     plt.xlabel('Date')
     plt.ylabel('Total Sales')
     plt.legend()
-    plt.show()
+    plt.close()
 
 def eval_features():
     # X = actual_df_copy.loc[:, actual_df_copy.columns != time_series_columns]
@@ -410,7 +410,7 @@ for product_name in products:
     plt.xlabel('Date')
     plt.ylabel('Total Sales and Quantity')
     plt.legend()
-    plt.show()
+    plt.close()
 
 # Display or use the evaluation results as needed
 # print("\n Total Sales Evaluation Results:")
@@ -484,7 +484,7 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
   doc_ref.set(data_to_be_history)
 #   print(f'Data uploaded to Firestore in user: {user_id}, document ID: {doc_ref.id}')
 
-  # Upload models to storage
+  # Upload models to storageprint
   bucket = storage.bucket()
   upload_blob = bucket.blob(f"{user}/{model_name}.pkl")
   upload_blob.upload_from_filename(f"{model_name}.pkl")
