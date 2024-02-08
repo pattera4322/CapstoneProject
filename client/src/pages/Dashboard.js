@@ -38,6 +38,11 @@ const Dashboard = ({}) => {
   const [products, setProducts] = useState([]);
   const [activeTab, setActiveTab] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState('');
+  const [filteredAnalyzedSalesData, setFilteredAnalyzedSalesData] = useState();
+  const [filteredAnalyzedQuantityData, setFilteredAnalyzedQuantityData] = useState();
+  const [filteredActualSalesData, setFilteredActualSalesData] = useState();
+  const [filteredActualQuantityData, setFilteredActualQuantityData] = useState();
+  // const [toggleIncludePredicted, setToggleIncludePredicted] = useState(true);
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -98,13 +103,25 @@ const Dashboard = ({}) => {
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
   
-    // const filteredAnalyzedSalesData = analyzedSalesData.historyData.history.filter(item => {
-    //     return product === "" || (item.predictedSalesValues && item.predictedSalesValues.hasOwnProperty(product)) || 
-    //                               (item.predictedQuantityValues && item.predictedQuantityValues.hasOwnProperty(product));
-    // });
-    // const filteredActualQuantityData = actualQuantityData.filter(item => product === "" || item.productName === product);
-    // setAnalyzedSalesData(filteredAnalyzedSalesData);
-    // setActualQuantityData(filteredActualQuantityData);
+    const filteredAnalyzedSalesData = analyzedSalesData.filter(item => {
+      return product === "" || item.Product === product;
+    });
+
+    const filteredAnalyzedQuantityData = analyzedQuantityData.filter(item => {
+      return product === "" || item.Product === product;
+    });
+
+    const filteredActualSalesData = actualSalesData.filter(item => {
+      return product === "" || item.productName === product;
+    });
+
+    const filteredActualQuantityData = actualQuantityData.filter(item => {
+      return product === "" || item.productName === product;
+    });
+    setFilteredAnalyzedSalesData(filteredAnalyzedSalesData);
+    setFilteredAnalyzedQuantityData(filteredAnalyzedQuantityData);
+    setFilteredActualSalesData(filteredActualSalesData);
+    setFilteredActualQuantityData(filteredActualQuantityData);
   };
 
   const handleScreenshot = () => {
@@ -166,7 +183,7 @@ const Dashboard = ({}) => {
                 <Chart
                   predictedName={"Predicted Sales"}
                   predictedData={
-                    analyzedSalesData
+                    filteredAnalyzedSalesData? filteredAnalyzedSalesData : analyzedSalesData
                   }
                   predictedColumn={"sales"}
                 />
@@ -181,18 +198,33 @@ const Dashboard = ({}) => {
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                Coming Soon
-                {/* <Analyzed 
-                  predictedData={analyzedSalesData.historyData.history.predictedSalesValues}
-                    userData={analyzedSalesData.userData}
-                    analyzedType={activeTab}
-                  /> */}
+                {/* Coming Soon */}
+                {actualSalesData && analyzedSalesData && (
+                  <Analyzed
+                    predictedName={"Predicted Sales"}
+                    predictedData={
+                      filteredAnalyzedSalesData? filteredAnalyzedSalesData : analyzedSalesData
+                    }
+                    userData={analyzedData.userData}
+                    actualData={filteredActualSalesData? filteredActualSalesData : actualSalesData}
+                  />
+                )}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                Coming Soon
-                {/* <Goal /> */}
+                {/* Coming Soon */}
+                {/* {actualSalesData && analyzedSalesData && (
+                  <Goal 
+                    predictedName={"Predicted Sales"}
+                    predictedData={
+                      filteredAnalyzedSalesData? filteredAnalyzedSalesData : analyzedSalesData
+                    }
+                    userData={analyzedData.userData}
+                    actualData={filteredActualSalesData? filteredActualSalesData : actualSalesData}
+                    // toggleIncludePredicted={toggleIncludePredicted}
+                  />
+                )} */}
               </div>
             </div>
           </div>
@@ -228,11 +260,6 @@ const Dashboard = ({}) => {
           activeTab === 2 ? "flex" : "hidden"
         }`}
       >
-        {/* <DropdownFilter
-          products={products}
-          selectedProduct={selectedProduct}
-          onSelectProduct={handleSelectProduct}
-        /> */}
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
@@ -240,7 +267,7 @@ const Dashboard = ({}) => {
                 <Chart
                   predictedName={"Predicted Quantity"}
                   predictedData={
-                    analyzedQuantityData
+                    filteredAnalyzedQuantityData? filteredAnalyzedQuantityData : analyzedQuantityData
                   }
                   predictedColumn={"quantity"}
                 />
@@ -256,14 +283,14 @@ const Dashboard = ({}) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 {/* Coming Soon */}
-                {actualQuantityData && actualQuantityData && (
+                {actualQuantityData && analyzedQuantityData && (
                   <Analyzed
                     predictedName={"Predicted Quantity"}
                     predictedData={
-                      analyzedQuantityData
+                      filteredAnalyzedQuantityData? filteredAnalyzedQuantityData : analyzedQuantityData
                     }
                     userData={analyzedData.userData}
-                    actualData={actualQuantityData}
+                    actualData={filteredActualQuantityData? filteredActualQuantityData : actualQuantityData}
                   />
                 )}
               </div>

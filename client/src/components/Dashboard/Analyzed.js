@@ -10,7 +10,8 @@ const Analyzed = ({predictedName, predictedData, userData, actualData}) => {
   let ROPActualAndPredicted = 0
   console.log( `Lead Time: ${leadTime}`)
 
-  const inventoryROP = (actualData,predictedData) => { //predictedData is a array of qty
+  const inventoryROP = (actualData,predictedData) => { 
+    console.log(`------ Inventory Analyze -----`)
     const predictedQty = predictedData.map(item => Math.round(item.Predicted_quantity));
     const actualQty = actualData.map(item => item.quantity);
     const combinedQty = predictedQty.concat(actualQty);
@@ -40,7 +41,10 @@ const Analyzed = ({predictedName, predictedData, userData, actualData}) => {
   }
 
   const salesAnalyze = (actualData,predictedData) => {
-    console.log(`Sale Analyze kuyyyy`)
+    console.log(`------ Sales Analyze -----`)
+
+
+
   }
   predictedName === "Predicted Quantity" ? inventoryROP(actualData,predictedData) : salesAnalyze(actualData,predictedData)// need to support function toggle include predict
 
@@ -51,7 +55,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData}) => {
             <p className="pb-4">Reorder point</p>
             <p className="text-base"> 
               {/* need to support function toggle include predict */}
-              while your products are <span style={{ color: 'red', fontWeight: 'bold' }}>{ROPActual}</span> items in stock. 
+              while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{ROPActual}</span> items in stock. 
             </p>
           </div>
         ) : (
@@ -59,7 +63,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData}) => {
             <p className="pb-4">Analyze Sales</p>
             <p className="text-base"> 
               {/* need to support function toggle include predict */}
-              while your .... 
+              ยอดขายอาจ ... ... ในช่วงเดือน ...
             </p>
           </div>
         )}

@@ -2,16 +2,25 @@ import React from "react";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 
-const Goal = () => {
-  const value = 69;
-  const percentage = `${value}%`;
+const Goal = ({predictedName, predictedData, userData, actualData}) => { //, toggleIncludePredicted
+  const salesGoal = userData.salesGoal
+  const toggleIncludePredicted = true
+
+  const predictedSales = predictedData.map(item => Math.round(item.Predicted_totalSales));
+  const actualSales = actualData.map(item => item.totalSales);
+  const sumActualSales = actualSales.reduce((acc, currentValue) => acc + currentValue, 0)
+  const sumPredictedSales = predictedSales.reduce((acc, currentValue) => acc + currentValue, 0)
+
+  const actualAndPredeictedPercent = Math.round(((sumPredictedSales+sumActualSales)/salesGoal)*100)
+  const actualPercent = Math.round((sumActualSales/salesGoal)*100)
+  const percentage = `${toggleIncludePredicted? actualAndPredeictedPercent  : actualPercent}%`;
 
   const data = {
     labels: ["Red"],
     datasets: [
       {
         label: "",
-        data: [value],
+        data: [toggleIncludePredicted? actualAndPredeictedPercent  : actualPercent],
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
@@ -61,7 +70,7 @@ const Goal = () => {
           overflow: "hidden",
         }}
       >
-        <Bar data={data} options={options} />
+        <Bar data={toggleIncludePredicted? actualAndPredeictedPercent  : actualPercent} options={options} />
         <div
           style={{
             position: "absolute",
