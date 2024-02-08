@@ -28,9 +28,9 @@ pred_date = json_data[3] #sys.argv[1]
 # sales_goal = json_data[1] #sys.argv[2]
 # risk_level = json_data[2] #sys.argv[3]
 # lead_time = json_data[3]
-actual_file_name = json_data[1] #sys.argv[4]
-model_file_name = json_data[2] #sys.argv[5]
-user = json_data[0] #sys.argv[6]
+actual_file_name = sys.argv[2] #json_data[1] #sys.argv[4]
+model_file_name = sys.argv[3] #json_data[2] #sys.argv[5]
+user = sys.argv[1] #json_data[0] #sys.argv[6]
 
 ### **STEP 2 : GET DATA & CLEANING DATA**
 if not firebase_admin._apps:
@@ -304,6 +304,8 @@ def upload_prediction_value(user_id,data_id,data_to_be_history):
 data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
+    'actualSalesValues' : actual_df_copy[['date','productName','totalSales']].to_dict(orient='records'),
+    'actualQuantityValues' : actual_df_copy[['date','productName','quantity']].to_dict(orient='records')
     # Evaluate result
     # 'evalTotalSales': evaluation_results_total_sales,
     # 'evalQuantity': evaluation_results_quantity,

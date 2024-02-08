@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
 
-const Analyzed = ({predictedData, userData, actualData, analyzedType}) => {
-  // console.log( `Analyze Phase Predicted Data: ${predictedData}`)
-  // console.log( `Analyze Phase Actual Data: ${actualData}`)
-  // console.log( `Analyze Phase user Data: ${userData}`)
-  // console.log( `Analyze Phase type: ${analyzedType}`) // 1 = Retail Sales , 2 = Inventory
+const Analyzed = ({predictedName, predictedData, userData, actualData}) => {
+  console.log( `Analyze Phase Predicted Data: ${predictedData}`)
+  console.log( `Analyze Phase Actual Data: ${actualData}`)
+  console.log( `Analyze Phase user Data: ${userData}`)
+  
   const leadTime = userData.leadTime
   let ROPActual = 0
   let ROPActualAndPredicted = 0
@@ -38,15 +38,31 @@ const Analyzed = ({predictedData, userData, actualData, analyzedType}) => {
     console.log(`ROPActual :${ROPActual}`)
     console.log(`ROPActualAndPredicted :${ROPActualAndPredicted}`)
   }
-  inventoryROP(actualData,predictedData) // need to support function toggle include predict
+
+  const salesAnalyze = (actualData,predictedData) => {
+    console.log(`Sale Analyze kuyyyy`)
+  }
+  predictedName === "Predicted Quantity" ? inventoryROP(actualData,predictedData) : salesAnalyze(actualData,predictedData)// need to support function toggle include predict
 
   return (
     <div className="w-full">
-      <p className="pb-4">Reorder point</p>
-      <p className="text-base"> 
-      {/* need to support function toggle include predict */}
-        while your products are <span style={{ color: 'red', fontWeight: 'bold' }}>{ROPActual}</span> items in stock. 
-      </p>
+      {predictedName === "Predicted Quantity" ? (
+          <div>
+            <p className="pb-4">Reorder point</p>
+            <p className="text-base"> 
+              {/* need to support function toggle include predict */}
+              while your products are <span style={{ color: 'red', fontWeight: 'bold' }}>{ROPActual}</span> items in stock. 
+            </p>
+          </div>
+        ) : (
+          <div>
+            <p className="pb-4">Analyze Sales</p>
+            <p className="text-base"> 
+              {/* need to support function toggle include predict */}
+              while your .... 
+            </p>
+          </div>
+        )}
     </div>
   );
 };

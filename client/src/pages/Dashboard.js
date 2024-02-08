@@ -8,6 +8,7 @@ import ProductPieChart from "../components/Dashboard/ProductPieChart";
 import ButtonComponent from "../components/Button";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
+import DropdownFilter from "../components/Dashboard/Filter";
 import { getUserHistory } from "../api/userDataApi";
 import { getFile } from "../api/fileApi";
 import { NavLink } from "react-router-dom";
@@ -30,14 +31,26 @@ const Dashboard = ({}) => {
   const fileId = 5;
 
   const [analyzedData, setAnalyzedData] = useState();
-  const [actualData, setActualData] = useState();
+  const [analyzedSalesData, setAnalyzedSalesData] = useState();
+  const [analyzedQuantityData, setAnalyzedQuantityData] = useState();
+  const [actualSalesData, setActualSalesData] = useState();
+  const [actualQuantityData, setActualQuantityData] = useState();
+  const [products, setProducts] = useState([]);
   const [activeTab, setActiveTab] = useState(1);
+  const [selectedProduct, setSelectedProduct] = useState('');
 
   useEffect(() => {
     getUserHistory(fileId)
       .then((res) => {
         console.log("analyzed data", res.data);
         setAnalyzedData(res.data);
+        setAnalyzedSalesData(res.data.historyData.history.predictedSalesValues);
+        setAnalyzedQuantityData(res.data.historyData.history.predictedQuantityValues);
+        setActualSalesData(res.data.historyData.history.actualSalesValues);
+        setActualQuantityData(res.data.historyData.history.actualQuantityValues);
+        const products = [...new Set(res.data.historyData.history.actualSalesValues.map(item => item.productName))];
+        setProducts(products)
+        console.log("name of Products", products);
       })
       .catch((error) => {
         console.log("Error: ", error);
@@ -47,36 +60,51 @@ const Dashboard = ({}) => {
       });
   }, []);
 
-  useEffect(() => {
-    getFile(fileId)
-      .then((res) => {
-        if (res) {
-          console.log("Data:", res);
+  // useEffect(() => {
+  //   getFile(fileId)
+  //     .then((res) => {
+  //       if (res) {
+  //         console.log("Data:", res);
 
-          const excelData = convertFileXLSX(res);
-          console.log("actual data", excelData);
-          setActualData(excelData);
-        }
+  //         const excelData = convertFileXLSX(res);
+  //         console.log("actual data", excelData);
+  //         setActualQuantityData(excelData);
+  //         const products = [...new Set(excelData.map(item => item.productName))];
+  //         setProducts(products)
+  //         console.log("name of Products", products);
+  //       }
       
-      })
-      .catch((error) => {
-        console.log("Error: ", error);
-        if (error.response.status === 404) {
-          console.log("Not found data");
-        }
-      });
-  }, []);
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error: ", error);
+  //       if (error.response.status === 404) {
+  //         console.log("Not found data");
+  //       }
+  //     });
+  // }, []);
 
-  const convertFileXLSX = (data) => {
-    const workbook = XLSX.read(data, { type: "buffer", cellDates: true });
-    const firstSheet = workbook.SheetNames[0];
-    const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-    console.log(`Finish converting file`, excelData);
-    return excelData;
-  };
+  // const convertFileXLSX = (data) => {
+  //   const workbook = XLSX.read(data, { type: "buffer", cellDates: true });
+  //   const firstSheet = workbook.SheetNames[0];
+  //   const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+  //   console.log(`Finish converting file`, excelData);
+  //   return excelData;
+  // };
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+  };
+
+  const handleSelectProduct = (product) => {
+    setSelectedProduct(product);
+  
+    // const filteredAnalyzedSalesData = analyzedSalesData.historyData.history.filter(item => {
+    //     return product === "" || (item.predictedSalesValues && item.predictedSalesValues.hasOwnProperty(product)) || 
+    //                               (item.predictedQuantityValues && item.predictedQuantityValues.hasOwnProperty(product));
+    // });
+    // const filteredActualQuantityData = actualQuantityData.filter(item => product === "" || item.productName === product);
+    // setAnalyzedSalesData(filteredAnalyzedSalesData);
+    // setActualQuantityData(filteredActualQuantityData);
   };
 
   const handleScreenshot = () => {
@@ -124,16 +152,21 @@ const Dashboard = ({}) => {
           </button>
         </li>
       </ul>
+      <DropdownFilter
+          products={products}
+          selectedProduct={selectedProduct}
+          onSelectProduct={handleSelectProduct}
+      />
 
       <div className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}>
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-            {analyzedData && (
+            {analyzedSalesData && (
                 <Chart
                   predictedName={"Predicted Sales"}
                   predictedData={
-                    analyzedData.historyData.history.predictedSalesValues
+                    analyzedSalesData
                   }
                   predictedColumn={"sales"}
                 />
@@ -150,8 +183,8 @@ const Dashboard = ({}) => {
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 Coming Soon
                 {/* <Analyzed 
-                  predictedData={analyzedData.historyData.history.predictedSalesValues}
-                    userData={analyzedData.userData}
+                  predictedData={analyzedSalesData.historyData.history.predictedSalesValues}
+                    userData={analyzedSalesData.userData}
                     analyzedType={activeTab}
                   /> */}
               </div>
@@ -195,14 +228,19 @@ const Dashboard = ({}) => {
           activeTab === 2 ? "flex" : "hidden"
         }`}
       >
+        {/* <DropdownFilter
+          products={products}
+          selectedProduct={selectedProduct}
+          onSelectProduct={handleSelectProduct}
+        /> */}
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-              {analyzedData && (
+              {analyzedQuantityData && (
                 <Chart
                   predictedName={"Predicted Quantity"}
                   predictedData={
-                    analyzedData.historyData.history.predictedQuantityValues
+                    analyzedQuantityData
                   }
                   predictedColumn={"quantity"}
                 />
@@ -218,14 +256,14 @@ const Dashboard = ({}) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 {/* Coming Soon */}
-                {analyzedData && actualData && (
+                {actualQuantityData && actualQuantityData && (
                   <Analyzed
+                    predictedName={"Predicted Quantity"}
                     predictedData={
-                      analyzedData.historyData.history.predictedQuantityValues
+                      analyzedQuantityData
                     }
                     userData={analyzedData.userData}
-                    actualData={actualData}
-                    analyzedType={activeTab}
+                    actualData={actualQuantityData}
                   />
                 )}
               </div>

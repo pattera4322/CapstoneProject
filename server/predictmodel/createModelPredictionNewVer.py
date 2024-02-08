@@ -453,8 +453,8 @@ transformed_predictions = {
 def transformed_predictions_data(selected_data,transformedProduct, model):
     # print(selected_data == all_predictions_autoarima)
     for product, forecasts in selected_data.items():
-        transformedProduct['sale_forecast'][product] = forecasts[['Date','Predicted_totalSales']]
-        transformedProduct['quantity_forecast'][product] = forecasts[['Date','Predicted_quantity']]
+        transformedProduct['sale_forecast'][product] = forecasts[['date','Predicted_totalSales']]
+        transformedProduct['quantity_forecast'][product] = forecasts[['date','Predicted_quantity']]
         # print(transformedProduct['sale_forecast'][product].info())
         # Add a new column 'product' to each DataFrame inside the nested structure
         for forecast_type, products in transformedProduct.items():
@@ -471,8 +471,8 @@ transformed_predictions_data(predictions_by_product, transformed_predictions, "D
 print(f'80')
 
 ### **STEP 9 : Export predicted data**
-transformed_predictions['quantity_forecast']['Date'] = transformed_predictions['quantity_forecast']['Date'].dt.strftime('%d-%m-%Y')
-transformed_predictions['sale_forecast']['Date'] = transformed_predictions['sale_forecast']['Date'].dt.strftime('%d-%m-%Y')
+transformed_predictions['quantity_forecast']['date'] = transformed_predictions['quantity_forecast']['date'].dt.strftime('%d-%m-%Y')
+transformed_predictions['sale_forecast']['date'] = transformed_predictions['sale_forecast']['date'].dt.strftime('%d-%m-%Y')
 
 def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
   # Upload predicted data to firestore database
@@ -494,10 +494,12 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
 data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
-    # Evaluate result
-    'evalTotalSales': evaluation_results_total_sales,
-    'evalQuantity': evaluation_results_quantity,
-    'best_params_models': best_params_all_products
+    'actualSalesValues' : actual_df_copy[['date','productName','totalSales']].to_dict(orient='records'),
+    'actualQuantityValues' : actual_df_copy[['date','productName','quantity']].to_dict(orient='records')
+    # # Evaluate result
+    # 'evalTotalSales': evaluation_results_total_sales,
+    # 'evalQuantity': evaluation_results_quantity,
+    # 'best_params_models': best_params_all_products
 }
 models_file_name = f'models_by_product_of_{actual_file_name}'
 joblib.dump(models_by_product, f"{models_file_name}.pkl")
