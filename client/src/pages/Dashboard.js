@@ -142,12 +142,14 @@ const Dashboard = ({}) => {
             Inventory
           </button>
         </li>
-      </ul>
-      <DropdownFilter
+        <li className="ml-auto">
+        <DropdownFilter
           products={products}
           selectedProduct={selectedProduct}
           onSelectProduct={handleSelectProduct}
       />
+        </li>
+      </ul>
       {/* <TogglePrediction onTogglePrediction={handleToggle}/> */}
 
       <div className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}>

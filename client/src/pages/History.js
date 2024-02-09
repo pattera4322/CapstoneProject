@@ -79,7 +79,7 @@ const History = () => {
 
   const renderTab = (tabNumber, label) => (
     <li className="mr-6" key={tabNumber}>
-       {!clickedTabs[tabNumber] && <Badge />}
+      {!clickedTabs[tabNumber] && <Badge />}
       <button
         onClick={() => onTabClick(tabNumber)}
         className={`inline-block p-2 ${activeTab === tabNumber
@@ -99,10 +99,12 @@ const History = () => {
         {renderTab(2, "Analyzed success")}
         {renderTab(3, "Analyze Failed")}
       </ul>
-      <div className="text-right mx-16 mt-8">
-        <NavLink to="/">
-          <ButtonComponent onClick={() => { }} children={"Analyze More"} />
-        </NavLink>
+      <div className="flex justify-end mx-16 mt-8">
+        <div className="">
+          <NavLink to="/">
+            <ButtonComponent onClick={() => { }} children={"Analyze More"} />
+          </NavLink>
+        </div>
       </div>
       {filteredJobs.length > 0 ? (
         <div>
