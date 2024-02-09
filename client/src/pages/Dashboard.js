@@ -9,8 +9,8 @@ import ButtonComponent from "../components/Button";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
 import DropdownFilter from "../components/Dashboard/Filter";
+import TogglePrediction from "../components/Dashboard/TogglePrediction";
 import { getUserHistory } from "../api/userDataApi";
-import { getFile } from "../api/fileApi";
 import { NavLink } from "react-router-dom";
 import html2canvas from "html2canvas";
 import {
@@ -42,7 +42,7 @@ const Dashboard = ({}) => {
   const [filteredAnalyzedQuantityData, setFilteredAnalyzedQuantityData] = useState();
   const [filteredActualSalesData, setFilteredActualSalesData] = useState();
   const [filteredActualQuantityData, setFilteredActualQuantityData] = useState();
-  // const [toggleIncludePredicted, setToggleIncludePredicted] = useState(true);
+  const [togglePredicted, setTogglePredicted] = useState(true);
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -65,40 +65,14 @@ const Dashboard = ({}) => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   getFile(fileId)
-  //     .then((res) => {
-  //       if (res) {
-  //         console.log("Data:", res);
-
-  //         const excelData = convertFileXLSX(res);
-  //         console.log("actual data", excelData);
-  //         setActualQuantityData(excelData);
-  //         const products = [...new Set(excelData.map(item => item.productName))];
-  //         setProducts(products)
-  //         console.log("name of Products", products);
-  //       }
-      
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error: ", error);
-  //       if (error.response.status === 404) {
-  //         console.log("Not found data");
-  //       }
-  //     });
-  // }, []);
-
-  // const convertFileXLSX = (data) => {
-  //   const workbook = XLSX.read(data, { type: "buffer", cellDates: true });
-  //   const firstSheet = workbook.SheetNames[0];
-  //   const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-  //   console.log(`Finish converting file`, excelData);
-  //   return excelData;
-  // };
-
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
+
+  const handleToggle = () =>{
+    setTogglePredicted(!togglePredicted)
+    console.log(`Toggle including prediction to => ${togglePredicted}`) // True is include, False is exclude
+  }
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
@@ -174,6 +148,7 @@ const Dashboard = ({}) => {
           selectedProduct={selectedProduct}
           onSelectProduct={handleSelectProduct}
       />
+      {/* <TogglePrediction onTogglePrediction={handleToggle}/> */}
 
       <div className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}>
         <div className="flex flex-col lg:w-full pl-4 pr-4">
@@ -207,6 +182,7 @@ const Dashboard = ({}) => {
                     }
                     userData={analyzedData.userData}
                     actualData={filteredActualSalesData? filteredActualSalesData : actualSalesData}
+                    togglePredicted={togglePredicted}
                   />
                 )}
               </div>

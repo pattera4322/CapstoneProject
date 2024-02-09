@@ -1,14 +1,30 @@
 import React, { useRef, useState } from "react";
 
-const Analyzed = ({predictedName, predictedData, userData, actualData}) => {
-  console.log( `Analyze Phase Predicted Data: ${predictedData}`)
-  console.log( `Analyze Phase Actual Data: ${actualData}`)
-  console.log( `Analyze Phase user Data: ${userData}`)
+const Analyzed = ({predictedName, predictedData, userData, actualData, togglePredicted}) => {
+  // console.log( `Analyze Phase Predicted Data: ${predictedData}`)
+  // console.log( `Analyze Phase Actual Data: ${actualData}`)
+  // console.log( `Analyze Phase user Data: ${userData}`)
+  console.log( `Analyze Phase toggle: ${togglePredicted}`)
   
   const leadTime = userData.leadTime
   let ROPActual = 0
   let ROPActualAndPredicted = 0
   console.log( `Lead Time: ${leadTime}`)
+
+  // const mergeData = (actualData, quantityData) => {
+  //   return actualData.map(saleItem => {
+  //     const matchingQuantityItem = quantityData.find(quantityItem => {
+  //       const saleDate = new Date(saleItem.Date._seconds * 1000);
+  //       const quantityDate = new Date(quantityItem.Date._seconds * 1000);
+  //       return saleDate.getMonth() === quantityDate.getMonth() && saleDate.getFullYear() === quantityDate.getFullYear();
+  //     });
+  
+  //     return {
+  //       ...saleItem,
+  //       Predicted_quantity: matchingQuantityItem ? matchingQuantityItem.Predicted_quantity : null
+  //     };
+  //   });
+  // };
 
   const inventoryROP = (actualData,predictedData) => { 
     console.log(`------ Inventory Analyze -----`)
@@ -55,7 +71,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData}) => {
             <p className="pb-4">Reorder point</p>
             <p className="text-base"> 
               {/* need to support function toggle include predict */}
-              while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{ROPActual}</span> items in stock. 
+              while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true? ROPActualAndPredicted:ROPActual}</span> items in stock. 
             </p>
           </div>
         ) : (
