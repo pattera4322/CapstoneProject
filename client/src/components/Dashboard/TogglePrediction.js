@@ -2,18 +2,21 @@ import { Switch, Typography } from "@material-tailwind/react";
 import React, { useState } from 'react';
 
  
-const TogglePrediction = ({onTogglePrediction}) => {
-  const [isToggled, setIsToggled] = useState(true);
-  const handleToggle = () =>{
-    onTogglePrediction= !onTogglePrediction
-    console.log(`Toggle including prediction to => ${onTogglePrediction}`) // True is include, False is exclude
-  }
+const TogglePrediction = ({ label, defaultChecked, onToggle }) => {
+
+  const [isChecked, setIsChecked] = useState(defaultChecked);
+
+  const handleToggle = () => {
+    setIsChecked(!isChecked);
+    onToggle(!isChecked);
+  };
+
   return (
     <Switch
       label={
         <div>
           <Typography color="blue-gray" className="font-medium">
-            Prediction data
+            {label}
           </Typography>
           {/* <Typography variant="small" color="gray" className="font-normal">
             You&apos;ll be able to login without password for 24 hours.
@@ -23,7 +26,8 @@ const TogglePrediction = ({onTogglePrediction}) => {
       containerProps={{
         className: "-mt-5",
       }}
-      onClick={handleToggle()}
+      checked={isChecked}
+      onChange={handleToggle} 
     />
   );
 }

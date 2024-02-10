@@ -125,7 +125,7 @@ const SelectData = ({ sendfileData }) => {
       setFileData([]);
       setIsHasFile(false);
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: "success",
         title: "The file has been reomoved!",
         showConfirmButton: false,

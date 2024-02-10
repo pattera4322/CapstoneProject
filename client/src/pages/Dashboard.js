@@ -41,7 +41,7 @@ const Dashboard = ({}) => {
   const [filteredAnalyzedQuantityData, setFilteredAnalyzedQuantityData] = useState();
   const [filteredActualSalesData, setFilteredActualSalesData] = useState();
   const [filteredActualQuantityData, setFilteredActualQuantityData] = useState();
-  const [togglePredicted, setTogglePredicted] = useState(true);
+  const [togglePredicted, setTogglePredicted] = useState(false);
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -68,10 +68,10 @@ const Dashboard = ({}) => {
     setActiveTab(tab);
   };
 
-  // const handleToggle = () =>{
-  //   setTogglePredicted(!togglePredicted)
-  //   console.log(`Toggle including prediction to => ${togglePredicted}`) // True is include, False is exclude
-  // }
+  const handleTogglePrediction = (value) =>{
+    setTogglePredicted(value)
+    console.log(`Toggle including prediction to => ${togglePredicted}`) // True is include, False is exclude
+  }
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
@@ -149,7 +149,11 @@ const Dashboard = ({}) => {
       />
         </li>
       </ul>
-      {/* <TogglePrediction onTogglePrediction={togglePredicted}/> */}
+      <TogglePrediction
+        label="Enable Predictions"
+        defaultChecked={true} 
+        onToggle={handleTogglePrediction}
+      />
 
       <div className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}>
         <div className="flex flex-col lg:w-full pl-4 pr-4">
@@ -268,6 +272,7 @@ const Dashboard = ({}) => {
                     }
                     userData={analyzedData.userData}
                     actualData={filteredActualQuantityData? filteredActualQuantityData : actualQuantityData}
+                    togglePredicted={togglePredicted}
                   />
                 )}
               </div>

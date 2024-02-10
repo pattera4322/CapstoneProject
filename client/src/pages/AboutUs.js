@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 const TeamCard = ({ imgSrc, name, email }) => (
-    <div className="bg-[#F1D1AB] rounded-lg p-6 shadow-md">
+    <div className="rounded-lg p-6 shadow-md">
       <img
         src={imgSrc}
         alt={name}
@@ -47,19 +47,19 @@ const AboutUs = () => {
                         <TeamCard
                             imgSrc={process.env.PUBLIC_URL + "/assets/Max.jpg"}
                             name="Max"
-                            email="john.doe@example.com"
+                            email="Kittiphum Uamthon"
                         />
 
                         <TeamCard
                             imgSrc={process.env.PUBLIC_URL + "/assets/My.jpg"}
                             name="My"
-                            email="jane.smith@example.com"
+                            email="Suwaphit Chotsawad"
                         />
 
                         <TeamCard
                             imgSrc={process.env.PUBLIC_URL + "/assets/Mint.jpg"}
                             name="Mint"
-                            email="bob.johnson@example.com"
+                            email="Pattera Jongwtananugul"
                         />
                     </div>
                 </div>
