@@ -3,9 +3,9 @@ import { Button } from "@material-tailwind/react";
 import * as XLSX from "xlsx";
 import { postFile } from "../../api/fileApi";
 import PropagateLoader from "react-spinners/PropagateLoader";
-import ColumnSelect from "./SelectColumn";
 import ProgressBar from "../ProgressBar.js";
 import Popup from "../Popup.js";
+import Swal from "sweetalert2";
 
 const FileUpload = ({
   index,
@@ -24,7 +24,7 @@ const FileUpload = ({
   const [loadingDropFile, setLoadingDropFile] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [userData, setUserData] = useState(
-    JSON.parse(localStorage.getItem("fileName")) || {}
+    JSON.parse(localStorage.getItem("fileName")) 
   );
 
   const override = {
@@ -35,23 +35,21 @@ const FileUpload = ({
   };
 
   useEffect(() => {
-    console.log(`Is file uploaded: `, isFileUploaded);
+    setUserData(JSON.parse(localStorage.getItem("fileName")));
     if (isFileUploaded) {
       setData(content);
       setIsHasFile(true);
-      console.log(`Finish set Data`);
     } else {
       setData([]);
       setIsHasFile(false);
       setSelectedFileName(null);
     }
   }, [content]);
-
+  
   const convertFileXLSX = (data) => {
     const workbook = XLSX.read(data, { type: "buffer", cellDates: true });
     const firstSheet = workbook.SheetNames[0];
     const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-    console.log(`Finish converting file`, excelData);
     return excelData;
   };
 
@@ -82,36 +80,35 @@ const FileUpload = ({
   const handleConfirm = async () => {
     try {
       setShowProgress(true);
-
+  
       const formData = new FormData();
       formData.append("file", file);
-      console.log(formData.get("file"));
-
-      const data = await postFile(index, formData, (progressEvent) => {
-        const progressPercentage = Math.round(
-          (progressEvent.loaded * 100) / progressEvent.total
-        );
+  
+      await postFile(index, formData, progressEvent => {
+        const progressPercentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
         setProgress(progressPercentage);
       });
-
-      console.log("Data:", data);
-
+  
       updateFileName();
-
       onConfirmButtonClick();
       setIsHasFile(true);
       setShowProgress(false);
     } catch (error) {
       console.error("Error uploading file:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Something went wrong",
+        text: "Error uploading file!"
+      });
     }
   };
+  
   const updateFileName = () => {
     const updatedUserData = {
       ...userData,
       [index]: selectedFileName,
     };
     setUserData(updatedUserData);
-    console.log("filename: ", updatedUserData);
     localStorage.setItem("fileName", JSON.stringify(updatedUserData));
   };
 
@@ -137,7 +134,6 @@ const FileUpload = ({
       reader.onload = (e) => {
         const fileData = e.target.result;
         const excelData = convertFileXLSX(fileData);
-        console.log(excelData.slice(0, 10));
         setData(excelData.slice(0, 10));
         setLoadingDropFile(false);
       };

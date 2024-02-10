@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import Chart from "../components/Dashboard/Chart";
-import { useLocation } from "react-router-dom";
+import { useLocation, NavLink } from "react-router-dom";
 import RelatedNews from "../components/Dashboard/RelatedNews";
 import Goal from "../components/Dashboard/Goal";
 import ProductPieChart from "../components/Dashboard/ProductPieChart";
@@ -11,7 +11,6 @@ import Analyzed from "../components/Dashboard/Analyzed";
 import DropdownFilter from "../components/Dashboard/Filter";
 import TogglePrediction from "../components/Dashboard/TogglePrediction";
 import { getUserHistory } from "../api/userDataApi";
-import { NavLink } from "react-router-dom";
 import html2canvas from "html2canvas";
 import {
   Chart as ChartJS,
@@ -19,7 +18,7 @@ import {
   LinearScale,
   BarElement,
 } from "chart.js";
-import { useDataContext } from "../context/AnalyzeDataContext";
+
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
 const Dashboard = ({}) => {
@@ -53,8 +52,8 @@ const Dashboard = ({}) => {
         setAnalyzedQuantityData(res.data.historyData.history.predictedQuantityValues);
         setActualSalesData(res.data.historyData.history.actualSalesValues);
         setActualQuantityData(res.data.historyData.history.actualQuantityValues);
-        const products = [...new Set(res.data.historyData.history.actualSalesValues.map(item => item.productName))];
-        setProducts(products)
+        // const products = [...new Set(res.data.historyData.history.actualSalesValues.map(item => item.productName))];
+        // setProducts(products)
         console.log("name of Products", products);
       })
       .catch((error) => {

@@ -24,18 +24,12 @@ export const postFile = async ( index, formData, onUploadProgress) => {
 
 export const getFile = async (index) => {
   try {
-    console.log(process.env.NODE_ENV);
-    console.log(`fetching file...`);
     const response = await axios.get(`${baseURL}/file/${userId.uid}/${index}`, {
       responseType: "arraybuffer",
     });
-    console.log(`finish fetching file...`);
     const fileContent = response.data;
-    console.log(fileContent)
     return fileContent;
   } catch (error) {
-    console.error("Error fetching data:", error);
-    //handle other error soon
     throw error;
   }
 };
@@ -43,16 +37,9 @@ export const getFile = async (index) => {
 export const deleteFile = async (index) => {
   try {
     const response = await axios.delete(`${baseURL}/file/${userId.uid}/${index}`);
-    console.log(`finish deleting file...`);
     return response;
   } catch (error) {
-    console.error("Error delete file:", error.response);
-    //handle other error soon
-    if (error.response && error.response.status === 404) {
-      return null;
-    } else {
-      throw error;
-    }
+    throw error;
   }
 };
 

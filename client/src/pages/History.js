@@ -23,11 +23,9 @@ const History = () => {
     });
 
     socket.on("jobProgress", (data) => {
-      // Update the progress in the component state
       setProgressData(data);
 
       if (data.progress === 100) {
-        // Fetch updated jobs when progress reaches 100
         getQueuesDataByUser().then((res) => {
           if (res) {
             setJobs(res.jobs);

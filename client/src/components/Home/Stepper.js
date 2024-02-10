@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Stepper, Step, Button, Typography } from "@material-tailwind/react";
-import { NavLink } from "react-router-dom";
-
 import UploadFileSection from "./UploadFileSection";
 import AskingSection from "./AskingSection";
 import AnalyzeSection from "./AnalyzeSection";
@@ -30,15 +28,11 @@ const StepperSection = () => {
     setIsFirstStep(nextStep === 0);
   };
 
-  const handleAnalyze = () => {};
-
   const handleSubmit = (formData) => {
     console.log("Form data submitted:", formData);
   };
 
   const receiveFileData = (data, fileId) => {
-    console.log("Data received from Select DATA:", data);
-    console.log("Data received from file name:", fileId);
     setFileData(data);
     setFileId(fileId);
   };

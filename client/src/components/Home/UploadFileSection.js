@@ -5,6 +5,7 @@ import { getFile } from "../../api/fileApi";
 import * as XLSX from "xlsx";
 import { deleteFile } from "../../api/fileApi";
 import { getUserData } from "../../api/userDataApi";
+import Swal from "sweetalert2";
 
 const SelectData = ({ sendfileData }) => {
   const [fileData, setFileData] = useState([]);
@@ -15,7 +16,7 @@ const SelectData = ({ sendfileData }) => {
     JSON.parse(localStorage.getItem("files")) || {}
   );
   const [fileName, setFileName] = useState(
-    JSON.parse(localStorage.getItem("fileName")) || {}
+    JSON.parse(localStorage.getItem("fileName"))
   );
 
   const [activeTab, setActiveTab] = useState(1);
@@ -43,15 +44,18 @@ const SelectData = ({ sendfileData }) => {
   ];
   useEffect(() => {
     getUserData().then((res) => {
-      console.log(res.data.userData.fileName);
-      if (fileName == {} || fileName == undefined) {
+      if (fileName === undefined ) {
         if (res.data.userData.fileName === undefined) {
+          console.log("heree1");
           localStorage.setItem("fileName", JSON.stringify({}));
+          setFileName(JSON.parse(localStorage.getItem("fileName")));
         } else {
+          console.log("heree2");
           localStorage.setItem(
             "fileName",
             JSON.stringify(res.data.userData.fileName)
           );
+          setFileName(JSON.parse(localStorage.getItem("fileName")));
         }
       }
     });
@@ -59,10 +63,9 @@ const SelectData = ({ sendfileData }) => {
 
   useEffect(() => {
     setLoading(true);
-    setFileName(JSON.parse(localStorage.getItem("fileName")));
     if (filesInLocal[activeTab] !== undefined) {
       setLoading(false);
-      console.log("Get preview file from local...");
+      // Get preview file from local...
       const data = filesInLocal[activeTab];
       setIsHasFile(true);
       sendfileData(data, activeTab);
@@ -72,16 +75,15 @@ const SelectData = ({ sendfileData }) => {
         .then((data) => {
           setLoading(false);
           if (data) {
-            console.log("Data:", data);
             sendfileData(data, activeTab);
             setIsHasFile(true);
             convertFileXLSX(data);
-          } 
+          }
         })
         .catch((error) => {
           if (error.response && error.response.status === 404) {
-            console.log("Not found")
-          }else{
+            console.log("File Not found");
+          } else {
             console.error("Error fetching file: ", error);
           }
           setIsHasFile(false);
@@ -96,8 +98,7 @@ const SelectData = ({ sendfileData }) => {
     const workbook = XLSX.read(data, { type: "buffer", cellDates: true });
 
     const firstSheet = workbook.SheetNames[0];
-    const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-    console.log(`Finish converting file`);
+    const excelData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);  
     const excelDataSlice = excelData.slice(0, 10);
     savePreviewFileToLocalStorage(excelDataSlice);
     setFileData(excelDataSlice);
@@ -114,16 +115,34 @@ const SelectData = ({ sendfileData }) => {
     setFilesInLocal(fileToLocalStorage);
   };
 
-  const removeSelectedFile = () => {
-    delete filesInLocal[activeTab];
-    delete fileName[activeTab];
-    localStorage.setItem("files", JSON.stringify(filesInLocal));
-    localStorage.setItem("fileName", JSON.stringify(fileName));
-    deleteFile(activeTab);
-    setFileData([]);
-    setIsHasFile(false);
-    //TODO: - handle userid in local storage
-    //-handle popup ask user before delete
+  const removeSelectedFile = async () => {
+    await deleteFile(activeTab)
+    .then(() => {
+      delete filesInLocal[activeTab];
+      delete fileName[activeTab];
+      localStorage.setItem("files", JSON.stringify(filesInLocal));
+      localStorage.setItem("fileName", JSON.stringify(fileName));
+      setFileData([]);
+      setIsHasFile(false);
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "The file has been reomoved!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    })
+    .catch(error => {
+      if (error.response && error.response.status === 404) {
+        Swal.fire({
+          icon: "error",
+          title: "Not have this file on storage",
+          text: "Something went wrong!"
+        });
+      }else{
+        console.error("Error deleting file:", error);
+      }
+    });
   };
 
   return (
