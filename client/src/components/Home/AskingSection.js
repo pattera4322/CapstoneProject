@@ -75,12 +75,33 @@ const Asking = ({ onSubmit }) => {
     console.log("Form submitted with:", formData);
   };
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  
+  //   if (formData.riskLevel[0] === 0 && formData.riskLevel[1] === 0) {
+  //     alert("Please select your comfort level with stock predictions.");
+  //     return;
+  //   }
+  
+  //   onSubmit(formData);
+  //   console.log("Form submitted with:", formData);
+  // };
+
   const isChecked = (value) => {
     if (formData.riskLevel == value) {
       return true;
     }
     return false;
   };
+  // const isChecked = (value) => {
+  //   const selectedRange = value.split(",").map(Number);
+  //   return (
+  //     formData.riskLevel[0] === selectedRange[0] &&
+  //     formData.riskLevel[1] === selectedRange[1]
+  //   );
+  // };
+  
+  
 
   const information1 = "We recommend that you enter the maximum value for the sales you desire.";
   const information2 = "This step will not affect sales predictions. But it will affect the recommended amount for stocking products.";
