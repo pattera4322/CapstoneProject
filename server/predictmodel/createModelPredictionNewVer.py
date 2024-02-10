@@ -343,7 +343,7 @@ def predict_future_for_product(product_name, models_by_product, scaler, pred_dat
     predicted_quantity = predicted_quantity[:min_length]
 
     # Create a DataFrame with the predictions and forecast dates
-    predictions_df = pd.DataFrame({'Date': forecast_index, 'Predicted_totalSales': predicted_total_sales, 'Predicted_quantity': predicted_quantity})
+    predictions_df = pd.DataFrame({'date': forecast_index, 'Predicted_totalSales': predicted_total_sales, 'Predicted_quantity': predicted_quantity})
 
     return predictions_df
 
@@ -432,8 +432,8 @@ for product_name in products:
     actual_product_data = actual_product_data[actual_product_data[product_column] == product_name]
 
     # Plotting
-    plt.plot(predictions_df['Date'], predictions_df['Predicted_totalSales'], label=f'{product_name} - Predicted totalSales', linestyle='dashed', color='green')
-    plt.plot(predictions_df['Date'], predictions_df['Predicted_quantity'], label=f'{product_name} - Predicted quantity', linestyle='dashed', color='red')
+    plt.plot(predictions_df['date'], predictions_df['Predicted_totalSales'], label=f'{product_name} - Predicted totalSales', linestyle='dashed', color='green')
+    plt.plot(predictions_df['date'], predictions_df['Predicted_quantity'], label=f'{product_name} - Predicted quantity', linestyle='dashed', color='red')
 
     plt.plot(actual_product_data['date'], actual_product_data['totalSales'], label=f'{product_name} - Actual totalSales', linestyle='solid', color='blue')
     plt.plot(actual_product_data['date'], actual_product_data['quantity'], label=f'{product_name} - Actual quantity', linestyle='solid', color='orange')
