@@ -52,8 +52,8 @@ const Dashboard = ({}) => {
         setAnalyzedQuantityData(res.data.historyData.history.predictedQuantityValues);
         setActualSalesData(res.data.historyData.history.actualSalesValues);
         setActualQuantityData(res.data.historyData.history.actualQuantityValues);
-        // const products = [...new Set(res.data.historyData.history.actualSalesValues.map(item => item.productName))];
-        // setProducts(products)
+        const products = [...new Set(res.data.historyData.history.actualSalesValues.map(item => item.productName))];
+        setProducts(products)
         console.log("name of Products", products);
       })
       .catch((error) => {
@@ -68,10 +68,10 @@ const Dashboard = ({}) => {
     setActiveTab(tab);
   };
 
-  const handleToggle = () =>{
-    setTogglePredicted(!togglePredicted)
-    console.log(`Toggle including prediction to => ${togglePredicted}`) // True is include, False is exclude
-  }
+  // const handleToggle = () =>{
+  //   setTogglePredicted(!togglePredicted)
+  //   console.log(`Toggle including prediction to => ${togglePredicted}`) // True is include, False is exclude
+  // }
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
@@ -149,7 +149,7 @@ const Dashboard = ({}) => {
       />
         </li>
       </ul>
-      {/* <TogglePrediction onTogglePrediction={handleToggle}/> */}
+      {/* <TogglePrediction onTogglePrediction={togglePredicted}/> */}
 
       <div className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}>
         <div className="flex flex-col lg:w-full pl-4 pr-4">

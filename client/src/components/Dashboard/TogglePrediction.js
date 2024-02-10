@@ -1,7 +1,13 @@
 import { Switch, Typography } from "@material-tailwind/react";
+import React, { useState } from 'react';
+
  
 const TogglePrediction = ({onTogglePrediction}) => {
-  console.log(`In Fliter products ==> ${onTogglePrediction}`)
+  const [isToggled, setIsToggled] = useState(true);
+  const handleToggle = () =>{
+    onTogglePrediction= !onTogglePrediction
+    console.log(`Toggle including prediction to => ${onTogglePrediction}`) // True is include, False is exclude
+  }
   return (
     <Switch
       label={
@@ -17,7 +23,7 @@ const TogglePrediction = ({onTogglePrediction}) => {
       containerProps={{
         className: "-mt-5",
       }}
-      onClick={onTogglePrediction()}
+      onClick={handleToggle()}
     />
   );
 }

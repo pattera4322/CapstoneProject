@@ -1,6 +1,6 @@
-const { Worker, delay } = require("bullmq");
+const { Worker, delay, DelayedError } = require("bullmq");
 const { spawn } = require("child_process");
-const { io } = require("../config/socketConfig")
+const { io } = require("../config/socketConfig");
 
 //remove later
 function sleep(ms) {
@@ -17,56 +17,66 @@ function setUpWorker() {
   const worker = new Worker(
     "myqueue",
     async (job) => {
+
       console.log(`Processing job ${job.id}`);
-      io.emit('jobProgress', { jobId: job.id, progress: 0 });
+      io.emit("jobProgress", { jobId: job.id, progress: 0 });
       //-------------------------------------------------------------
-      const pythonArgs = [job.data.userid,job.data.fileid];
-      // const pythonArgs = req.body.dataForAnalyze
+      const pythonArgs = [job.data.userid, job.data.fileid];
       const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
-      const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
-      pythonProcess.stdout.on("data", (data) => {
-        console.log(`stdout: ${data}`);
-      });
 
-      pythonProcess.stderr.on("data", (data) => {
-        console.log(`stderr: ${data}`);
-      });
+      // const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
+      let stderrData = '';
+      try {
+        const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
+  
+        pythonProcess.stdout.on("data", (data) => {
+          console.log(`stdout: ${data}`);
+          
+          if (data == 10) {
+            console.log(`Received progress: ${data}`);
+            io.emit("jobProgress", { jobId: job.id, progress: data });
+          }
+        });
 
-      pythonProcess.on("close", (code) => {
-        console.log(`child process exited with code ${code}`);
-      });
-      pythonProcess.on("error", (err) => {
-        console.error("Failed to start Python process:", err);
-      });
-      
-      //--------------------------------------------------------------
-      await job.updateProgress(70);
-      console.log(job.data);
-      io.emit('jobProgress', { jobId: job.id, progress: 42 });
-      console.log("1");
-      await sleep(2000)
-      io.emit('jobProgress', { jobId: job.id, progress: 50 });
-      console.log("1");
-      await sleep(2000)
-      io.emit('jobProgress', { jobId: job.id, progress: 60 });
-      console.log("1");
-      await sleep(10000)
-      io.emit('jobProgress', { jobId: job.id, progress: 70 });
-      console.log("1");
-      await sleep(4000)
-      io.emit('jobProgress', { jobId: job.id, progress: 80 });
-      console.log("1");
-      await sleep(2000)
-      //this is socket.io------------------------------------
-      // for (let i = 0; i <= 100; i += 10) {
-      //   await job.updateProgress(i);
-      //   // Emit progress to connected clients
-      //   io.emit('jobProgress', { jobId: job.id, progress: i });
-      // }
-      io.emit('jobProgress', { jobId: job.id, progress: 100 });
-      return { result: "Job completed successfully" };
+        pythonProcess.stderr.on("data", (data) => {
+          stderrData += data; // Collect error output
+        });
+  
+        await new Promise((resolve, reject) => {
+          pythonProcess.on("close", (code) => {
+            console.log(`child process exited with code ${code}`);
+            if (code === 0) {
+              io.emit("jobProgress", { jobId: job.id, progress: 100 });
+              resolve();
+            } else {
+              reject(new Error(`Python process exited with non-zero code: ${code}.Error output: ${stderrData}`));
+            }
+          });
+  
+          pythonProcess.on("error", (err) => {
+            console.error("Failed to start Python process:", err);
+            reject(err);
+          });
+        });
+
+      } catch (error) {
+        console.error("Error occurred during job processing:", error);
+        // throw new DelayedError();
+      }
+
+      // pythonProcess.on("close", (code) => {
+      //   console.log(`child process exited with code ${code}`);
+
+      // });
+
+      // pythonProcess.on("error", (err) => {
+      //   console.error("Failed to start Python process:", err);
+      //   throw new DelayedError();
+      // });
+
+  
     },
-    { connection: redisConfig, autorun: true }
+    { connection: redisConfig }
   );
 
   worker.on("completed", (job) => {
@@ -76,14 +86,15 @@ function setUpWorker() {
   worker.on("failed", (job, err) => {
     console.log(`${job.id} has failed with ${err.message}`);
   });
-  worker.on('active', (job) => {
-		console.debug(`Completed job with id ${job.id}`);
-	});
-  worker.on('waiting', (job) => {
-		console.debug(`${job.id} has waiting`);
-	});
+  worker.on("active", (job) => {
+    console.log(`active job with id ${job.id}`);
+  });
+  worker.on("waiting", (job) => {
+    console.log(`${job.id} has waiting`);
+  });
+  worker.on("delayed", (job) => {
+    console.log(`${job.id} has delayed`);
+  });
 }
-
-
 
 module.exports = { setUpWorker };
