@@ -43,6 +43,21 @@ const StepperSection = () => {
     setShowPopup(true);
   };
 
+  const handleContinueToNextStep = () => {
+    setShowPopup(false);
+    handleNavigation("next");
+  };
+
+  const handleSubmitAskingSection = (formData) => {
+    // Add validation for sales goal
+    if (formData.salesGoal === 0) {
+      setShowPopup(true); // Show the popup with an error message
+      return; // Prevent navigation
+    }
+    // If sales goal is valid, proceed to the next step
+    handleNavigation("next");
+  };
+
   return (
     <div className="w-full py-4 px-8 mt-7">
       <Stepper
@@ -66,7 +81,8 @@ const StepperSection = () => {
       </Stepper>
       {/* <---------------------- Detail Section --------------------> */}
       <div className="mt-20 ">
-        {activeStep === 0 && <AskingSection onSubmit={handleSubmit} />}
+        {/* {activeStep === 0 && <AskingSection onSubmit={handleSubmit} />} */}
+        {activeStep === 0 && <AskingSection onSubmit={handleSubmitAskingSection} />}
         {activeStep === 1 && <DownloadTemplate />}
         {activeStep === 2 && (
           <UploadFileSection sendfileData={receiveFileData} />
@@ -90,7 +106,9 @@ const StepperSection = () => {
         {isLastStep ? (
           <div className="flex">
             {/* TODO: some progress bar in future */}
-            We will redirect you to the status page to view the success of your analysis process. This page will display the job currently in the queue.
+            We will redirect you to the status page to view the success of your
+            analysis process. This page will display the job currently in the
+            queue.
           </div>
         ) : (
           <div className="flex">
@@ -102,10 +120,24 @@ const StepperSection = () => {
                   handleNavigation("next");
                 }
               }}
-              disabled={activeStep === 2? fileData === null:false}
+              disabled={activeStep === 2 ? fileData === null : false}
             >
               Next
             </Button>
+            {/* <Button
+              onClick={() => {
+                if (activeStep === 0) {
+                  handleButtonClick();
+                } else if (activeStep === 2) {
+                  handleButtonClick();
+                } else {
+                  handleNavigation("next");
+                }
+              }}
+              disabled={activeStep === 2 ? fileData === null : false}
+            >
+              Next
+            </Button> */}
           </div>
         )}
       </div>
@@ -122,6 +154,20 @@ const StepperSection = () => {
           continueText={"Go to Analyze ->"}
         />
       )}
+
+      {/* {showPopup && (
+        <Popup
+          onClose={() => setShowPopup(false)}
+          header={activeStep === 0 ? "Review Your Information" : "Before go to analyze!"}
+          info={
+            activeStep === 0
+              ? "Please review the information you provided."
+              : "Please ensure that you have reviewed and confirmed the information in the selected column before proceeding. Note that changes cannot be undone. Take a moment to double-check before clicking the 'Go' button"
+          }
+          onContinue={handleContinueToNextStep}
+          continueText={activeStep === 0 ? "Confirm" : "Go to Analyze ->"}
+        />
+      )} */}
     </div>
   );
 };

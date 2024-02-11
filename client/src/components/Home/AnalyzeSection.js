@@ -20,7 +20,9 @@ const Analyzing = ({ fileId }) => {
      "salesGoal": askingItem.salesGoal || 0,
      "riskLevel": askingItem.riskLevel || [0, 25],
      "leadTime": askingItem.leadTime || 1,
-     "fileName": fileName || {}
+     "fileName": fileName || {},
+     "costPerProductStorage": askingItem.costPerProductStorage || 0,
+     "costPerOrder": askingItem.costPerOrder || 0
   }
   );
 

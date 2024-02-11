@@ -36,11 +36,13 @@ const Dashboard = ({}) => {
   const [actualQuantityData, setActualQuantityData] = useState();
   const [products, setProducts] = useState([]);
   const [activeTab, setActiveTab] = useState(1);
-  const [selectedProduct, setSelectedProduct] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState("");
   const [filteredAnalyzedSalesData, setFilteredAnalyzedSalesData] = useState();
-  const [filteredAnalyzedQuantityData, setFilteredAnalyzedQuantityData] = useState();
+  const [filteredAnalyzedQuantityData, setFilteredAnalyzedQuantityData] =
+    useState();
   const [filteredActualSalesData, setFilteredActualSalesData] = useState();
-  const [filteredActualQuantityData, setFilteredActualQuantityData] = useState();
+  const [filteredActualQuantityData, setFilteredActualQuantityData] =
+    useState();
   const [togglePredicted, setTogglePredicted] = useState(false);
 
   useEffect(() => {
@@ -49,11 +51,21 @@ const Dashboard = ({}) => {
         console.log("analyzed data", res.data);
         setAnalyzedData(res.data);
         setAnalyzedSalesData(res.data.historyData.history.predictedSalesValues);
-        setAnalyzedQuantityData(res.data.historyData.history.predictedQuantityValues);
+        setAnalyzedQuantityData(
+          res.data.historyData.history.predictedQuantityValues
+        );
         setActualSalesData(res.data.historyData.history.actualSalesValues);
-        setActualQuantityData(res.data.historyData.history.actualQuantityValues);
-        const products = [...new Set(res.data.historyData.history.actualSalesValues.map(item => item.productName))];
-        setProducts(products)
+        setActualQuantityData(
+          res.data.historyData.history.actualQuantityValues
+        );
+        const products = [
+          ...new Set(
+            res.data.historyData.history.actualSalesValues.map(
+              (item) => item.productName
+            )
+          ),
+        ];
+        setProducts(products);
         console.log("name of Products", products);
       })
       .catch((error) => {
@@ -68,27 +80,27 @@ const Dashboard = ({}) => {
     setActiveTab(tab);
   };
 
-  const handleTogglePrediction = (value) =>{
-    setTogglePredicted(value)
-    console.log(`Toggle including prediction to => ${togglePredicted}`) // True is include, False is exclude
-  }
+  const handleTogglePrediction = (value) => {
+    setTogglePredicted(value);
+    console.log(`Toggle including prediction to => ${togglePredicted}`); // True is include, False is exclude
+  };
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
-  
-    const filteredAnalyzedSalesData = analyzedSalesData.filter(item => {
+
+    const filteredAnalyzedSalesData = analyzedSalesData.filter((item) => {
       return product === "" || item.Product === product;
     });
 
-    const filteredAnalyzedQuantityData = analyzedQuantityData.filter(item => {
+    const filteredAnalyzedQuantityData = analyzedQuantityData.filter((item) => {
       return product === "" || item.Product === product;
     });
 
-    const filteredActualSalesData = actualSalesData.filter(item => {
+    const filteredActualSalesData = actualSalesData.filter((item) => {
       return product === "" || item.productName === product;
     });
 
-    const filteredActualQuantityData = actualQuantityData.filter(item => {
+    const filteredActualQuantityData = actualQuantityData.filter((item) => {
       return product === "" || item.productName === product;
     });
     setFilteredAnalyzedSalesData(filteredAnalyzedSalesData);
@@ -142,30 +154,40 @@ const Dashboard = ({}) => {
           </button>
         </li>
         <li className="ml-auto">
-        <DropdownFilter
-          products={products}
-          selectedProduct={selectedProduct}
-          onSelectProduct={handleSelectProduct}
-      />
+          <TogglePrediction
+            label="Enable Predictions"
+            defaultChecked={true}
+            onToggle={handleTogglePrediction}
+          />
+        </li>
+        <li className="ml-auto">
+          <DropdownFilter
+            products={products}
+            selectedProduct={selectedProduct}
+            onSelectProduct={handleSelectProduct}
+          />
         </li>
       </ul>
-      <TogglePrediction
-        label="Enable Predictions"
-        defaultChecked={true} 
-        onToggle={handleTogglePrediction}
-      />
 
       <div className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}>
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
-            {analyzedSalesData && (
+              {analyzedSalesData && (
                 <Chart
                   predictedName={"Predicted Sales"}
                   predictedData={
-                    filteredAnalyzedSalesData? filteredAnalyzedSalesData : analyzedSalesData
+                    filteredAnalyzedSalesData
+                      ? filteredAnalyzedSalesData
+                      : analyzedSalesData
                   }
                   predictedColumn={"sales"}
+                  actualData={
+                    filteredActualSalesData
+                      ? filteredActualSalesData
+                      : actualSalesData
+                  }
+                  togglePredicted={togglePredicted}
                 />
               )}
             </div>
@@ -183,10 +205,16 @@ const Dashboard = ({}) => {
                   <Analyzed
                     predictedName={"Predicted Sales"}
                     predictedData={
-                      filteredAnalyzedSalesData? filteredAnalyzedSalesData : analyzedSalesData
+                      filteredAnalyzedSalesData
+                        ? filteredAnalyzedSalesData
+                        : analyzedSalesData
                     }
                     userData={analyzedData.userData}
-                    actualData={filteredActualSalesData? filteredActualSalesData : actualSalesData}
+                    actualData={
+                      filteredActualSalesData
+                        ? filteredActualSalesData
+                        : actualSalesData
+                    }
                     togglePredicted={togglePredicted}
                   />
                 )}
@@ -195,7 +223,7 @@ const Dashboard = ({}) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 {/* Coming Soon */}
-                {/* {actualSalesData && analyzedSalesData && (
+                {actualSalesData && analyzedSalesData && (
                   <Goal 
                     predictedName={"Predicted Sales"}
                     predictedData={
@@ -203,9 +231,9 @@ const Dashboard = ({}) => {
                     }
                     userData={analyzedData.userData}
                     actualData={filteredActualSalesData? filteredActualSalesData : actualSalesData}
-                    // toggleIncludePredicted={toggleIncludePredicted}
+                    togglePredicted={togglePredicted}
                   />
-                )} */}
+                )}
               </div>
             </div>
           </div>
@@ -248,9 +276,17 @@ const Dashboard = ({}) => {
                 <Chart
                   predictedName={"Predicted Quantity"}
                   predictedData={
-                    filteredAnalyzedQuantityData? filteredAnalyzedQuantityData : analyzedQuantityData
+                    filteredAnalyzedQuantityData
+                      ? filteredAnalyzedQuantityData
+                      : analyzedQuantityData
                   }
                   predictedColumn={"quantity"}
+                  actualData={
+                    filteredActualQuantityData
+                      ? filteredActualQuantityData
+                      : actualQuantityData
+                  }
+                  togglePredicted={togglePredicted}
                 />
               )}
             </div>
@@ -268,10 +304,16 @@ const Dashboard = ({}) => {
                   <Analyzed
                     predictedName={"Predicted Quantity"}
                     predictedData={
-                      filteredAnalyzedQuantityData? filteredAnalyzedQuantityData : analyzedQuantityData
+                      filteredAnalyzedQuantityData
+                        ? filteredAnalyzedQuantityData
+                        : analyzedQuantityData
                     }
                     userData={analyzedData.userData}
-                    actualData={filteredActualQuantityData? filteredActualQuantityData : actualQuantityData}
+                    actualData={
+                      filteredActualQuantityData
+                        ? filteredActualQuantityData
+                        : actualQuantityData
+                    }
                     togglePredicted={togglePredicted}
                   />
                 )}

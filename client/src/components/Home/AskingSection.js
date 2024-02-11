@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input, Radio, Typography } from "@material-tailwind/react";
 import InfoPopup from "./InfoPopup";
+import Popup from "../Popup.js";
 
 const Asking = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ const Asking = ({ onSubmit }) => {
     salesGoal: 0,
     riskLevel: [0, 0],
     leadTime: 1,
+    costPerProductStorage: 0,
+    costPerOrder: 0,
   });
 
   useEffect(() => {
@@ -31,9 +34,6 @@ const Asking = ({ onSubmit }) => {
         riskLevel: arrayValues,
       });
     }
-    // else if (name ==="salesGoal") {
-    //   salesGoalValidation(e)
-    // } 
     else if (name === "leadTime") {
       leadTimeValidation(e);
     } else {
@@ -69,23 +69,20 @@ const Asking = ({ onSubmit }) => {
     }
   };
 
+  const [showSalesGoalAlert, setShowSalesGoalAlert] = useState(false); // New state variable
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // if (formData.salesGoal === 0) {
+    //   setShowSalesGoalAlert(true); // Set state to show the alert
+    //   return;
+    // }
+
+
     onSubmit(formData);
     console.log("Form submitted with:", formData);
   };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  
-  //   if (formData.riskLevel[0] === 0 && formData.riskLevel[1] === 0) {
-  //     alert("Please select your comfort level with stock predictions.");
-  //     return;
-  //   }
-  
-  //   onSubmit(formData);
-  //   console.log("Form submitted with:", formData);
-  // };
 
   const isChecked = (value) => {
     if (formData.riskLevel == value) {
@@ -93,19 +90,20 @@ const Asking = ({ onSubmit }) => {
     }
     return false;
   };
-  // const isChecked = (value) => {
-  //   const selectedRange = value.split(",").map(Number);
-  //   return (
-  //     formData.riskLevel[0] === selectedRange[0] &&
-  //     formData.riskLevel[1] === selectedRange[1]
-  //   );
-  // };
-  
-  
 
-  const information1 = "We recommend that you enter the maximum value for the sales you desire.";
-  const information2 = "This step will not affect sales predictions. But it will affect the recommended amount for stocking products.";
-  const information3 = "Measures how long it takes to complete a process from beginning to end. If you don't know the exact time, you can estimate a nearby time period.";
+  // const handleNavigation = (direction) => {
+  //   const nextStep = direction === "next";
+  // };
+
+
+  const information1 =
+    "We recommend that you enter the maximum value for the sales you desire.";
+  const information2 =
+    "Specify the cost of product storage per unit per year. You can estimate the cost.";
+  const information3 =
+    "Specify the cost of each order. You can average the cost of each order.";
+  const information4 =
+    "Measures how long it takes to complete a process from beginning to end. If you don't know the exact time, you can estimate a nearby time period.";
 
   return (
     <div className="text-black">
@@ -118,7 +116,8 @@ const Asking = ({ onSubmit }) => {
         <div className="pt-10 pl-10">
           <label className="text-lg">
             1. Please share your current sales goal with us.
-          </label><InfoPopup infoText={information1} />
+          </label>
+          <InfoPopup infoText={information1} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
             Your sales goal is crucial for us to align our strategies and
             recommendations with your specific targets, helping you achieve your
@@ -138,8 +137,11 @@ const Asking = ({ onSubmit }) => {
             />
           </div>
           <span className="inline-block pl-2.5">Baht</span>
+          {showSalesGoalAlert && (
+            <div className="text-red-500">Sales goal cannot be zero. Please enter a valid sales goal.</div>
+          )}
         </div>
-        <div className="pt-10 pl-10">
+        {/* <div className="pt-10 pl-10">
           <label className="text-lg">
             2. Please let us know your comfort level when it comes to taking
             risks with stock predictions.
@@ -249,13 +251,61 @@ const Asking = ({ onSubmit }) => {
               ripple={false}
             />
           </div>
+        </div> */}
+        <div className="pt-10 pl-10">
+          <label className="text-lg">
+            2. Please provide details about cost of product storage for the
+            entire year.
+          </label>
+          <InfoPopup infoText={information2} />
+          <p className="text-s text-gray-500 pl-4 pt-1.5">
+            Understanding your cost of product storage will enable us to offer
+            customized insights and recommendation.
+          </p>
+          <div className="w-72 pt-4 pl-4 inline-block">
+            <Input
+              type="number"
+              label="Cost Per Product Storage"
+              min={0}
+              variant="outlined"
+              name="costPerProductStorage"
+              value={formData.costPerProductStorage}
+              onChange={handleChange}
+              className="inline-block float-left"
+            />
+          </div>
+          <span className="inline-block pl-2.5">Baht</span>
         </div>
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            3. Please kindly provide us with insights into your average lead
-            time.
+            3. Please provide details about cost of each order.
           </label>
           <InfoPopup infoText={information3} />
+          <p className="text-s text-gray-500 pl-4 pt-1.5">
+            Understanding these parameters will enable us to offer customized
+            insights and recommendations, aligning our strategies with your
+            specific goals and helping you achieve your objectives effectively.
+          </p>
+          <div className="w-72 pt-4 pl-4 inline-block">
+            <Input
+              type="number"
+              label="Cost Per Order"
+              min={0}
+              variant="outlined"
+              name="costPerOrder"
+              value={formData.costPerOrder}
+              onChange={handleChange}
+              className="inline-block float-left"
+            />
+          </div>
+          <span className="inline-block pl-2.5">Baht</span>
+        </div>
+        <div className="pt-10 pl-10">
+          <label className="text-lg">
+            4. Please kindly provide us with insights into your average lead
+            time.
+          </label>
+          <InfoPopup infoText={information4} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
             Your lead time help us understanding the duration it typically takes
             for your processes, from initiation to completion, will enable us to

@@ -7,10 +7,14 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
   console.log( `Analyze Phase toggle: ${togglePredicted}`)
   
   const leadTime = userData.leadTime
+  const costPerOrder = userData.costPerOrder
+  const costPerProductStorage = userData.costPerProductStorage
   let ROPActual = 0
   let ROPActualAndPredicted = 0
+  let EOQActual = 0
+  let EOQActualAndPredicted = 0
   let analyzedSalesWithComparison = []
-  console.log( `Lead Time: ${leadTime}`)
+  // console.log( `Lead Time: ${leadTime}`)
 
   const inventoryROP = (actualData,predictedData) => { 
     console.log(`------ Inventory Analyze -----`)
@@ -29,17 +33,21 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
     const safetyStockActualAndPredicted = (leadTime*maxCombinedQty)-(leadTime*avgActualAndPredicted)
     ROPActual = Math.round((leadTime*actualDemandRate) + safetyStockActual)
     ROPActualAndPredicted = Math.round((leadTime*(actualDemandRate+predictedDemandRate)) + safetyStockActualAndPredicted)
+    EOQActual = Math.round(Math.sqrt((2 * actualDemandRate * costPerOrder) / (costPerProductStorage/actualDemandRate)))
+    EOQActualAndPredicted = Math.round(Math.sqrt((2 * (actualDemandRate+predictedDemandRate) * costPerOrder) / (costPerProductStorage/(actualDemandRate+predictedDemandRate))))
 
-    console.log(`actualDemandRate :${actualDemandRate}`)
-    console.log(`predictedDemandRate :${predictedDemandRate}`)
-    console.log(`maxCombinedQty :${maxCombinedQty}`)
-    console.log(`maxActualQty :${maxActualQty}`)
+    // console.log(`actualDemandRate :${actualDemandRate}`)
+    // console.log(`predictedDemandRate :${predictedDemandRate}`)
+    // console.log(`maxCombinedQty :${maxCombinedQty}`)
+    // console.log(`maxActualQty :${maxActualQty}`)
 
-    console.log(`avgActualAndPredicted :${avgActualAndPredicted}`)
-    console.log(`safetyStockActual :${safetyStockActual}`)
-    console.log(`safetyStockActualAndPredicted :${safetyStockActualAndPredicted}`)
+    // console.log(`avgActualAndPredicted :${avgActualAndPredicted}`)
+    // console.log(`safetyStockActual :${safetyStockActual}`)
+    // console.log(`safetyStockActualAndPredicted :${safetyStockActualAndPredicted}`)
     console.log(`ROPActual :${ROPActual}`)
     console.log(`ROPActualAndPredicted :${ROPActualAndPredicted}`)
+    console.log(`EOQActual :${EOQActual}`)
+    console.log(`EOQActualAndPredicted :${EOQActualAndPredicted}`)
   }
 
   const salesAnalyze = (actualData,predictedData) => {
@@ -130,10 +138,16 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
     <div className="w-full">
       {predictedName === "Predicted Quantity" ? (
         <div>
-          <p className="pb-4">Reorder point</p>
+          <p className="pb-4 font-bold">Reorder point</p>
           <p className="text-base"> 
             {/* need to support function toggle include predict */}
             while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? ROPActualAndPredicted : ROPActual}</span> items in stock. 
+          </p>
+          <br/>
+          <p className="pb-4 font-bold">Economic Order Quantity</p>
+          <p className="text-base"> 
+            {/* need to support function toggle include predict */}
+            Economic Order Quantity ที่จะทำให้คุ้มค่าและมีปีะสิทธิภาพมากที่สุดค คือ <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in stock. 
           </p>
         </div>
       ) : (

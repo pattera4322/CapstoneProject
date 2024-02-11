@@ -60,7 +60,7 @@ bytes_io = BytesIO(content)
 try:
   actual_df = pd.read_csv(bytes_io)
 except:
-  pd.read_excel(bytes_io)
+  actual_df = pd.read_excel(bytes_io)
 
 list_col_name = list(actual_df.columns)
 # print(list_col_name)

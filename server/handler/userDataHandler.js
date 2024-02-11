@@ -25,7 +25,9 @@ const getData = async (req, res) => {
         riskLevel: userDocSnapshot.data().riskLevel,
         leadTime: userDocSnapshot.data().leadTime,
         salesGoal: userDocSnapshot.data().salesGoal,
-        fileName:userDocSnapshot.data().fileName
+        fileName:userDocSnapshot.data().fileName,
+        costPerProductStorage: userDocSnapshot.data().costPerProductStorage,
+        costPerOrder: userDocSnapshot.data().costPerOrder,
       };
 
       res.status(200).json({ data: { userData } });
@@ -52,7 +54,9 @@ const getHistoryData = async (req, res) => {
         riskLevel: userDocSnapshot.data().riskLevel,
         leadTime: userDocSnapshot.data().leadTime,
         salesGoal: userDocSnapshot.data().salesGoal,
-        fileName:userDocSnapshot.data().fileName
+        fileName:userDocSnapshot.data().fileName,
+        costPerProductStorage: userDocSnapshot.data().costPerProductStorage,
+        costPerOrder: userDocSnapshot.data().costPerOrder,
       };
 
       const historyRef = userRef.collection('history').doc(fileId);

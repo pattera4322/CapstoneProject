@@ -2,9 +2,10 @@ import React from "react";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 
-const Goal = ({predictedName, predictedData, userData, actualData}) => { //, toggleIncludePredicted
+const Goal = ({predictedName, predictedData, userData, actualData, togglePredicted}) => { //, toggleIncludePredicted
+  console.log(`------ Sales Goal Analyze -----`)
   const salesGoal = userData.salesGoal
-  const toggleIncludePredicted = true
+  console.log(`salesGoal => ${salesGoal}`)
 
   const predictedSales = predictedData.map(item => Math.round(item.Predicted_totalSales));
   const actualSales = actualData.map(item => item.totalSales);
@@ -13,21 +14,25 @@ const Goal = ({predictedName, predictedData, userData, actualData}) => { //, tog
 
   const actualAndPredeictedPercent = Math.round(((sumPredictedSales+sumActualSales)/salesGoal)*100)
   const actualPercent = Math.round((sumActualSales/salesGoal)*100)
-  const percentage = `${toggleIncludePredicted? actualAndPredeictedPercent  : actualPercent}%`;
+  console.log(`actualAndPredeictedPercent => ${actualAndPredeictedPercent}`)
+  console.log(`actualPercent => ${actualPercent}`)
+  const percentage = `${togglePredicted? actualAndPredeictedPercent  : actualPercent}%`;
 
   const data = {
     labels: ["Red"],
     datasets: [
       {
-        label: "",
-        data: [toggleIncludePredicted? actualAndPredeictedPercent  : actualPercent],
+        label: "Goal",
+        data: [togglePredicted? actualAndPredeictedPercent  : actualPercent],
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
         barThickness: 30,
-      },
+      }
     ],
   };
+  console.log("Goal Data")
+  console.log(data)
 
   const options = {
     plugins: {
@@ -59,9 +64,7 @@ const Goal = ({predictedName, predictedData, userData, actualData}) => { //, tog
 
   return (
     <div className="w-full">
-      <p className="pb-4">
-                  The effort you're investing brings you closer to your goal
-                </p>
+      <p className="pb-4">The effort you're investing brings you closer to your goal</p>
       <div
         style={{
           position: "relative",
@@ -70,7 +73,7 @@ const Goal = ({predictedName, predictedData, userData, actualData}) => { //, tog
           overflow: "hidden",
         }}
       >
-        <Bar data={toggleIncludePredicted? actualAndPredeictedPercent  : actualPercent} options={options} />
+        <Bar data={data} options={options} />
         <div
           style={{
             position: "absolute",
