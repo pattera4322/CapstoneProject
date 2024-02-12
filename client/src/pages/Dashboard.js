@@ -223,13 +223,19 @@ const Dashboard = ({}) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 {actualSalesData && analyzedSalesData && (
-                  <Goal 
+                  <Goal
                     predictedName={"Predicted Sales"}
                     predictedData={
-                      filteredAnalyzedSalesData? filteredAnalyzedSalesData : analyzedSalesData
+                      filteredAnalyzedSalesData
+                        ? filteredAnalyzedSalesData
+                        : analyzedSalesData
                     }
                     userData={analyzedData.userData}
-                    actualData={filteredActualSalesData? filteredActualSalesData : actualSalesData}
+                    actualData={
+                      filteredActualSalesData
+                        ? filteredActualSalesData
+                        : actualSalesData
+                    }
                     togglePredicted={togglePredicted}
                   />
                 )}
@@ -321,23 +327,26 @@ const Dashboard = ({}) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 h-40">
                 {/* Coming Soon */}
+
                 <p className="pb-4">% of Products</p>
-                <ProductPieChart 
-                  predictedName={"Predicted Quantity"}
-                  predictedData={
-                    filteredAnalyzedQuantityData
-                      ? filteredAnalyzedQuantityData
-                      : analyzedQuantityData
-                  }
-                  userData={analyzedData.userData}
-                  actualData={
-                    filteredActualQuantityData
-                      ? filteredActualQuantityData
-                      : actualQuantityData
-                  }
-                  togglePredicted={togglePredicted}
-                  products={products}
+                {/* {analyzedData && (
+                  <ProductPieChart
+                    predictedName={"Predicted Quantity"}
+                    predictedData={
+                      filteredAnalyzedQuantityData
+                        ? filteredAnalyzedQuantityData
+                        : analyzedQuantityData
+                    }
+                    userData={analyzedData.userData}
+                    actualData={
+                      filteredActualQuantityData
+                        ? filteredActualQuantityData
+                        : actualQuantityData
+                    }
+                    togglePredicted={togglePredicted}
+                    products={products}
                   />
+                )} */}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">

@@ -59,7 +59,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
     }));
 
     const renamedAnalyzedSalesData = predictedData.map(item => ({
-      date: item.Date._seconds,
+      date: item.date._seconds,
       product: item.Product,
       totalSales: item.Predicted_totalSales
     }));

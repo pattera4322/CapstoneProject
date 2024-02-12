@@ -39,7 +39,9 @@ const getData = async (req, res) => {
 };
 
 const getHistoryData = async (req, res) => {
-  const userId = req.params.userid;
+  //TODO: uncomment when model complete 
+  //const userId = req.params.userid;
+  const userId = "clK7zB0QWpRRzpgum9QZB5XM73D3"
   const fileId = req.params.fileid;
   try {
     const userRef = firestore.collection("users").doc(userId);
@@ -64,8 +66,8 @@ const getHistoryData = async (req, res) => {
           history: historySnapshot.data(),
         };
 
-        console.log(`File ID: ${historyData.fileId}`);
-        console.log(`History:`, historyData.history);
+        // console.log(`File ID: ${historyData.fileId}`);
+        // console.log(`History:`, historyData.history);
 
         res.status(200).json({ data: { userData, historyData } });
       } else {
@@ -88,23 +90,15 @@ const getAllHistoryData = async (req, res) => {
     const userRef = firestore.collection("users").doc(userId);
 
     const historyRef = userRef.collection("history");
-    const historySnapshot = await historyRef.get();
-    console.log(`historyjahh: ${historySnapshot.data()}`);
-    if (historySnapshot.exists) {
-      const historyData = {
-        fileId: historySnapshot.id,
-        history: historySnapshot.data(),
-      };
+    // const historySnapshot = await historyRef.get();
+    // console.log(`historyjahh: ${historySnapshot.data()}`);
 
-      console.log(`File ID: ${historyData.fileId}`);
-      console.log(`History:`, historyData.history);
 
-      res.status(200).json({ data: { userData, historyData } });
-    } else {
-      res
-        .status(404)
-        .json({ error: "History data not found" });
-    }
+      // console.log(`File ID: ${historyData.fileId}`);
+      // console.log(`History:`, historyData.history);
+
+      // res.status(200).json({ data: { userData, historyData } });
+   
   } catch (error) {
     console.error("Error get history data:", error);
     res.status(500).json({ error: "Internal Server Error" });

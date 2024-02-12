@@ -6,12 +6,12 @@ const Chart = ({
   predictedData,
   predictedColumn,
   actualData = [],
-  togglePredicted
+  togglePredicted,
 }) => {
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
-  console.log(`------ Chart Phase -----`)
+  console.log(`------ Chart Phase -----`);
   const options = {
     maintainAspectRatio: false,
     responsive: true,
@@ -55,7 +55,7 @@ const Chart = ({
       const entryDate = new Date(entry.date._seconds * 1000);
       return entryDate >= threeMonthsAgo;
     });
-
+    console.log(predictedData)
     const arrayPredicted = predictedData.map((entry) =>
       predictedColumn === "quantity"
         ? entry.Predicted_quantity
@@ -70,6 +70,7 @@ const Chart = ({
       filteredActualData3Months,
       true
     );
+  
     const mergedDateArray = ActualDataFormatted.concat(predictedDataFormatted);
 
     const array = Array(arrayActual.length).fill("undefined");
@@ -80,7 +81,7 @@ const Chart = ({
     setFormattedDates(mergedDateArray);
   }, [predictedData, predictedColumn]);
 
-  const data = {
+  const chartData = {
     labels: formattedDates,
     datasets: [
       {
@@ -90,29 +91,51 @@ const Chart = ({
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
       },
-      // {
-      //   label: actualData,
-      //   data: [],
-      //   backgroundColor: "rgba(54, 162, 235, 0.2)",
-      //   borderColor: "rgba(54, 162, 235, 1)",
-      //   borderWidth: 1,
-      // },
+      {
+        label: "actualData",
+        data: actualArray,
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        borderWidth: 1,
+      },
     ],
   };
+
+  function formatDateArray(dataArray, checkActual) {
+    return dataArray.map((entry) => {
+      
+      const timestamp = entry.date;
+      const milliseconds =
+        timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000;
+      const date = new Date(milliseconds);
+
+      // const formattedDateTime = `${date.getFullYear()}-${(date.getMonth() + 1)
+      //   .toString()
+      //   .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+      const formattedDateTime = `${date.getDate().toString().padStart(2, "0")} ${months[date.getMonth()]} ${date.getFullYear()}`;
+
+      return formattedDateTime;
+    });
+  }
 
   return (
     <div className="h-full overflow-hidden">
       <div className="flex-grow flex items-center justify-center h-full">
         {/* <Line data={chartData} options={options} /> */}
-        {togglePredicted === true? (
+        {togglePredicted === true ? (
           <Line data={chartData} options={options} />
-        ) : (
-          chartData.datasets && chartData.datasets.length >= 2 ? (
-            <Line data={{
+        ) : chartData.datasets && chartData.datasets.length >= 2 ? (
+          <Line
+            data={{
               labels: chartData.labels,
-              datasets: [chartData.datasets[0]] // Only using the first dataset (Actual Data)
-            }} options={options} />
-          ) : (<Line data={chartData} options={options} />)
+              datasets: [chartData.datasets[0]], // Only using the first dataset (Actual Data)
+            }}
+            options={options}
+          />
+        ) : (
+          <Line data={chartData} options={options} />
         )}
       </div>
     </div>

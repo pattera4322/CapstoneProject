@@ -71,17 +71,25 @@ const Asking = ({ onSubmit }) => {
 
   const [showSalesGoalAlert, setShowSalesGoalAlert] = useState(false); // New state variable
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   if (formData.salesGoal === 0) {
+  //     setShowSalesGoalAlert(true);
+  //     return;
+  //   }
+
+  //   onSubmit(formData);
+  //   console.log("Form submitted with:", formData);
+  // };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // if (formData.salesGoal === 0) {
-    //   setShowSalesGoalAlert(true); // Set state to show the alert
-    //   return;
-    // }
-
-
+    if (formData.salesGoal === 0) {
+      alert("Invalid email address");
+      return;
+    }
     onSubmit(formData);
-    console.log("Form submitted with:", formData);
   };
 
   const isChecked = (value) => {
