@@ -1,75 +1,61 @@
 const { spawn } = require("child_process");
+const { io } = require("../config/socketConfig");
+const { saveHistoryData } = require("../handler/userDataHandler");
 
+function analyze(requestQueue) {
+  if (requestQueue.length === 0) {
+    return false;
+  }
 
-function analyze(req, res) {
-  console.log("REQ BODY", req.body.dataForAnalyze);
+  const { userid, fileid } = requestQueue[0];
+
+  console.log("ARGS", userid, fileid);
+
   const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
-  const pythonArgs = req.body.dataForAnalyze;
+  const pythonArgs = [userid, fileid];
+  //const pythonScript = "./predictmodel/test2.py";
 
-  const updatedPythonArgs = [...pythonArgs];
+  const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
 
-  updatedPythonArgs[5] = JSON.stringify(req.body.dataForAnalyze[5]);
+  let stderrData = "";
 
-  console.log("UpdatedPythonArgs", updatedPythonArgs);
-  const pythonProcess = spawn("python", [pythonScript, ...updatedPythonArgs]);
-
-  const getDataFromPython = [];
-  var getErrorFromPython = "No error";
-
-  // pythonProcess.stdout.on("data", (data) => {
-  //   const values = data.toString().split("----EndOfValue");
-  //   console.log("split leaw", values);
-  //   getDataFromPython.push(values);
-  //   // values.forEach((value, index) => {
-  //   //   if (value.trim() !== '') {
-  //   //     console.log(`Index ${index} :`);
-  //   //     console.log(value.trim());
-  //   //     getDataFromPython[index] = value.trim();
-  //   //   }
-  //   // });
-  // });
+  pythonProcess.stdout.on("data", (data) => {
+    console.log(`stdout: ${data.toString()}`);
+    const valuesToCheck = [12, 15, 20, 30, 35, 50, 65, 70, 75, 80, 90, 100];
+    if (valuesToCheck.includes(parseInt(data.toString()))) {
+      console.log(`Received progress: ${data.toString()}`);
+      io.emit("jobProgress", {
+        jobId: 1,
+        progress: parseInt(data.toString()),
+      });
+    }
+  });
 
   // Handle error ka
   pythonProcess.stderr.on("data", (data) => {
-    console.error(`Python stderr: ${data.toString()}`);
-    getErrorFromPython = data.toString();
+    console.log(`Python stderr: ${data.toString()}`);
+    stderrData = data.toString();
   });
 
   // Handle the Python script's exit
   pythonProcess.on("close", (code) => {
     if (code === 0) {
-      console.log("Python script executed successfully.");
-      console.log("--------------------------------");
-      console.log(`predictSalesData: ${getDataFromPython[0]}`);
-      console.log(`predictQuantityData: ${getDataFromPython[1]}`);
-      console.log(`evaluateSalesData: ${getDataFromPython[2][0]}`);
-      console.log(`evaluateQuantityData: ${getDataFromPython[2][1]}`);
-      console.log(`predictImage: ${getDataFromPython[2][2]}`);
-      console.log(`predictModel: ${getDataFromPython[2][3]}`);
-
-      return res.status(200).json({
-        predictSalesData: getDataFromPython[0],
-        predictQuantityData: getDataFromPython[1],
-        evaluateSalesData: getDataFromPython[2][0],
-        evaluateQuantityData: getDataFromPython[2][1],
-        predictImage: getDataFromPython[2][2],
-        predictModel: getDataFromPython[2][3],
-      });
-    } else if (code === 1) {
-      console.error(`Python script exited with code ${code}`);
-      return res.status(500).json({
-        RespCode: 500,
-        RespMessage: getErrorFromPython,
-      });
+      console.log("Successs");
+      
     } else {
-      console.error(`Python script exited with code ${code}`);
-      return res.status(500).json({
-        RespCode: 500,
-        RespMessage: getErrorFromPython,
-      });
+      const lastLine = stderrData.trim().split("\n").pop();
+      console.log(
+        `Python script exited with code ${code}. Error output: ${lastLine}`
+      );
+      const data = {
+        errorMessage: `${lastLine}`
+      }
+      saveHistoryData(data,userid,fileid)
     }
+    requestQueue.shift();
+    analyze(requestQueue);
   });
-
+  return true;
 }
 
 module.exports = { analyze };

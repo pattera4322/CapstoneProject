@@ -38,3 +38,14 @@ export const getUserHistory = async (fileId) => {
   }
 };
 
+export const getUserHistories = async () => {
+  try {
+    const response = await axios.get(
+      `${baseURL}/userHistory/${user.uid}`,
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+

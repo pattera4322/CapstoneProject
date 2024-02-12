@@ -26,20 +26,13 @@ export const getQueuesDataByUser = async () => {
   }
 };
 
-// export const analyzeData = async (dataForAnalyze) => {
-//   try {
-//     const response = await axios.post(`${baseURL}/analyze`, { dataForAnalyze });
-//     console.log("Analyze Data...");
-//     return response.data;
-//   } catch (error) {
-//     console.log(error);
-//     if (error.response.status === 500) {
-//       console.log(
-//         "Error from wrong parameter: ",
-//         error.response.data.RespMessage
-//       );
-//       throw error;
-//     }
-//     throw error;
-//   }
-// };
+export const analyzeData = async (fileId) => {
+  try {
+    const response = await axios.post(`${baseURL}/analyze/${user.uid}/${fileId}`);
+    console.log("Analyze Data...");
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

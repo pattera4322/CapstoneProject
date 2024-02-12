@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { enqueueData } from "../../api/analyzeApi";
+import { enqueueData,analyzeData } from "../../api/analyzeApi";
 import { postUserData } from "../../api/userDataApi";
-import { useDataContext } from "../../context/AnalyzeDataContext";
 import { useNavigate } from "react-router-dom";
 import Popup from "../Popup";
 
@@ -13,7 +12,6 @@ const Analyzing = ({ fileId }) => {
   const [fileName, setFileName] = useState(
     JSON.parse(localStorage.getItem("fileName")) || {}
   );
-  const { contextAnalyzeData, setContextAnalyzeData } = useDataContext();
   const [error, setError] = useState(null);
 
   const [userData, setUserData] = useState({
@@ -48,7 +46,10 @@ const Analyzing = ({ fileId }) => {
 
   useEffect(() => {
     postUserData(userData).then(async (res) => {
-      await enqueueData(fileId,userData).then((res) => {
+      // await enqueueData(fileId,userData).then((res) => {
+      //   console.log(res)
+      // })
+      await analyzeData(fileId).then(()=>{
         console.log(res)
       })
       // await delay(2000);

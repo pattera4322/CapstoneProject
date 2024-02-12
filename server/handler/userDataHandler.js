@@ -15,9 +15,7 @@ const saveData = async (req, res) => {
 const getData = async (req, res) => {
   const userId = req.params.userid;
   try {
-    const userRef = firestore
-      .collection("users")
-      .doc(userId);
+    const userRef = firestore.collection("users").doc(userId);
     const userDocSnapshot = await userRef.get();
 
     if (userDocSnapshot.exists) {
@@ -31,8 +29,8 @@ const getData = async (req, res) => {
       };
 
       res.status(200).json({ data: { userData } });
-    }else {
-      res.status(404).json({ error: 'User not found' });
+    } else {
+      res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
     console.error("Error get user data:", error);
@@ -44,9 +42,7 @@ const getHistoryData = async (req, res) => {
   const userId = req.params.userid;
   const fileId = req.params.fileid;
   try {
-    const userRef = firestore
-      .collection("users")
-      .doc(userId);
+    const userRef = firestore.collection("users").doc(userId);
     const userDocSnapshot = await userRef.get();
 
     if (userDocSnapshot.exists) {
@@ -59,17 +55,26 @@ const getHistoryData = async (req, res) => {
         costPerOrder: userDocSnapshot.data().costPerOrder,
       };
 
-      const historyRef = userRef.collection('history').doc(fileId);
+      const historyRef = userRef.collection("history").doc(fileId);
       const historySnapshot = await historyRef.get();
 
-      const historyData = {
-        fileId: historySnapshot.id,
-        history: historySnapshot.data(),
-      };
-      console.log(`History data : ${historyData}`)
-      res.status(200).json({ data: { userData, historyData } });
-    }else {
-      res.status(404).json({ error: 'User not found' });
+      if (historySnapshot.exists) {
+        const historyData = {
+          fileId: historySnapshot.id,
+          history: historySnapshot.data(),
+        };
+
+        console.log(`File ID: ${historyData.fileId}`);
+        console.log(`History:`, historyData.history);
+
+        res.status(200).json({ data: { userData, historyData } });
+      } else {
+        res
+          .status(404)
+          .json({ error: "History data not found for the specified file ID" });
+      }
+    } else {
+      res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
     console.error("Error get history data:", error);
@@ -77,4 +82,49 @@ const getHistoryData = async (req, res) => {
   }
 };
 
-module.exports = { saveData, getData, getHistoryData };
+const getAllHistoryData = async (req, res) => {
+  const userId = req.params.userid;
+  try {
+    const userRef = firestore.collection("users").doc(userId);
+
+    const historyRef = userRef.collection("history");
+    const historySnapshot = await historyRef.get();
+    console.log(`historyjahh: ${historySnapshot.data()}`);
+    if (historySnapshot.exists) {
+      const historyData = {
+        fileId: historySnapshot.id,
+        history: historySnapshot.data(),
+      };
+
+      console.log(`File ID: ${historyData.fileId}`);
+      console.log(`History:`, historyData.history);
+
+      res.status(200).json({ data: { userData, historyData } });
+    } else {
+      res
+        .status(404)
+        .json({ error: "History data not found" });
+    }
+  } catch (error) {
+    console.error("Error get history data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const saveHistoryData = async (data, userid, fileid) => {
+  try {
+    const userRef = firestore.collection("users").doc(userid);
+    const historyRef = userRef.collection("history").doc(fileid);
+    await historyRef.set(data);
+  } catch (error) {
+    console.log("Error save history data:", error);
+  }
+};
+
+module.exports = {
+  saveData,
+  getData,
+  getHistoryData,
+  saveHistoryData,
+  getAllHistoryData,
+};

@@ -33,7 +33,15 @@ actual_file_name = sys.argv[2] #json_data[1]
 model_file_name = "empty" #json_data[5] 
 user = sys.argv[1] 
 
-print(f'10')
+# pred_date = 90
+# actual_file_name = "5" #json_data[1] 
+# model_file_name = "empty" #json_data[5] 
+# user = "BNpbU1pwKpPbhDqaIfBswOw8ycM2"
+def flush():
+    sys.stdout.flush()
+
+print(f'12')
+flush()
 # print(f'pred_date : {pred_date}, File name: {actual_file_name}, user: {user},  Model: {model_file_name}')
 
 ### **STEP 2 : GET DATA & CLEANING DATA**
@@ -73,7 +81,7 @@ total_sales = list_col_name[4]
 pred_date = 90 if pred_date == 0 else pred_date
 confidence_level = 95
 print(f'15')
-
+flush()
 ### **STEP 3 : CLEANING DATA & DATA PROFILING**
 # Handle columns name & select columns
 actual_df_copy = actual_df.copy()
@@ -150,7 +158,7 @@ for x in columns_with_missing_values:
 actual_df_copy = actual_df_copy.dropna()
 actual_df_copy = actual_df_copy.drop_duplicates()
 print(f'20')
-
+flush()
 ## Profiling function
 def profiling():
         # Perform seasonal decomposition
@@ -194,7 +202,7 @@ def profiling():
     # print("Detected outliers:", outliers) # Empty DataFrame means the data has no outlier
 profiling()
 print(f'30')
-
+flush()
 ### **STEP 4 : SPLIT DATA INTO TRAIN AND TEST (70:30 split)**
 actual_df_copy.sort_values('date', inplace=True)
 split_date = int(0.7 * len(actual_df_copy))
@@ -247,7 +255,7 @@ scaler = StandardScaler()
 X_train = scaler.fit_transform(train_data.drop(columns=[time_series_columns, product_column]))
 X_test = scaler.transform(test_data.drop(columns=[time_series_columns, product_column]))
 print(f'35')
-
+flush()
 import tensorflow as tf
 def build_dnn_model(input_shape):
     model_dnn = tf.keras.Sequential()
@@ -310,6 +318,7 @@ for product_name in products:
     models_by_product[product_name] = {'totalSales': model_total_sales , 'quantity': model_quantity}
 
 print(f'50')
+flush()
 # for product_name in products:
 #    print(models_by_product[product_name]['totalSales'])
 #    print(models_by_product[product_name]['quantity'])   
@@ -348,7 +357,7 @@ def predict_future_for_product(product_name, models_by_product, scaler, pred_dat
     return predictions_df
 
 print(f'65')
-
+flush()
 # Initialize a dictionary to store predictions
 predictions_by_product = {}
 # Loop through each product
@@ -357,7 +366,7 @@ for product_name in products:
   predictions_by_product[product_name] = predictions_df
 
 print(f'70')
-
+flush()
 ### **STEP 7 : EVALUATE FUNCTION**
 from sklearn.metrics import mean_squared_error, r2_score
 
@@ -420,7 +429,7 @@ for product_name in products:
 # print(pd.DataFrame(evaluation_results_quantity).T)
 
 print(f'75')
-
+flush()
 ### **STEP 8 : SHOW RESULT**
 # Loop through each product
 for product_name in products:
@@ -469,7 +478,7 @@ def transformed_predictions_data(selected_data,transformedProduct, model):
 
 transformed_predictions_data(predictions_by_product, transformed_predictions, "DNN-Tensorflow")
 print(f'80')
-
+flush()
 ### **STEP 9 : Export predicted data**
 transformed_predictions['quantity_forecast']['date'] = transformed_predictions['quantity_forecast']['date'].dt.strftime('%d-%m-%Y')
 transformed_predictions['sale_forecast']['date'] = transformed_predictions['sale_forecast']['date'].dt.strftime('%d-%m-%Y')
@@ -490,7 +499,7 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
   upload_blob.upload_from_filename(f"{model_name}.pkl")
 #   print(f'{model_name} uploaded to {blob.public_url}') 
   print(f'90')
-
+  flush()
 data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
@@ -506,3 +515,4 @@ joblib.dump(models_by_product, f"{models_file_name}.pkl")
 
 upload_prediction_value(f'users/{user}/history',actual_file_name,data_to_save, models_file_name)
 print(f'100')
+flush()

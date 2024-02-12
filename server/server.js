@@ -1,30 +1,34 @@
 const { app, port, host } = require("./config/expressSetup");
-const { io, httpServer } = require("./config/socketConfig")
+const { io, httpServer } = require("./config/socketConfig");
 const { uploadFile, getFile, deleteFile } = require("./handler/fileHandler");
 const { upload } = require("./config/firebaseConfig");
 const { analyze } = require("./handler/analyzeHandler");
 const { createUser } = require("./handler/userHandler");
 const { enqueueJob, getQueues } = require("./handler/queue");
-const { saveData, getData,getHistoryData } = require("./handler/userDataHandler");
+const {
+  saveData,
+  getData,
+  getHistoryData,
+  getAllHistoryData,
+} = require("./handler/userDataHandler");
 const { setUpWorker } = require("./handler/worker");
 
 app.listen(port, host, () => {
   console.log(`Server backend started on http://${host}:${port}`);
-  setUpWorker();
+  // setUpWorker();
 });
 
 // WebSocket connection handling----------------------------------
-io.on('connection', socket => {
-  console.log('Client connected');
+io.on("connection", (socket) => {
+  console.log("Client connected");
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
   });
 });
 
 httpServer.listen(3001, () => {
-  console.log('Socket server running on port 3001');
-
+  console.log("Socket server running on port 3001");
 });
 
 // -------------------------------------------File------------------------------------------------
@@ -36,8 +40,21 @@ app.get("/api/file/:userid/:fileid", (req, res) => {
 });
 
 // -------------------------------------------Analyze------------------------------------------------
-app.post("/api/analyze", (req, res) => {
-  analyze(req, res);
+let isRunning = false;
+const requestQueue = [];
+app.post("/api/analyze/:userid/:fileid", (req, res) => {
+  const { userid, fileid } = req.params;
+  requestQueue.push({ userid, fileid });
+  res.status(200).json({ message: "send Analyze successfully." });
+  console.log(requestQueue);
+  if (requestQueue.length === 1) {
+    isRunning = false;
+  }
+  console.log(isRunning);
+  if (isRunning) {
+    return;
+  }
+  isRunning = analyze(requestQueue);
 });
 
 app.delete("/api/file/:userid/:fileid", (req, res) => {
@@ -51,7 +68,7 @@ app.post("/api/enqueueJob/:userid/:fileid", async (req, res) => {
     const args = {
       userid,
       fileid,
-      userData: req.body.userData
+      userData: req.body.userData,
     };
     await enqueueJob(args);
     res.status(200).json({ message: "Job enqueued successfully." });
@@ -62,8 +79,7 @@ app.post("/api/enqueueJob/:userid/:fileid", async (req, res) => {
 });
 
 app.get("/api/queues/:userid", async (req, res) => {
-  getQueues(req,res);
-
+  getQueues(req, res);
 });
 
 // -------------------------------------------User------------------------------------------------
@@ -82,4 +98,8 @@ app.get("/api/userData/:userid", (req, res) => {
 
 app.get("/api/userHistory/:userid/:fileid", (req, res) => {
   getHistoryData(req, res);
+});
+
+app.get("/api/userHistory/:userid", (req, res) => {
+  getAllHistoryData(req, res);
 });
