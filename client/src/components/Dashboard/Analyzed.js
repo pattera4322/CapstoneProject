@@ -104,7 +104,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
     const calculatePercentageAndTrend = (currentMonth, lastMonth) => {
       if (lastMonth === 0) return { percent: 0, trend: 'unchanged' };
       const percentChange = ((currentMonth - lastMonth) / lastMonth) * 100;
-      const trend = percentChange > 0 ? 'พุ่งขึ้น' : percentChange < 0 ? 'ลดลง' : 'ไม่เปลี่ยนแปลง';
+      const trend = percentChange > 0 ? 'increase' : percentChange < 0 ? 'decrease' : 'ไม่เปลี่ยนแปลง';
       return { percent: percentChange.toFixed(2), trend };
     };
     
@@ -129,7 +129,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
   const getMonthName = (monthKey) => {
     const [year, month] = monthKey.split('-');
     const date = new Date(year, month - 1);
-    return date.toLocaleString('default', { month: 'long', locale: 'th-TH' });
+    return date.toLocaleString('default', { month: 'long' });
   }
 
   predictedName === "Predicted Quantity" ? inventoryROP(actualData,predictedData) : salesAnalyze(actualData,predictedData)// need to support function toggle include predict
@@ -147,7 +147,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
           <p className="pb-4 font-bold">Economic Order Quantity</p>
           <p className="text-base"> 
             {/* need to support function toggle include predict */}
-            Economic Order Quantity ที่จะทำให้คุ้มค่าและมีปีะสิทธิภาพมากที่สุดค คือ <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in stock. 
+            The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in stock. 
           </p>
         </div>
       ) : (
@@ -156,7 +156,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
           {analyzedSalesWithComparison && analyzedSalesWithComparison.map((item) => (
             item.Trend !== "ไม่เปลี่ยนแปลง" ? (
               <div key={item.Month}>
-                หากอนาคตเป็นไปตามผลทำนาย ยอดขายมีแนวโน้มที่จะ {item.Trend} {item.Percent}% ในช่วงเดือน {getMonthName(item.Month)}
+                In case sales follow an anticipated trend, the sales volume may {item.Trend} by {item.Percent}% during {getMonthName(item.Month)}
               </div>
             ) : (
               <div key={item.Month}>
