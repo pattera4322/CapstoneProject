@@ -21,7 +21,7 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
-const Dashboard = ({}) => {
+const Dashboard = ({ }) => {
   const location = useLocation();
 
   //uncomment when can use tensorflow and success do dashboard --------------------------------------------------------
@@ -43,7 +43,7 @@ const Dashboard = ({}) => {
   const [filteredActualSalesData, setFilteredActualSalesData] = useState();
   const [filteredActualQuantityData, setFilteredActualQuantityData] =
     useState();
-  const [togglePredicted, setTogglePredicted] = useState(false);
+  const [togglePredicted, setTogglePredicted] = useState(true);
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -132,11 +132,10 @@ const Dashboard = ({}) => {
         <li className="mr-2">
           <button
             onClick={() => handleTabClick(1)}
-            className={`inline-block p-2 ${
-              activeTab === 1
+            className={`inline-block p-2 ${activeTab === 1
                 ? "text-black bg-[#F1D1AB] rounded-t-lg"
                 : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-            }`}
+              }`}
           >
             Retail Sales
           </button>
@@ -144,27 +143,26 @@ const Dashboard = ({}) => {
         <li className="mr-2">
           <button
             onClick={() => handleTabClick(2)}
-            className={`inline-block p-2 ${
-              activeTab === 2
+            className={`inline-block p-2 ${activeTab === 2
                 ? "text-black bg-[#F1D1AB] rounded-t-lg"
                 : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-            }`}
+              }`}
           >
             Inventory
           </button>
         </li>
-        <li className="ml-auto">
-          <TogglePrediction
-            label="Enable Predictions"
-            defaultChecked={true}
-            onToggle={handleTogglePrediction}
-          />
-        </li>
-        <li className="ml-auto">
+        <li className="ml-auto mr-4">
           <DropdownFilter
             products={products}
             selectedProduct={selectedProduct}
             onSelectProduct={handleSelectProduct}
+          />
+        </li>
+        <li className="end-1">
+          <TogglePrediction
+            // label="Enable Predictions"
+            defaultChecked={togglePredicted}
+            onToggle={handleTogglePrediction}
           />
         </li>
       </ul>
@@ -262,7 +260,7 @@ const Dashboard = ({}) => {
             </div>
             <div className="ml-2">
               <NavLink to="/">
-                <ButtonComponent onClick={() => {}} children={"Analyze More"} />
+                <ButtonComponent onClick={() => { }} children={"Analyze More"} />
               </NavLink>
             </div>
           </div>
@@ -270,9 +268,8 @@ const Dashboard = ({}) => {
       </div>
 
       <div
-        className={`h-[80%] box-content p-4 ${
-          activeTab === 2 ? "flex" : "hidden"
-        }`}
+        className={`h-[80%] box-content p-4 ${activeTab === 2 ? "flex" : "hidden"
+          }`}
       >
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
@@ -328,9 +325,32 @@ const Dashboard = ({}) => {
               <div className="text-base text-left p-4 h-40">
                 {/* Coming Soon */}
 
-                <p className="pb-4">% of Products</p>
-                {/* {analyzedData && (
+                <p className="pb-4 font-bold">% of Products</p>
+                {analyzedData && (
                   <ProductPieChart
+                    predictedName={"Predicted Quantity"}
+                    predictedData={
+                      filteredAnalyzedQuantityData
+                        ? filteredAnalyzedQuantityData
+                        : analyzedQuantityData
+                    }
+                    userData={analyzedData.userData}
+                    actualData={
+                      filteredActualQuantityData
+                        ? filteredActualQuantityData
+                        : actualQuantityData
+                    }
+                    togglePredicted={togglePredicted}
+                  />
+                )}
+              </div>
+            </div>
+            <div className="box-content w-80 p-4 shadow-md flex-1">
+              <div className="text-base text-left p-4 overflow-y-auto h-40">
+                <div>
+                  {/* Coming Soon */}
+                  {analyzedData && (
+                  <NumberOfProducts
                     predictedName={"Predicted Quantity"}
                     predictedData={
                       filteredAnalyzedQuantityData
@@ -346,14 +366,7 @@ const Dashboard = ({}) => {
                     togglePredicted={togglePredicted}
                     products={products}
                   />
-                )} */}
-              </div>
-            </div>
-            <div className="box-content w-80 p-4 shadow-md flex-1">
-              <div className="text-base text-left p-4 overflow-y-auto h-40">
-                <div>
-                  {/* <NumberOfProducts /> */}
-                  Coming Soon
+                )}
                 </div>
               </div>
             </div>
@@ -379,7 +392,7 @@ const Dashboard = ({}) => {
             </div>
             <div className="ml-2">
               <NavLink to="/">
-                <ButtonComponent onClick={() => {}} children={"Analyze More"} />
+                <ButtonComponent onClick={() => { }} children={"Analyze More"} />
               </NavLink>
             </div>
           </div>

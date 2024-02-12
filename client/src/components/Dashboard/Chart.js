@@ -130,7 +130,7 @@ const Chart = ({
           <Line
             data={{
               labels: chartData.labels,
-              datasets: [chartData.datasets[0]], // Only using the first dataset (Actual Data)
+              datasets: [chartData.datasets[1]], // Only using the first dataset (Actual Data)
             }}
             options={options}
           />

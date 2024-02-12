@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-const Analyzed = ({predictedName, predictedData, userData, actualData, togglePredicted}) => {
+const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePredicted }) => {
   // console.log( `Analyze Phase Predicted Data: ${predictedData}`)
   // console.log( `Analyze Phase Actual Data: ${actualData}`)
   // console.log( `Analyze Phase user Data: ${userData}`)
-  console.log( `Analyze Phase toggle: ${togglePredicted}`)
-  
+  console.log(`Analyze Phase toggle: ${togglePredicted}`)
+
   const leadTime = userData.leadTime
   const costPerOrder = userData.costPerOrder
   const costPerProductStorage = userData.costPerProductStorage
@@ -16,25 +16,25 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
   let analyzedSalesWithComparison = []
   // console.log( `Lead Time: ${leadTime}`)
 
-  const inventoryROP = (actualData,predictedData) => { 
+  const inventoryROP = (actualData, predictedData) => {
     console.log(`------ Inventory Analyze -----`)
     const predictedQty = predictedData.map(item => Math.round(item.Predicted_quantity));
     const actualQty = actualData.map(item => item.quantity);
     const combinedQty = predictedQty.concat(actualQty);
     const sumActual = actualQty.reduce((acc, currentValue) => acc + currentValue, 0)
-    const actualDemandRate = sumActual/actualQty.length;
+    const actualDemandRate = sumActual / actualQty.length;
     const sumPredicted = predictedQty.reduce((acc, currentValue) => acc + currentValue, 0)
-    const predictedDemandRate = sumPredicted/predictedQty.length;
+    const predictedDemandRate = sumPredicted / predictedQty.length;
     const maxCombinedQty = Math.max(...combinedQty);
     const maxActualQty = Math.max(...actualQty)
 
-    const avgActualAndPredicted = (actualDemandRate+predictedDemandRate)
-    const safetyStockActual = (leadTime*maxActualQty)-(leadTime*actualDemandRate)
-    const safetyStockActualAndPredicted = (leadTime*maxCombinedQty)-(leadTime*avgActualAndPredicted)
-    ROPActual = Math.round((leadTime*actualDemandRate) + safetyStockActual)
-    ROPActualAndPredicted = Math.round((leadTime*(actualDemandRate+predictedDemandRate)) + safetyStockActualAndPredicted)
-    EOQActual = Math.round(Math.sqrt((2 * actualDemandRate * costPerOrder) / (costPerProductStorage/actualDemandRate)))
-    EOQActualAndPredicted = Math.round(Math.sqrt((2 * (actualDemandRate+predictedDemandRate) * costPerOrder) / (costPerProductStorage/(actualDemandRate+predictedDemandRate))))
+    const avgActualAndPredicted = (actualDemandRate + predictedDemandRate)
+    const safetyStockActual = (leadTime * maxActualQty) - (leadTime * actualDemandRate)
+    const safetyStockActualAndPredicted = (leadTime * maxCombinedQty) - (leadTime * avgActualAndPredicted)
+    ROPActual = Math.round((leadTime * actualDemandRate) + safetyStockActual)
+    ROPActualAndPredicted = Math.round((leadTime * (actualDemandRate + predictedDemandRate)) + safetyStockActualAndPredicted)
+    EOQActual = Math.round(Math.sqrt((2 * actualDemandRate * costPerOrder) / (costPerProductStorage / actualDemandRate)))
+    EOQActualAndPredicted = Math.round(Math.sqrt((2 * (actualDemandRate + predictedDemandRate) * costPerOrder) / (costPerProductStorage / (actualDemandRate + predictedDemandRate))))
 
     // console.log(`actualDemandRate :${actualDemandRate}`)
     // console.log(`predictedDemandRate :${predictedDemandRate}`)
@@ -50,7 +50,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
     console.log(`EOQActualAndPredicted :${EOQActualAndPredicted}`)
   }
 
-  const salesAnalyze = (actualData,predictedData) => {
+  const salesAnalyze = (actualData, predictedData) => {
     console.log(`------ Sales Analyze -----`)
     const renamedActualData = actualData.map(item => ({
       date: item.date._seconds,
@@ -90,7 +90,7 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
       return acc;
     }, {});
 
-    const salesByMonth = (tableName,groupedByMonth) => {
+    const salesByMonth = (tableName, groupedByMonth) => {
       tableName = Object.entries(groupedByMonth).map(([key, value]) => ({
         Month: key,
         Product: value[0].product,
@@ -98,23 +98,23 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
       }));
       return tableName
     }
-    const actualSalesByMonth = salesByMonth("actualSalesByMonth",actualDataGroupedByMonth)
-    const analyzedSalesByMonth = salesByMonth("analyzedSalesByMonth",analyzedDataGroupedByMonth)
+    const actualSalesByMonth = salesByMonth("actualSalesByMonth", actualDataGroupedByMonth)
+    const analyzedSalesByMonth = salesByMonth("analyzedSalesByMonth", analyzedDataGroupedByMonth)
 
     const calculatePercentageAndTrend = (currentMonth, lastMonth) => {
       if (lastMonth === 0) return { percent: 0, trend: 'unchanged' };
       const percentChange = ((currentMonth - lastMonth) / lastMonth) * 100;
-      const trend = percentChange > 0 ? 'increase' : percentChange < 0 ? 'decrease' : 'ไม่เปลี่ยนแปลง';
+      const trend = percentChange > 0 ? 'increase' : percentChange < 0 ? 'decrease' : 'unchanged';
       return { percent: percentChange.toFixed(2), trend };
     };
-    
+
     // Calculate percent change and trend for each month
     analyzedSalesWithComparison = analyzedSalesByMonth.map((currentMonth, index) => {
-      const lastMonth = index === 0 ? (actualSalesByMonth[actualSalesByMonth.length - 1].Month === currentMonth.Month? actualSalesByMonth[actualSalesByMonth.length - 2].TotalSales : actualSalesByMonth[actualSalesByMonth.length - 1].TotalSales) : analyzedSalesByMonth[index - 1].TotalSales;
+      const lastMonth = index === 0 ? (actualSalesByMonth[actualSalesByMonth.length - 1].Month === currentMonth.Month ? actualSalesByMonth[actualSalesByMonth.length - 2].TotalSales : actualSalesByMonth[actualSalesByMonth.length - 1].TotalSales) : analyzedSalesByMonth[index - 1].TotalSales;
       const { percent, trend } = calculatePercentageAndTrend(currentMonth.TotalSales, lastMonth);
       return { ...currentMonth, Percent: percent, Trend: trend };
     });
-    
+
     console.log(analyzedSalesWithComparison);
   }
 
@@ -132,31 +132,50 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
     return date.toLocaleString('default', { month: 'long' });
   }
 
-  predictedName === "Predicted Quantity" ? inventoryROP(actualData,predictedData) : salesAnalyze(actualData,predictedData)// need to support function toggle include predict
+  predictedName === "Predicted Quantity" ? inventoryROP(actualData, predictedData) : salesAnalyze(actualData, predictedData)// need to support function toggle include predict
+
+
+  const getTextColor = (trend) => {
+    if (trend === 'increase') {
+      return 'green';
+    } else if (trend === 'decrease') {
+      return 'red';
+    } else {
+      return 'black'; // Or any default color
+    }
+  };
 
   return (
     <div className="w-full">
       {predictedName === "Predicted Quantity" ? (
         <div>
           <p className="pb-4 font-bold">Reorder point</p>
-          <p className="text-base"> 
+          <p className="text-base">
             {/* need to support function toggle include predict */}
-            while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? ROPActualAndPredicted : ROPActual}</span> items in stock. 
+            while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? ROPActualAndPredicted : ROPActual}</span> items in stock.
           </p>
-          <br/>
+          <br />
           <p className="pb-4 font-bold">Economic Order Quantity</p>
-          <p className="text-base"> 
+          <p className="text-base">
             {/* need to support function toggle include predict */}
-            The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in stock. 
+            The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in stock.
           </p>
         </div>
       ) : (
         <div>
-          <p className="pb-4">Analyze Sales</p>
+          <p className="pb-4 font-bold">Analyze Sales</p>
           {analyzedSalesWithComparison && analyzedSalesWithComparison.map((item) => (
-            item.Trend !== "ไม่เปลี่ยนแปลง" ? (
+            item.Trend !== "unchanged" ? (
               <div key={item.Month}>
-                In case sales follow an anticipated trend, the sales volume may {item.Trend} by {item.Percent}% during {getMonthName(item.Month)}
+                In case sales follow an anticipated trend, the sales volume may&nbsp;
+                <div style={{ color: getTextColor(item.Trend), display: 'inline-block' }}>
+                  {item.Trend}
+                </ div>
+                &nbsp;by&nbsp;
+                <div style={{ color: getTextColor(item.Trend), display: 'inline-block' }}>
+                  {item.Percent} %&nbsp;
+                </ div>
+                during {getMonthName(item.Month)}
               </div>
             ) : (
               <div key={item.Month}>
@@ -167,6 +186,35 @@ const Analyzed = ({predictedName, predictedData, userData, actualData, togglePre
         </div>
       )}
     </div>
+
+    // <div className="w-full">
+    //   {predictedName === "Predicted Quantity" ? (
+    //     <div>
+    //       <p className="pb-4 font-bold">Reorder point</p>
+    //       <p className="text-base"> 
+    //         while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? ROPActualAndPredicted : ROPActual}</span> items in stock. 
+    //       </p>
+    //       <br/>
+    //       <p className="pb-4 font-bold">Economic Order Quantity</p>
+    //       <p className="text-base"> 
+    //         The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in stock. 
+    //       </p>
+    //     </div>
+    //   ) : (
+    //     <div>
+    //       <p className="pb-4 font-bold">Analyze Sales</p>
+    //       {analyzedSalesWithComparison && analyzedSalesWithComparison.map((item) => (
+    //         <div key={item.Month} style={{ color: getTextColor(item.Trend) }}>
+    //           {item.Trend !== "No changes" ? (
+    //             `In case sales follow an anticipated trend, the sales volume may ${item.Trend} by ${item.Percent}% during ${getMonthName(item.Month)}`
+    //           ) : (
+    //             `This visualization needs to use prediction data.`
+    //           )}
+    //         </div>
+    //       ))}
+    //     </div>
+    //   )}
+    // </div>
   );
 };
 

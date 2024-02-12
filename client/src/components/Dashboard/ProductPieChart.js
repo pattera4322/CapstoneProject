@@ -2,12 +2,20 @@ import React from "react";
 import 'chart.js/auto';
 import { Doughnut } from 'react-chartjs-2';
 
-const ProductPieChart = ({predictedName, predictedData, userData, actualData, togglePredicted, products}) => {
+const ProductPieChart = ({predictedName, predictedData, userData, actualData, togglePredicted}) => {
   console.log(`------ Pie Chart Analyze -----`)
+
+  const products = [
+    ...new Set(
+      actualData.map(
+        (item) => item.productName
+      )
+    ),
+  ];
 
   const handleGroupedData = (dataName,data) => {
     const formattedData = data.map(item => {
-      const timestamp = dataName === 'actual' ? item.date : item.Date;
+      const timestamp = dataName === 'actual' ? item.date : item.date;
       const date = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
   
       return {
@@ -24,7 +32,7 @@ const ProductPieChart = ({predictedName, predictedData, userData, actualData, to
       acc[item.product].total += item.total;
       return acc;
     }, {});
-    console.log(`Group data by product of ${dataName} ${groupedData.product}`)
+    console.log(`Group data by product of ${dataName}`)
     console.log(groupedData)
     
     return groupedData
@@ -32,17 +40,38 @@ const ProductPieChart = ({predictedName, predictedData, userData, actualData, to
   
   const groupedActual = handleGroupedData('actual', actualData);
   const groupedPredict = handleGroupedData('prediction', predictedData);
-  console.log(`Grouped by Products`)
-  console.log(groupedActual)
-  console.log(groupedPredict)
+  const mergedGroupedActualAndPredict = {}
 
+  Object.keys(groupedActual).forEach(productName => {
+    mergedGroupedActualAndPredict[productName] = {
+        product: productName,
+        total: groupedActual[productName].total + groupedPredict[productName].total
+    };
+  });
+  // console.log(mergedGroupedActualAndPredict)
+  const totalActual = Object.values(groupedActual).reduce((acc, { total }) => acc + total, 0);
+  const totalmerged = Object.values(mergedGroupedActualAndPredict).reduce((acc, { total }) => acc + total, 0);
 
+  const arrayPercentOfActual = Object.keys(groupedActual).map(productName => {
+    const actualTotal = groupedActual[productName].total;
+    const percentage = (actualTotal / totalActual) * 100;
+    return Math.round(percentage * 100) / 100; // Round to 2 decimal places
+  })
+
+  const arrayPercentOfMerge = Object.keys(mergedGroupedActualAndPredict).map(productName => {
+    const mergedTotal = mergedGroupedActualAndPredict[productName].total;
+    const percentage = (mergedTotal / totalmerged) * 100;
+    return Math.round(percentage * 100) / 100; // Round to 2 decimal places
+  })
+  console.log(`Percent of each product`)
+  console.log(arrayPercentOfActual)
+  console.log(arrayPercentOfMerge)
 
   const data = {
     labels: products,
     datasets: [{
       label: 'Percent of products',
-      data: [300, 50, 100, 200, 40, 90],
+      data: togglePredicted === true ? arrayPercentOfMerge : arrayPercentOfActual,
       backgroundColor: [
         'rgb(255, 99, 132)',
         'rgb(54, 162, 235)',

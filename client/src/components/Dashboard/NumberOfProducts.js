@@ -1,17 +1,49 @@
 import React from "react";
 
-const NumberOfProducts = () => {
-  // Dummy data for the table
-  const productsData = [
-    { productName: "DilDo", numberOfProducts: 100 },
-    { productName: "Jimkrapong", numberOfProducts: 69 },
-    { productName: "Maid Suit", numberOfProducts: 5 },
-    { productName: "Cat", numberOfProducts: 99999999999 },
-  ];
+const NumberOfProducts = ({predictedName, predictedData, userData, actualData, togglePredicted, products}) => {
+  console.log(`------ Number of product Analyze -----`)
+
+  const handleGroupedData = (dataName,data) => {
+    const formattedData = data.map(item => {
+      const timestamp = dataName === 'actual' ? item.date : item.date;
+      const date = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
+  
+      return {
+        date: date.toISOString().slice(0, 10), // Format date as "YYYY-MM-DD"
+        product: dataName === 'actual' ? item.productName : item.Product,
+        total: dataName === 'actual' ? item.quantity : item.Predicted_quantity,
+        data: dataName === 'actual' ? "actual" : "prediction"
+      };
+    });
+  
+    // Group the formatted data
+    const groupedData = formattedData.reduce((acc, item) => {
+      acc[item.product] = acc[item.product] || { product: item.product, total: 0 };
+      acc[item.product].total += item.total;
+      return acc;
+    }, {});
+    console.log(`Group data by product of ${dataName}`)
+    console.log(groupedData)
+    
+    return groupedData
+  }
+  
+  const groupedActual = handleGroupedData('actual', actualData);
+  const groupedPredict = handleGroupedData('prediction', predictedData);
+  const mergedGroupedActualAndPredict = {}
+
+  Object.keys(groupedActual).forEach(productName => {
+    mergedGroupedActualAndPredict[productName] = {
+        product: productName,
+        total: Math.round(groupedActual[productName].total + groupedPredict[productName].total)
+    };
+  });
+  console.log(`Merge actual and predict`)
+  console.log(mergedGroupedActualAndPredict)
 
   return (
     <div>
-      <p className="pb-4">Number of Products</p>
+      <p className="pb-4 font-bold">Number of Products</p>
       <div className="p-4">
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-300">
@@ -23,14 +55,11 @@ const NumberOfProducts = () => {
               </tr>
             </thead>
             <tbody>
-              {productsData.map((product, index) => (
-                <tr
-                  key={index}
-                  className={(index + 1) % 2 === 0 ? "bg-gray-100" : ""}
-                >
-                  <td className="py-2 px-4 border-b">{product.productName}</td>
+              {Object.keys(togglePredicted ? mergedGroupedActualAndPredict : groupedActual).map((productName, index) => (
+                <tr key={index} className={(index + 1) % 2 === 0 ? "bg-gray-100" : ""}>
+                  <td className="py-2 px-4 border-b">{productName}</td>
                   <td className="py-2 px-4 border-b">
-                    {product.numberOfProducts}
+                    {togglePredicted ? mergedGroupedActualAndPredict[productName].total : groupedActual[productName].total}
                   </td>
                   <td className="py-2 px-4 border-b">items</td>
                 </tr>

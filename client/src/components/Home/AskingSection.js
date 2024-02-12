@@ -123,7 +123,7 @@ const Asking = ({ onSubmit }) => {
       <div onSubmit={handleSubmit} className="pt-10 text-left">
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            1. Please share your current sales goal with us.
+            1. Please share your current <span className="bg-[#F1D1AB]">sales goal</span> with us.
           </label>
           <InfoPopup infoText={information1} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
@@ -262,8 +262,7 @@ const Asking = ({ onSubmit }) => {
         </div> */}
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            2. Please provide details about cost of product storage for the
-            entire year.
+            2. Please provide details about <span className="bg-[#F1D1AB]">cost of product storage for the entire year</span>.
           </label>
           <InfoPopup infoText={information2} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
@@ -286,7 +285,7 @@ const Asking = ({ onSubmit }) => {
         </div>
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            3. Please provide details about cost of each order.
+            3. Please provide details about <span className="bg-[#F1D1AB]">cost of each order</span>.
           </label>
           <InfoPopup infoText={information3} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
@@ -310,8 +309,8 @@ const Asking = ({ onSubmit }) => {
         </div>
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            4. Please kindly provide us with insights into your average lead
-            time.
+            4. Please kindly provide us with insights into your average <span className="bg-[#F1D1AB]">lead
+            time</span>.
           </label>
           <InfoPopup infoText={information4} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">

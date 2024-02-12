@@ -64,7 +64,7 @@ const Goal = ({predictedName, predictedData, userData, actualData, togglePredict
 
   return (
     <div className="w-full">
-      <p className="pb-4">The effort you're investing brings you closer to your goal</p>
+      <p className="pb-4 font-bold">The effort you're investing brings you closer to your goal</p>
       <div
         style={{
           position: "relative",

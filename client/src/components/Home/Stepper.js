@@ -112,7 +112,7 @@ const StepperSection = () => {
           </div>
         ) : (
           <div className="flex">
-            <Button
+            {/* <Button
               onClick={() => {
                 if (activeStep === 2) {
                   handleButtonClick();
@@ -123,8 +123,8 @@ const StepperSection = () => {
               disabled={activeStep === 2 ? fileData === null : false}
             >
               Next
-            </Button>
-            {/* <Button
+            </Button> */}
+            <Button
               onClick={() => {
                 if (activeStep === 0) {
                   handleButtonClick();
@@ -137,13 +137,13 @@ const StepperSection = () => {
               disabled={activeStep === 2 ? fileData === null : false}
             >
               Next
-            </Button> */}
+            </Button>
           </div>
         )}
       </div>
 
       {/* Popup component */}
-      {showPopup && (
+      {/* {showPopup && (
         <Popup
           onClose={() => setShowPopup(false)}
           header={"Before go to analyze!"}
@@ -153,21 +153,21 @@ const StepperSection = () => {
           onContinue={() => handleNavigation("next")}
           continueText={"Go to Analyze ->"}
         />
-      )}
+      )} */}
 
-      {/* {showPopup && (
+      {showPopup && (
         <Popup
           onClose={() => setShowPopup(false)}
           header={activeStep === 0 ? "Review Your Information" : "Before go to analyze!"}
           info={
             activeStep === 0
-              ? "Please review the information you provided."
+              ? "The data you input can be edited on the dashboard. Once you've analysed a file, you don't need to come back and change information here."
               : "Please ensure that you have reviewed and confirmed the information in the selected column before proceeding. Note that changes cannot be undone. Take a moment to double-check before clicking the 'Go' button"
           }
           onContinue={handleContinueToNextStep}
           continueText={activeStep === 0 ? "Confirm" : "Go to Analyze ->"}
         />
-      )} */}
+      )}
     </div>
   );
 };
