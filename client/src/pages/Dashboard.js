@@ -42,7 +42,7 @@ const Dashboard = ({ }) => {
   const [filteredActualSalesData, setFilteredActualSalesData] = useState();
   const [filteredActualQuantityData, setFilteredActualQuantityData] = useState();
   const [togglePredicted, setTogglePredicted] = useState(true);
-  const [news, setNews] = useState([]);
+  const [keywords, setKeywords] = useState([])
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -102,6 +102,11 @@ const Dashboard = ({ }) => {
     const filteredActualQuantityData = actualQuantityData.filter((item) => {
       return product === "" || item.productName === product;
     });
+
+    const keywords = selectedProduct === ""? [...new Set(actualQuantityData.map((item) => item.productName))] : [...product]
+
+    setKeywords(keywords)
+    console.log('Keywords in dashboard : ' + keywords)
     setFilteredAnalyzedSalesData(filteredAnalyzedSalesData);
     setFilteredAnalyzedQuantityData(filteredAnalyzedQuantityData);
     setFilteredActualSalesData(filteredActualSalesData);
@@ -189,8 +194,10 @@ const Dashboard = ({ }) => {
               )}
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
-              Coming Soon
-              {/* <RelatedNews /> */}
+              {/* Coming Soon */}
+              <RelatedNews 
+              keywords={keywords}
+              />
             </div>
           </div>
 
@@ -292,8 +299,14 @@ const Dashboard = ({ }) => {
               )}
             </div>
             <div className="box-content p-4 shadow-md flex-1">
-              Coming Soon
-              {/* <RelatedNews /> */}
+              {/* Coming Soon */}
+              {/* <RelatedNews 
+              keywords={
+                filteredAnalyzedQuantityData
+                ? [...new Set(filteredAnalyzedQuantityData.map((item) => item.productName))]
+                : [...new Set(analyzedQuantityData.map((item) => item.productName))]
+              }
+              /> */}
             </div>
           </div>
 
