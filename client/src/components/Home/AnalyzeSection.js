@@ -24,26 +24,6 @@ const Analyzing = ({ fileId }) => {
   }
   );
 
-  // const [formData, setFormData] = useState([
-  //   askingItem.days || 90,
-  //   askingItem.salesGoal || 0,
-  //   askingItem.riskLevel || [0, 25],
-  //   askingItem.leadTime || 1,
-  //   fileName,
-  //   {
-  //     date: headerItems.date,
-  //     // year: headerItems.year || "empty",
-  //     // month: headerItems.month || "empty",
-  //     productName: headerItems.prodName || "empty",
-  //     totalSales: headerItems.sales || "empty",
-  //     pricePerUnit: headerItems.price || "empty",
-  //     quantity: headerItems.quantity || "empty",
-  //   },
-  //   "empty",
-  //   [],
-  //   userId,
-  // ]);
-
   useEffect(() => {
     postUserData(userData).then(async (res) => {
       // await enqueueData(fileId,userData).then((res) => {
@@ -52,19 +32,9 @@ const Analyzing = ({ fileId }) => {
       await analyzeData(fileId).then(()=>{
         console.log(res)
       })
-      // await delay(2000);
-      navigate("/History");
+      navigate("/History", { replace: true, state: fileId });
     })
-    // analyzeData(formData)
-    //   .then((res) => {
-    //     setContextAnalyzeData(res);
-    //     console.log(contextAnalyzeData);
-    //     navigate("/History");
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error:", error);
-    //     setError(error);
-    //   });
+
   }, []);
 
   return (
