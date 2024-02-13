@@ -75,19 +75,6 @@ const Dashboard = ({ }) => {
       });
   }, []);
 
-  function getNews(query) {
-    fetch(`https://gnews.io/api/v4/search?q=${query}&lang=en&country=us&max=10&apikey=${apikey}`).
-    then((response) => {
-      return response.json();
-    }).then((response) => {
-        const articles = response.articles;
-        setNews(articles)
-    }).catch((error) => {
-        console.log(`Error with CODE : ${error.response.data.RespMessage}`)
-        // console.log(error);
-    })
-  }
-
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
