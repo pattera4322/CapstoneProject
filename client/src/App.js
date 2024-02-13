@@ -8,9 +8,7 @@ import Dashboard from "./pages/Dashboard.js";
 import Login from "./pages/Login.js";
 import Register from "./pages/Register.js";
 import AboutUs from "./pages/AboutUs.js";
-// import History from "./pages/History.js";
-import History from "./pages/History copy.js";
-//TODO:change this
+import History from "./pages/History.js";
 
 function App() {
   return (

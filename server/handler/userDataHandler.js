@@ -23,7 +23,7 @@ const getData = async (req, res) => {
         riskLevel: userDocSnapshot.data().riskLevel,
         leadTime: userDocSnapshot.data().leadTime,
         salesGoal: userDocSnapshot.data().salesGoal,
-        fileName:userDocSnapshot.data().fileName,
+        fileName: userDocSnapshot.data().fileName,
         costPerProductStorage: userDocSnapshot.data().costPerProductStorage,
         costPerOrder: userDocSnapshot.data().costPerOrder,
       };
@@ -39,9 +39,9 @@ const getData = async (req, res) => {
 };
 
 const getHistoryData = async (req, res) => {
-  //TODO: uncomment when model complete 
+  //TODO: uncomment when model complete
   //const userId = req.params.userid;
-  const userId = "clK7zB0QWpRRzpgum9QZB5XM73D3"
+  const userId = "clK7zB0QWpRRzpgum9QZB5XM73D3";
   const fileId = req.params.fileid;
   try {
     const userRef = firestore.collection("users").doc(userId);
@@ -52,7 +52,7 @@ const getHistoryData = async (req, res) => {
         riskLevel: userDocSnapshot.data().riskLevel,
         leadTime: userDocSnapshot.data().leadTime,
         salesGoal: userDocSnapshot.data().salesGoal,
-        fileName:userDocSnapshot.data().fileName,
+        fileName: userDocSnapshot.data().fileName,
         costPerProductStorage: userDocSnapshot.data().costPerProductStorage,
         costPerOrder: userDocSnapshot.data().costPerOrder,
       };
@@ -65,9 +65,6 @@ const getHistoryData = async (req, res) => {
           fileId: historySnapshot.id,
           history: historySnapshot.data(),
         };
-
-        // console.log(`File ID: ${historyData.fileId}`);
-        // console.log(`History:`, historyData.history);
 
         res.status(200).json({ data: { userData, historyData } });
       } else {
@@ -88,17 +85,31 @@ const getAllHistoryData = async (req, res) => {
   const userId = req.params.userid;
   try {
     const userRef = firestore.collection("users").doc(userId);
+    const userDocSnapshot = await userRef.get();
+    
+    if (!userDocSnapshot.exists) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
     const historyRef = userRef.collection("history");
-    // const historySnapshot = await historyRef.get();
-    // console.log(`historyjahh: ${historySnapshot.data()}`);
+    const historySnapshot = await historyRef.get();
+    if (historySnapshot.empty) {
+      return res
+        .status(404)
+        .json({ error: "History data not found for the specified user" });
+    }
+    const historyData = [];
+    historySnapshot.forEach((doc) => {
+      const data = {
+        id: doc.id,
+        fileName: userDocSnapshot.data().fileName[doc.id],
+        ...doc.data(),
+      };
+      historyData.push(data);
+    });
 
-
-      // console.log(`File ID: ${historyData.fileId}`);
-      // console.log(`History:`, historyData.history);
-
-      // res.status(200).json({ data: { userData, historyData } });
-   
+    console.log(`Histories data:`, historyData);
+    res.status(200).json({ data: historyData });
   } catch (error) {
     console.error("Error get history data:", error);
     res.status(500).json({ error: "Internal Server Error" });

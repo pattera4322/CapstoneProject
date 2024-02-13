@@ -6,21 +6,23 @@ import { NavLink } from "react-router-dom";
 import ButtonComponent from "../components/Button";
 import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
-import { getUserHistories } from "../api/userDataApi";
 
 const History = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [jobs, setJobs] = useState([]);
+  // const [progressData, setProgressData] = useState({});
   const { progressData, setProgressData } = useProgress();
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [text, setText] = useState("");
   const [clickedTabs, setClickedTabs] = useState(Array.from({ length: activeTab }, () => false));
 
   useEffect(() => {
-    
-    getUserHistories().then((res) => {
-
-    })
+    getQueuesDataByUser().then((res) => {
+      console.log("queues jobbbb:", res);
+      if (res) {
+        setJobs(res.jobs);
+      }
+    });
 
     socket.on("jobProgress", (data) => {
       console.log(data)

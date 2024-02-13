@@ -1,5 +1,6 @@
 const { spawn } = require("child_process");
 const { io } = require("../config/socketConfig");
+const { enqueueData } = require("../handler/queueHandler");
 const { saveHistoryData } = require("../handler/userDataHandler");
 
 function analyze(requestQueue) {
@@ -25,11 +26,11 @@ function analyze(requestQueue) {
     if (valuesToCheck.includes(parseInt(data.toString()))) {
       console.log(`Received progress: ${data.toString()}`);
       io.emit("jobProgress", {
-        jobId: 1,
+        fileid: fileid,
         progress: parseInt(data.toString()),
       });
     }
-  });
+  })
 
   // Handle error ka
   pythonProcess.stderr.on("data", (data) => {
@@ -53,6 +54,7 @@ function analyze(requestQueue) {
       saveHistoryData(data,userid,fileid)
     }
     requestQueue.shift();
+    enqueueData(requestQueue,userid)
     analyze(requestQueue);
   });
   return true;

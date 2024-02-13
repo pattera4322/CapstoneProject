@@ -1,39 +1,68 @@
 import React, { useEffect, useState } from "react";
 import { socket } from "../config/socket";
-import { getQueuesDataByUser } from "../api/analyzeApi";
+import { getQueues } from "../api/analyzeApi";
 import JobComponent from "../components/History/JobComponent";
-import { NavLink } from "react-router-dom";
+import { useLocation, NavLink } from "react-router-dom";
 import ButtonComponent from "../components/Button";
 import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
+import { getUserHistories } from "../api/userDataApi";
 
 const History = () => {
   const [activeTab, setActiveTab] = useState(1);
-  const [jobs, setJobs] = useState([]);
-  // const [progressData, setProgressData] = useState({});
-  const { progressData, setProgressData } = useProgress();
+
+  const [completedAnalyzed, setCompletedAnalyzed] = useState([]);
+  const [queuesData, setQueuesData] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
+
+  const { progressData, setProgressData } = useProgress();
+
   const [text, setText] = useState("");
-  const [clickedTabs, setClickedTabs] = useState(Array.from({ length: activeTab }, () => false));
+  const [clickedTabs, setClickedTabs] = useState(
+    Array.from({ length: activeTab }, () => false)
+  );
+  const location = useLocation();
 
   useEffect(() => {
-    getQueuesDataByUser().then((res) => {
-      console.log("queues jobbbb:", res);
-      if (res) {
-        setJobs(res.jobs);
-      }
-    });
+    getQueues()
+      .then((res) => {
+        setQueuesData(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    getUserHistories()
+      .then((res) => {
+        setCompletedAnalyzed(res.data);
+        console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     socket.on("jobProgress", (data) => {
-      console.log(data)
+      console.log(data);
       setProgressData(data);
-      console.log(progressData)
+      console.log(progressData);
       if (data.progress === 100) {
-        getQueuesDataByUser().then((res) => {
-          if (res) {
-            setJobs(res.jobs);
-          }
+        getQueues()
+        .then((res) => {
+          setQueuesData(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
         });
+
+        getUserHistories()
+          .then((res) => {
+            if (res) {
+              setCompletedAnalyzed(res.data);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
     });
 
@@ -43,33 +72,25 @@ const History = () => {
   }, []);
 
   useEffect(() => {
-    const filterJobsByState = (state) => {
-      if (state === "activeOrWaiting") {
-        const filteredJobs = jobs.filter(
-          (job) => job.state === "active" || job.state === "waiting"
-        );
-        return filteredJobs.sort((a, b) => a.id - b.id);
-      }
-      return jobs.filter((job) => job.state === state);
-    };
-
+    const filteredCompletedArray = completedAnalyzed.filter(item => item.errorMessage === undefined);
+    const filteredErrorArray = completedAnalyzed.filter(item => item.errorMessage !== undefined);
     switch (activeTab) {
       case 1:
-        setFilteredJobs(filterJobsByState("activeOrWaiting"));
+        setFilteredJobs(queuesData);
         setText("Analyzing data in queue yet");
         break;
       case 2:
-        setFilteredJobs(filterJobsByState("completed"));
+        setFilteredJobs(filteredCompletedArray);
         setText("Completed data yet");
         break;
       case 3:
-        setFilteredJobs(filterJobsByState("failed"));
+        setFilteredJobs(filteredErrorArray);
         setText("failed data");
         break;
       default:
-        setFilteredJobs(jobs);
+        setFilteredJobs(completedAnalyzed);
     }
-  }, [jobs, activeTab]);
+  }, [completedAnalyzed,queuesData,activeTab]);
 
   const onTabClick = (tab) => {
     setActiveTab(tab);
@@ -83,10 +104,11 @@ const History = () => {
       {!clickedTabs[tabNumber] && <Badge />}
       <button
         onClick={() => onTabClick(tabNumber)}
-        className={`inline-block p-2 ${activeTab === tabNumber
-          ? "text-black bg-[#F1D1AB] rounded-t-lg"
-          : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-          }`}
+        className={`inline-block p-2 ${
+          activeTab === tabNumber
+            ? "text-black bg-[#F1D1AB] rounded-t-lg"
+            : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+        }`}
       >
         {label}
       </button>
@@ -103,14 +125,14 @@ const History = () => {
       <div className="flex justify-end mx-16 mt-8">
         <div className="">
           <NavLink to="/">
-            <ButtonComponent onClick={() => { }} children={"Analyze More"} />
+            <ButtonComponent onClick={() => {}} children={"Analyze More"} />
           </NavLink>
         </div>
       </div>
       {filteredJobs.length > 0 ? (
         <div>
-          {filteredJobs.map((job) => (
-            <JobComponent job={job} progressData={progressData} />
+          {filteredJobs.map((job,index) => (
+            <JobComponent index={index} job={job} progressData={progressData} />
           ))}
         </div>
       ) : (

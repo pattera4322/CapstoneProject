@@ -496,7 +496,7 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
   # Upload models to storageprint
   bucket = storage.bucket()
   upload_blob = bucket.blob(f"{user}/{model_name}.pkl")
-  upload_blob.upload_from_filename(f"{model_name}.pkl")
+  upload_blob.upload_from_filename(f"./{model_name}.pkl")
 #   print(f'{model_name} uploaded to {blob.public_url}') 
   print(f'90')
   flush()
