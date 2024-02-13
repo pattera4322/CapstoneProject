@@ -4,7 +4,7 @@ const DropdownFilter = ({ products, selectedProduct, onSelectProduct }) => {
     console.log(`In Fliter products ==> ${products}`)
     console.log(`In Fliter selected ==> ${selectedProduct}`)
     return (
-      <div className="bg-white divide-y divide-gray-100 rounded-md shadow w-32 dark:bg-gray-700">
+      <div className="bg-white divide-y divide-gray-100 rounded-md shadow w-32 dark:bg-gray-700 text-black">
       <select value={selectedProduct} onChange={(e) => onSelectProduct(e.target.value)}>
         <option value="">All products</option>
         {products.map((product) => (

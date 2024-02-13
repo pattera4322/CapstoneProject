@@ -38,12 +38,11 @@ const Dashboard = ({ }) => {
   const [activeTab, setActiveTab] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState("");
   const [filteredAnalyzedSalesData, setFilteredAnalyzedSalesData] = useState();
-  const [filteredAnalyzedQuantityData, setFilteredAnalyzedQuantityData] =
-    useState();
+  const [filteredAnalyzedQuantityData, setFilteredAnalyzedQuantityData] = useState();
   const [filteredActualSalesData, setFilteredActualSalesData] = useState();
-  const [filteredActualQuantityData, setFilteredActualQuantityData] =
-    useState();
+  const [filteredActualQuantityData, setFilteredActualQuantityData] = useState();
   const [togglePredicted, setTogglePredicted] = useState(true);
+  const [news, setNews] = useState([]);
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -75,6 +74,19 @@ const Dashboard = ({ }) => {
         }
       });
   }, []);
+
+  function getNews(query) {
+    fetch(`https://gnews.io/api/v4/search?q=${query}&lang=en&country=us&max=10&apikey=${apikey}`).
+    then((response) => {
+      return response.json();
+    }).then((response) => {
+        const articles = response.articles;
+        setNews(articles)
+    }).catch((error) => {
+        console.log(`Error with CODE : ${error.response.data.RespMessage}`)
+        // console.log(error);
+    })
+  }
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
