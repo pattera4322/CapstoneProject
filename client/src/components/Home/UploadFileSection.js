@@ -44,7 +44,8 @@ const SelectData = ({ sendfileData }) => {
   ];
   useEffect(() => {
     getUserData().then((res) => {
-      if (fileName === undefined ) {
+      console.log(fileName)
+      if (fileName === undefined || fileName === null) {
         if (res.data.userData.fileName === undefined) {
           console.log("heree1");
           localStorage.setItem("fileName", JSON.stringify({}));

@@ -1,10 +1,8 @@
 const { app, port, host } = require("./config/expressSetup");
-const { io, httpServer } = require("./config/socketConfig");
 const { uploadFile, getFile, deleteFile } = require("./handler/fileHandler");
 const { upload } = require("./config/firebaseConfig");
 const { analyze } = require("./handler/analyzeHandler");
 const { createUser } = require("./handler/userHandler");
-// const { enqueueJob, getQueues } = require("./handler/queue");
 const { enqueueData, getQueues } = require("./handler/queueHandler")
 const {
   saveData,
@@ -16,21 +14,20 @@ const { setUpWorker } = require("./handler/worker");
 
 app.listen(port, host, () => {
   console.log(`Server backend started on http://${host}:${port}`);
-  // setUpWorker();
 });
 
 // WebSocket connection handling----------------------------------
-io.on("connection", (socket) => {
-  console.log("Client connected");
+// io.on("connection", (socket) => {
+//   console.log("Client connected");
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-  });
-});
+//   socket.on("disconnect", () => {
+//     console.log("User disconnected");
+//   });
+// });
 
-httpServer.listen(3001, () => {
-  console.log("Socket server running on port 3001");
-});
+// httpServer.listen(5002, () => {
+//   console.log("Socket server running on port 5002");
+// });
 
 // -------------------------------------------File------------------------------------------------
 app.post("/api/file/:userid/:fileid", upload.single("file"), (req, res) => {

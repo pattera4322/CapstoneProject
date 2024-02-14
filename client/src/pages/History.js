@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { socket } from "../config/socket";
+import { socketJobProgress } from "../config/socket";
 import { getQueues } from "../api/analyzeApi";
 import JobComponent from "../components/History/JobComponent";
 import { useLocation, NavLink } from "react-router-dom";
@@ -22,6 +22,7 @@ const History = () => {
     Array.from({ length: activeTab }, () => false)
   );
   const location = useLocation();
+  socketJobProgress.connect();
 
   useEffect(() => {
     getQueues()
@@ -41,18 +42,23 @@ const History = () => {
         console.log(error);
       });
 
-    socket.on("jobProgress", (data) => {
-      console.log(data);
+      socketJobProgress.emit('test', (data) => {
+        console.log(`hi from socket`);
+      });
+
+      socketJobProgress.on("jobProgress", (data) => {
+      console.log(data.progress);
       setProgressData(data);
-      console.log(progressData);
-      if (data.progress === 100) {
+      if (data.progress === 101) {
         getQueues()
-        .then((res) => {
-          setQueuesData(res.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((res) => {
+            setQueuesData(res.data);
+            console.log("on 101:", res.data);
+          })
+          .catch((error) => {
+            setQueuesData([]);
+            console.log(error);
+          });
 
         getUserHistories()
           .then((res) => {
@@ -61,6 +67,7 @@ const History = () => {
             }
           })
           .catch((error) => {
+            setCompletedAnalyzed([]);
             console.log(error);
           });
       }
@@ -72,8 +79,14 @@ const History = () => {
   }, []);
 
   useEffect(() => {
-    const filteredCompletedArray = completedAnalyzed.filter(item => item.errorMessage === undefined);
-    const filteredErrorArray = completedAnalyzed.filter(item => item.errorMessage !== undefined);
+    console.log("kikiki", process.env.REACT_APP_API_URL);
+    console.log("hiiii", process.env.REACT_APP_SOCKET_BASE_URL);
+    const filteredCompletedArray = completedAnalyzed.filter(
+      (item) => item.errorMessage === undefined
+    );
+    const filteredErrorArray = completedAnalyzed.filter(
+      (item) => item.errorMessage !== undefined
+    );
     switch (activeTab) {
       case 1:
         setFilteredJobs(queuesData);
@@ -90,7 +103,7 @@ const History = () => {
       default:
         setFilteredJobs(completedAnalyzed);
     }
-  }, [completedAnalyzed,queuesData,activeTab]);
+  }, [completedAnalyzed, queuesData, activeTab]);
 
   const onTabClick = (tab) => {
     setActiveTab(tab);
@@ -131,7 +144,7 @@ const History = () => {
       </div>
       {filteredJobs.length > 0 ? (
         <div>
-          {filteredJobs.map((job,index) => (
+          {filteredJobs.map((job, index) => (
             <JobComponent index={index} job={job} progressData={progressData} />
           ))}
         </div>
