@@ -1,22 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input, Radio, Typography } from "@material-tailwind/react";
 import ButtonComponent from "../Button";
 
 
 const DownloadTemplate = () => {
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const toggleZoom = () => {
+    setIsZoomed(!isZoomed);
+  };
   return (
     <div className="pt-10">
-      <div className="pb-8 text-gray-500">
+      <div className="pb-8 text-xl text-gray-500">
         Download our template, enter your info to align columns for analysis.
       </div>
       <img
         src={process.env.PUBLIC_URL + "/assets/template.svg"}
-        className="h-54 ml-2 shadow-md"
+        style={{ transform: isZoomed ? "scale(1.5)" : "scale(1)" }}
+        className="shadow-md cursor-pointer h-54 ml-2"
         alt="resetIcon"
+        onClick={toggleZoom}
       />
 
       <br />
       <br />
+      <div className="flex justify-center mx-16 mt-8">
       <a href={process.env.PUBLIC_URL + "/assets/template.xlsx"} download>
         <ButtonComponent
           onClick={() => {}}
@@ -34,6 +42,7 @@ const DownloadTemplate = () => {
           }
         ></ButtonComponent>{" "}
       </a>
+      </div>
       <br />
 
       <div className="px-4 md:px-10 lg:px-64 py-4 text-left">
