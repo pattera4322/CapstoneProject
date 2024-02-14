@@ -10,7 +10,6 @@ const {
   getHistoryData,
   getAllHistoryData,
 } = require("./handler/userDataHandler");
-const { setUpWorker } = require("./handler/worker");
 
 app.listen(port, host, () => {
   console.log(`Server backend started on http://${host}:${port}`);
