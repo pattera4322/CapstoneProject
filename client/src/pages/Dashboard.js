@@ -109,7 +109,7 @@ const Dashboard = ({ }) => {
 
     setKeywords(selectedKeywords)
     console.log(`selectedKeywords`)
-    console.log(keywords)
+    console.log(selectedKeywords)
     setFilteredAnalyzedSalesData(filteredAnalyzedSalesData);
     setFilteredAnalyzedQuantityData(filteredAnalyzedQuantityData);
     setFilteredActualSalesData(filteredActualSalesData);

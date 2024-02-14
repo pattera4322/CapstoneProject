@@ -11,7 +11,7 @@ const Chart = ({
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
-  console.log(`------ Chart Phase -----`);
+
   const options = {
     maintainAspectRatio: false,
     responsive: true,
@@ -55,7 +55,7 @@ const Chart = ({
       const entryDate = new Date(entry.date._seconds * 1000);
       return entryDate >= threeMonthsAgo;
     });
-    console.log(predictedData)
+
     const arrayPredicted = predictedData.map((entry) =>
       predictedColumn === "quantity"
         ? entry.Predicted_quantity

@@ -1,47 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import { getNews } from '../../api/newsApi';
 
 const RelatedNews = ({ keywords }) => {
-    console.log(`------ News -----`)
-    console.log(`keywords : ${keywords}`)
-    // const query = keywords.join(' OR ')
 
     const [news, setNews] = useState([]);
-    const [error, setError] = useState(null);
-    const GNEWS_API_KEY = '46222a355a3e7db3702d560383569019';
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        // console.log(`Query => ${query}`)
-        // getNews(query);
-        getNews(keywords)
-    }, keywords);
-
-    async function getNews(keywords) {
-        const promises = keywords.map(keyword =>
-            fetch(`https://gnews.io/api/v4/search?q=(economics OR business OR economy) AND ${encodeURIComponent(keyword)}&lang=en&country=us&max=3&apikey=${GNEWS_API_KEY}`)
-                .then(response => {
-                    if (!response.ok) {
-                        if (response.status === 403) {
-                            throw new Error(`Sorry, Code 403 Forbidden.`);
-                        } else {
-                            throw new Error(`HTTP error ${response.status}`);
-                        }
-                    }
-                    return response.json();
-                })
-                .then(response => response.articles)
-        );
-
-        try {
-            const articlesArray = await Promise.all(promises);
-            const articles = articlesArray.flat(); // Flatten the array of articles
-            setNews(articles);
-            setError(null); // Reset error state
-            console.log(news);
-        } catch (error) {
-            setError(error.message); // Set error state
-            console.error('Error fetching news:', error);
-        }
-    }
+        getNews(keywords).then((res) => {
+                console.log("newsssssss",res)
+                setNews(res);
+            
+        }).catch((error) => {
+            if (error.response.status === 403) {
+                setError(error.response.data.errors[0])
+            } else {
+                //An error occurred while fetching news.
+                console.log(error)
+                setError(error.response.data.errors[0])
+            }
+        })
+    }, [keywords]);
 
     function formatDate(dateString) {
         const date = new Date(dateString);
@@ -55,12 +34,12 @@ const RelatedNews = ({ keywords }) => {
     return (
         <div className="">
             <div className="text-base text-left p-4 overflow-y-auto" style={{ maxHeight: '300px' }}>
-                <p className="pb-4 font-bold">Related News</p>
+                <p className="pb-2 font-bold">Related News</p>
                 {error ? (
-                    <p className="mt-16 text-sm text-gray-500">The news retrieval is unavailable at this moment.</p>
+                    <p className=" text-sm text-gray-500">{error}</p>
                 ) : (
                     news.length === 0 ? (
-                        <p className="mt-16 text-sm text-gray-500">The news retrieval is unavailable at this moment.</p>
+                        <p className="mt-16 text-sm text-gray-500">No news available.</p>
                     ) : (
                         news.map((article, index) => (
                             <div key={index} className="text-base text-left p-4 bg-gray-200 rounded-lg">
