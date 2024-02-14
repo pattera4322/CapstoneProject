@@ -170,6 +170,7 @@ const Dashboard = ({ }) => {
             // label="Enable Predictions"
             defaultChecked={togglePredicted}
             onToggle={handleTogglePrediction}
+            label={"Enable prediction"}
           />
         </li>
       </ul>
