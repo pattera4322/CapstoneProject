@@ -20,6 +20,7 @@ export const useAuthenticate = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const signUp = async (email, password) => {
+    setError("");
     try {
       const response = await axios.post(`${baseURL}/signup`, {
         email: email,
@@ -45,6 +46,7 @@ export const useAuthenticate = () => {
   };
 
   const logIn = async (email, password) => {
+    setError("");
     try {
       setLoading(true);
       if (!email) {

@@ -17,73 +17,47 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
   };
 
   const validatePassword = (password) => {
-    // Password should be at least 8 characters
     return password.length >= 8;
   };
 
-  const validateConfirmPassword = (password, confirmPassword) => {
-    if (confirmPassword === "") {
-      return false; // Confirm password is empty
-    }
-    return password === confirmPassword;
+  const validateEmptyInput = (input) => {
+    return input !== "";
   };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (isProvider == false) {
-  //     // Validate email
-  //     if (!validateEmail(email)) {
-  //       alert("Invalid email address");
-  //       return;
-  //     }
-
-  //     // Validate password
-  //     if (!validatePassword(password)) {
-  //       alert("Password must be at least 8 characters");
-  //       return;
-  //     }
-
-  //     // Check if passwords match for registration
-  //     if (!isLogin && password !== confirmPassword) {
-  //       alert("Passwords don't match!");
-  //       return;
-  //     }
-  //   }
-  //   onSubmit({ email, password, isProvider });
-  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
-
-    if (isProvider === false) {
-      // Validate email
-      if (!email.trim()) {
-        setEmailError("Please fill email");
+    let isValid = true
+    if (isProvider == false) {
+      if (!validateEmptyInput(email)) {
+        setEmailError("Please enter your email address");
+        isValid = false
       } else if (!validateEmail(email)) {
         setEmailError("Invalid email address");
+        isValid = false
       }
 
-      // Validate password
-      if (!isLogin && !password.trim()) {
-        setPasswordError("Please fill password");
+      if (!validateEmptyInput(password)) {
+        setPasswordError("Please enter your password");
+        isValid = false
       } else if (!validatePassword(password)) {
         setPasswordError("Password must be at least 8 characters");
+        isValid = false
       }
 
-      // Check if passwords match for registration
-      if (!validateConfirmPassword(password, confirmPassword)) {
-        if (confirmPassword === "") {
-          setConfirmPasswordError("Please fill confirm password");
-        } else {
+      if (!isLogin) {
+        if (!validateEmptyInput(confirmPassword)) {
+          setConfirmPasswordError("Please enter your confirm password");
+          isValid = false
+        } else if (password !== confirmPassword) {
           setConfirmPasswordError("Passwords don't match!");
+          isValid = false
         }
-        return;
-      }
-
-      if (emailError || passwordError || confirmPasswordError) {
+        
+      } 
+      if(!isValid){
         return;
       }
     }
@@ -131,7 +105,9 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
                 placeholder="••••••••"
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              {confirmPasswordError && <div style={{ color: "red" }}>{confirmPasswordError}</div>}
+              {confirmPasswordError && (
+                <div style={{ color: "red" }}>{confirmPasswordError}</div>
+              )}
             </label>
           </div>
           <br />
@@ -139,7 +115,11 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
       )}
 
       {errorMessage && (
-        <div style={{ color: 'red', fontWeight: 'bold', marginBottom: '-15px' }}>{errorMessage}</div>
+        <div
+          style={{ color: "red", fontWeight: "bold", marginBottom: "-15px" }}
+        >
+          {errorMessage}
+        </div>
       )}
 
       {/* {errorMessage && <Alert severity="error">{errorMessage}</Alert>} */}
@@ -153,7 +133,9 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
       </button>
 
       <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
-        <p className="mx-4 mb-0 text-center font-medium text-gray-900 dark:text-white">Or</p>
+        <p className="mx-4 mb-0 text-center font-medium text-gray-900 dark:text-white">
+          Or
+        </p>
       </div>
 
       <button
@@ -167,7 +149,7 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
             alt="google"
             className=" me-3 h-6 w-6"
           />
-          {isLogin ? "Continue" : "Continue"} with Google
+          Continue with Google
         </div>
       </button>
     </form>
