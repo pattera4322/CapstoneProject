@@ -167,7 +167,6 @@ const Dashboard = ({ }) => {
         </li>
         <li className="end-1">
           <TogglePrediction
-            // label="Enable Predictions"
             defaultChecked={togglePredicted}
             onToggle={handleTogglePrediction}
             label={"Enable prediction"}
