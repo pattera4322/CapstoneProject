@@ -92,12 +92,12 @@ const Asking = ({ onSubmit }) => {
     onSubmit(formData);
   };
 
-  const isChecked = (value) => {
-    if (formData.riskLevel == value) {
-      return true;
-    }
-    return false;
-  };
+  // const isChecked = (value) => {
+  //   if (formData.riskLevel == value) {
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
   // const handleNavigation = (direction) => {
   //   const nextStep = direction === "next";
@@ -145,9 +145,9 @@ const Asking = ({ onSubmit }) => {
             />
           </div>
           <span className="inline-block pl-2.5">Baht</span>
-          {showSalesGoalAlert && (
+          {/* {showSalesGoalAlert && (
             <div className="text-red-500">Sales goal cannot be zero. Please enter a valid sales goal.</div>
-          )}
+          )} */}
         </div>
         {/* <div className="pt-10 pl-10">
           <label className="text-lg">

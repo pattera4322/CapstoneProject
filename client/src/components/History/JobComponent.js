@@ -10,7 +10,7 @@ const JobComponent = ({ job, progressData,index }) => {
   const isJobProgress = !isJobFailed && !isJobCompleted && index === 0;
   const isJobWaiting = !isJobFailed && !isJobCompleted && index !== 0;
   
-  console.log("this is progress data id", progressData.jobId);
+  console.log("this is progress data id", progressData.fileid);
 
   const OnCompletedJobClick = () => {
     console.log(JSON.stringify(job.data));
@@ -20,7 +20,7 @@ const JobComponent = ({ job, progressData,index }) => {
   };
 
   return (
-    <div
+    <div key={index}
       className={`transition ease-in-out hover:-translate-y-1 hover:scale-10 mx-16 my-8 px-8 py-8 rounded-md text-left shadow-[0px_10px_1px_rgba(221,221,221,1),0_10px_20px_rgba(204,204,204,1)]`}
     >
       {isJobProgress || isJobWaiting ? <div>IN QUEUE: {index + 1}</div>:null}

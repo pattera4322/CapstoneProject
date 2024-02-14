@@ -1,8 +1,14 @@
-import React from 'react';
+import React from "react";
 
-const ProgressBar = ({ showProgress, progress ,text}) => {
+const ProgressBar = ({ showProgress, progress, text }) => {
   return (
-    <div className={`${showProgress ? "opacity-100 transition-opacity duration-1000" : "opacity-0 invisible"}`}>
+    <div
+      className={`${
+        showProgress
+          ? "opacity-100 transition-opacity duration-1000"
+          : "opacity-0 invisible"
+      }`}
+    >
       <div className="pt-1">
         <div className="flex mb-2 items-center justify-between">
           <div>
@@ -17,11 +23,16 @@ const ProgressBar = ({ showProgress, progress ,text}) => {
           </div>
         </div>
         <div className="flex mb-2 items-center justify-center">
-          <div className="w-full overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-200">
+          <div className="w-full overflow-hidden h-8 mb-4 text-xs flex rounded bg-gray-200">
             <div
-              style={{ width: `${progress}%` }}
+              style={{ width: `${progress}%`,  transition:'width 1s linear', }}
               className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-black"
             ></div>
+            <img
+              src={process.env.PUBLIC_URL + "/assets/cat3.gif"}
+              className="h-8"
+              alt="resetIcon"
+            />
           </div>
         </div>
       </div>

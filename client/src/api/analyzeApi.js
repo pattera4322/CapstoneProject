@@ -10,7 +10,6 @@ export const analyzeData = async (fileId) => {
     console.log("Analyze Data...");
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -21,7 +20,6 @@ export const getQueues = async () => {
     console.log("Get queues..");
     return response.data;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
