@@ -4,7 +4,7 @@ import "chart.js/auto";
 
 const Goal = ({predictedName, predictedData, userData, actualData, togglePredicted}) => { //, toggleIncludePredicted
   console.log(`------ Sales Goal Analyze -----`)
-  const salesGoal = userData.salesGoal
+  const salesGoal = userData.salesGoal === 0? 1 : userData.salesGoal
   console.log(`salesGoal => ${salesGoal}`)
 
   const predictedSales = predictedData.map(item => Math.round(item.Predicted_totalSales));
@@ -14,7 +14,7 @@ const Goal = ({predictedName, predictedData, userData, actualData, togglePredict
 
   const actualAndPredeictedPercent = Math.round(((sumPredictedSales+sumActualSales)/salesGoal)*100)
   const actualPercent = Math.round((sumActualSales/salesGoal)*100)
-  console.log(`actualAndPredeictedPercent => ${actualAndPredeictedPercent}`)
+  console.log(`actualAndPredictedPercent => ${actualAndPredeictedPercent}`)
   console.log(`actualPercent => ${actualPercent}`)
   const percentage = `${togglePredicted? actualAndPredeictedPercent  : actualPercent}%`;
 

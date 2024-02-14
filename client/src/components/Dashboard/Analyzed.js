@@ -6,9 +6,9 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
   // console.log( `Analyze Phase user Data: ${userData}`)
   console.log(`Analyze Phase toggle: ${togglePredicted}`)
 
-  const leadTime = userData.leadTime
-  const costPerOrder = userData.costPerOrder
-  const costPerProductStorage = userData.costPerProductStorage
+  const leadTime = userData.leadTime === 0? 1 : userData.leadTime
+  const costPerOrder = userData.costPerOrder === 0? 1 : userData.costPerOrder
+  const costPerProductStorage = userData.costPerProductStorage === 0? 1 : userData.costPerProductStorage
   let ROPActual = 0
   let ROPActualAndPredicted = 0
   let EOQActual = 0
@@ -146,7 +146,7 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
   };
 
   return (
-    <div className="w-full">
+    <div className="">
       {predictedName === "Predicted Quantity" ? (
         <div>
           <p className="pb-4 font-bold">Reorder point</p>

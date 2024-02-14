@@ -64,7 +64,9 @@ const Dashboard = ({ }) => {
             )
           ),
         ];
+
         setProducts(products);
+        setKeywords(products)
         console.log("name of Products", products);
       })
       .catch((error) => {
@@ -103,10 +105,11 @@ const Dashboard = ({ }) => {
       return product === "" || item.productName === product;
     });
 
-    const keywords = selectedProduct === ""? [...new Set(actualQuantityData.map((item) => item.productName))] : [...product]
+    const selectedKeywords = product === ""? products : [...new Set(filteredActualQuantityData.map((item) => item.productName))]
 
-    setKeywords(keywords)
-    console.log('Keywords in dashboard : ' + keywords)
+    setKeywords(selectedKeywords)
+    console.log(`selectedKeywords`)
+    console.log(keywords)
     setFilteredAnalyzedSalesData(filteredAnalyzedSalesData);
     setFilteredAnalyzedQuantityData(filteredAnalyzedQuantityData);
     setFilteredActualSalesData(filteredActualSalesData);
@@ -195,9 +198,11 @@ const Dashboard = ({ }) => {
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               {/* Coming Soon */}
-              <RelatedNews 
-              keywords={keywords}
-              />
+              {analyzedSalesData && (
+                <RelatedNews 
+                keywords={keywords}
+                />
+              )}
             </div>
           </div>
 
@@ -300,13 +305,11 @@ const Dashboard = ({ }) => {
             </div>
             <div className="box-content p-4 shadow-md flex-1">
               {/* Coming Soon */}
-              {/* <RelatedNews 
-              keywords={
-                filteredAnalyzedQuantityData
-                ? [...new Set(filteredAnalyzedQuantityData.map((item) => item.productName))]
-                : [...new Set(analyzedQuantityData.map((item) => item.productName))]
-              }
-              /> */}
+              {analyzedSalesData && (
+                <RelatedNews
+                keywords={keywords}
+                />
+              )}
             </div>
           </div>
 
