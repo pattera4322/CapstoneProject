@@ -5,8 +5,13 @@ const { authMiddleware } = require("../handler/userHandler");
 const { socketio } = require("socket.io");
 
 const app = express();
+// const corsOptions = {
+//   origin: ["http://localhost:3000", "http://cp23sj1.sit.kmutt.ac.th:3000","https://capstone23.sit.kmutt.ac.th"],
+//   credentials: true,
+// };
+
 const corsOptions = {
-  origin: ["http://localhost:3000", "http://cp23sj1.sit.kmutt.ac.th:3000"],
+  origin: "*",
   credentials: true,
 };
 

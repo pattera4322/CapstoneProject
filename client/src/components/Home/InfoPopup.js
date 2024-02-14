@@ -15,7 +15,7 @@ const InfoPopup = ({ infoText }) => {
         <div className="relative inline-block" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <span className="text-blue-500 cursor-pointer">
                 <img
-                    src={process.env.PUBLIC_URL + "/assets/Info.svg"}
+                    src={process.env.PUBLIC_URL + "/assets/info.svg"}
                     className="h-4 ml-2"
                     alt="resetIcon"
                 />
