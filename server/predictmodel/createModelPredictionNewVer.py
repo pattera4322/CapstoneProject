@@ -480,8 +480,9 @@ transformed_predictions_data(predictions_by_product, transformed_predictions, "D
 print(f'80')
 flush()
 ### **STEP 9 : Export predicted data**
-transformed_predictions['quantity_forecast']['date'] = transformed_predictions['quantity_forecast']['date'].dt.strftime('%d-%m-%Y')
-transformed_predictions['sale_forecast']['date'] = transformed_predictions['sale_forecast']['date'].dt.strftime('%d-%m-%Y')
+transformed_predictions['quantity_forecast']['date'] = pd.to_datetime(transformed_predictions['quantity_forecast']['date'])
+transformed_predictions['sale_forecast']['date'] = pd.to_datetime(transformed_predictions['sale_forecast']['date'])
+actual_df_copy['date'] = pd.to_datetime(actual_df_copy['date'])
 
 def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
   # Upload predicted data to firestore database
@@ -500,6 +501,7 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
 #   print(f'{model_name} uploaded to {blob.public_url}') 
   print(f'90')
   flush()
+
 data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),

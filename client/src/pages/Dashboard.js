@@ -47,7 +47,7 @@ const Dashboard = ({ }) => {
   useEffect(() => {
     getUserHistory(fileId)
       .then((res) => {
-        console.log("analyzed data", res.data);
+        // console.log("analyzed data", res.data);
         setAnalyzedData(res.data);
         setAnalyzedSalesData(res.data.historyData.history.predictedSalesValues);
         setAnalyzedQuantityData(
@@ -67,7 +67,6 @@ const Dashboard = ({ }) => {
 
         setProducts(products);
         setKeywords(products)
-        console.log("name of Products", products);
       })
       .catch((error) => {
         console.log("Error: ", error);
@@ -82,8 +81,7 @@ const Dashboard = ({ }) => {
   };
 
   const handleTogglePrediction = (value) => {
-    setTogglePredicted(value);
-    console.log(`Toggle including prediction to => ${togglePredicted}`); // True is include, False is exclude
+    setTogglePredicted(value); // True is include, False is exclude
   };
 
   const handleSelectProduct = (product) => {
@@ -108,8 +106,6 @@ const Dashboard = ({ }) => {
     const selectedKeywords = product === ""? products : [...new Set(filteredActualQuantityData.map((item) => item.productName))]
 
     setKeywords(selectedKeywords)
-    console.log(`selectedKeywords`)
-    console.log(selectedKeywords)
     setFilteredAnalyzedSalesData(filteredAnalyzedSalesData);
     setFilteredAnalyzedQuantityData(filteredAnalyzedQuantityData);
     setFilteredActualSalesData(filteredActualSalesData);
@@ -197,7 +193,6 @@ const Dashboard = ({ }) => {
               )}
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
-              {/* Coming Soon */}
               {analyzedSalesData && (
                 <RelatedNews 
                 keywords={keywords}
@@ -209,7 +204,6 @@ const Dashboard = ({ }) => {
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                {/* Coming Soon */}
                 {actualSalesData && analyzedSalesData && (
                   <Analyzed
                     predictedName={"Predicted Sales"}
@@ -304,7 +298,6 @@ const Dashboard = ({ }) => {
               )}
             </div>
             <div className="box-content p-4 shadow-md flex-1">
-              {/* Coming Soon */}
               {analyzedSalesData && (
                 <RelatedNews
                 keywords={keywords}
@@ -316,7 +309,6 @@ const Dashboard = ({ }) => {
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                {/* Coming Soon */}
                 {actualQuantityData && analyzedQuantityData && (
                   <Analyzed
                     predictedName={"Predicted Quantity"}
@@ -338,8 +330,6 @@ const Dashboard = ({ }) => {
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 h-40">
-                {/* Coming Soon */}
-
                 <p className="pb-4 font-bold">% of Products</p>
                 {analyzedData && (
                   <ProductPieChart
@@ -363,7 +353,6 @@ const Dashboard = ({ }) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 <div>
-                  {/* Coming Soon */}
                   {analyzedData && (
                   <NumberOfProducts
                     predictedName={"Predicted Quantity"}

@@ -8,7 +8,7 @@ const RelatedNews = ({ keywords }) => {
 
     useEffect(() => {
         getNews(keywords).then((res) => {
-                console.log("newsssssss",res)
+                // console.log("news : ",res)
                 setNews(res);
             
         }).catch((error) => {

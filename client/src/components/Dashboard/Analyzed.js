@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePredicted }) => {
-  // console.log( `Analyze Phase Predicted Data: ${predictedData}`)
-  // console.log( `Analyze Phase Actual Data: ${actualData}`)
-  // console.log( `Analyze Phase user Data: ${userData}`)
-  console.log(`Analyze Phase toggle: ${togglePredicted}`)
 
   const leadTime = userData.leadTime === 0? 1 : userData.leadTime
   const costPerOrder = userData.costPerOrder === 0? 1 : userData.costPerOrder
@@ -14,10 +10,8 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
   let EOQActual = 0
   let EOQActualAndPredicted = 0
   let analyzedSalesWithComparison = []
-  // console.log( `Lead Time: ${leadTime}`)
 
   const inventoryROP = (actualData, predictedData) => {
-    console.log(`------ Inventory Analyze -----`)
     const predictedQty = predictedData.map(item => Math.round(item.Predicted_quantity));
     const actualQty = actualData.map(item => item.quantity);
     const combinedQty = predictedQty.concat(actualQty);
@@ -35,23 +29,9 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
     ROPActualAndPredicted = Math.round((leadTime * (actualDemandRate + predictedDemandRate)) + safetyStockActualAndPredicted)
     EOQActual = Math.round(Math.sqrt((2 * actualDemandRate * costPerOrder) / (costPerProductStorage / actualDemandRate)))
     EOQActualAndPredicted = Math.round(Math.sqrt((2 * (actualDemandRate + predictedDemandRate) * costPerOrder) / (costPerProductStorage / (actualDemandRate + predictedDemandRate))))
-
-    // console.log(`actualDemandRate :${actualDemandRate}`)
-    // console.log(`predictedDemandRate :${predictedDemandRate}`)
-    // console.log(`maxCombinedQty :${maxCombinedQty}`)
-    // console.log(`maxActualQty :${maxActualQty}`)
-
-    // console.log(`avgActualAndPredicted :${avgActualAndPredicted}`)
-    // console.log(`safetyStockActual :${safetyStockActual}`)
-    // console.log(`safetyStockActualAndPredicted :${safetyStockActualAndPredicted}`)
-    console.log(`ROPActual :${ROPActual}`)
-    console.log(`ROPActualAndPredicted :${ROPActualAndPredicted}`)
-    console.log(`EOQActual :${EOQActual}`)
-    console.log(`EOQActualAndPredicted :${EOQActualAndPredicted}`)
   }
 
   const salesAnalyze = (actualData, predictedData) => {
-    console.log(`------ Sales Analyze -----`)
     const renamedActualData = actualData.map(item => ({
       date: item.date._seconds,
       product: item.productName,
@@ -114,17 +94,7 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
       const { percent, trend } = calculatePercentageAndTrend(currentMonth.TotalSales, lastMonth);
       return { ...currentMonth, Percent: percent, Trend: trend };
     });
-
-    console.log(analyzedSalesWithComparison);
   }
-
-  // useEffect(() => {
-  //   if (predictedName === "Predicted Quantity") {
-  //     inventoryROP(actualData, predictedData);
-  //   } else {
-  //     salesAnalyze(actualData, predictedData);
-  //   }
-  // }, [actualData, predictedData, predictedName]);
 
   const getMonthName = (monthKey) => {
     const [year, month] = monthKey.split('-');
@@ -132,7 +102,7 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
     return date.toLocaleString('default', { month: 'long' });
   }
 
-  predictedName === "Predicted Quantity" ? inventoryROP(actualData, predictedData) : salesAnalyze(actualData, predictedData)// need to support function toggle include predict
+  predictedName === "Predicted Quantity" ? inventoryROP(actualData, predictedData) : salesAnalyze(actualData, predictedData)
 
 
   const getTextColor = (trend) => {
@@ -141,7 +111,7 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
     } else if (trend === 'decrease') {
       return 'red';
     } else {
-      return 'black'; // Or any default color
+      return 'black'; // default color
     }
   };
 
@@ -151,13 +121,11 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
         <div>
           <p className="pb-4 font-bold">Reorder point</p>
           <p className="text-base">
-            {/* need to support function toggle include predict */}
             while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? ROPActualAndPredicted : ROPActual}</span> items in stock.
           </p>
           <br />
           <p className="pb-4 font-bold">Economic Order Quantity</p>
           <p className="text-base">
-            {/* need to support function toggle include predict */}
             The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in stock.
           </p>
         </div>
@@ -186,35 +154,6 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
         </div>
       )}
     </div>
-
-    // <div className="w-full">
-    //   {predictedName === "Predicted Quantity" ? (
-    //     <div>
-    //       <p className="pb-4 font-bold">Reorder point</p>
-    //       <p className="text-base"> 
-    //         while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? ROPActualAndPredicted : ROPActual}</span> items in stock. 
-    //       </p>
-    //       <br/>
-    //       <p className="pb-4 font-bold">Economic Order Quantity</p>
-    //       <p className="text-base"> 
-    //         The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in stock. 
-    //       </p>
-    //     </div>
-    //   ) : (
-    //     <div>
-    //       <p className="pb-4 font-bold">Analyze Sales</p>
-    //       {analyzedSalesWithComparison && analyzedSalesWithComparison.map((item) => (
-    //         <div key={item.Month} style={{ color: getTextColor(item.Trend) }}>
-    //           {item.Trend !== "No changes" ? (
-    //             `In case sales follow an anticipated trend, the sales volume may ${item.Trend} by ${item.Percent}% during ${getMonthName(item.Month)}`
-    //           ) : (
-    //             `This visualization needs to use prediction data.`
-    //           )}
-    //         </div>
-    //       ))}
-    //     </div>
-    //   )}
-    // </div>
   );
 };
 

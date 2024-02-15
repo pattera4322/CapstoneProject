@@ -51,7 +51,7 @@ const DownloadTemplate = () => {
         </h1>
         <div className="pt-1.5 text-lg">
           <label className="text-lg">
-            <b>1. Data Input Requirements</b>
+            <b>Data Input Requirements</b>
           </label>
           <div className="text-s pl-4 pt-1.5">
             <p>
@@ -80,7 +80,8 @@ const DownloadTemplate = () => {
                 optional.
               </li>
             </ul>
-            <p className="text-lg pt-5">
+            </div>
+            {/* <p className="text-lg pt-5">
               <b>Data Input Template</b>
             </p>
             <ol className="list-decimal pl-4">
@@ -137,7 +138,7 @@ const DownloadTemplate = () => {
                 </li>
               </ol>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

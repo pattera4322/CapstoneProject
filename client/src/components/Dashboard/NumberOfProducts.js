@@ -1,7 +1,6 @@
 import React from "react";
 
 const NumberOfProducts = ({predictedName, predictedData, userData, actualData, togglePredicted, products}) => {
-  console.log(`------ Number of product Analyze -----`)
 
   const handleGroupedData = (dataName,data) => {
     const formattedData = data.map(item => {
@@ -22,8 +21,6 @@ const NumberOfProducts = ({predictedName, predictedData, userData, actualData, t
       acc[item.product].total += item.total;
       return acc;
     }, {});
-    console.log(`Group data by product of ${dataName}`)
-    console.log(groupedData)
     
     return groupedData
   }
@@ -38,8 +35,6 @@ const NumberOfProducts = ({predictedName, predictedData, userData, actualData, t
         total: Math.round(groupedActual[productName].total + groupedPredict[productName].total)
     };
   });
-  console.log(`Merge actual and predict`)
-  console.log(mergedGroupedActualAndPredict)
 
   return (
     <div>

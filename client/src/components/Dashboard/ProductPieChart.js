@@ -3,7 +3,6 @@ import 'chart.js/auto';
 import { Doughnut } from 'react-chartjs-2';
 
 const ProductPieChart = ({predictedName, predictedData, userData, actualData, togglePredicted}) => {
-  console.log(`------ Pie Chart Analyze -----`)
 
   const products = [
     ...new Set(
@@ -32,8 +31,6 @@ const ProductPieChart = ({predictedName, predictedData, userData, actualData, to
       acc[item.product].total += item.total;
       return acc;
     }, {});
-    console.log(`Group data by product of ${dataName}`)
-    console.log(groupedData)
     
     return groupedData
   }
@@ -48,24 +45,20 @@ const ProductPieChart = ({predictedName, predictedData, userData, actualData, to
         total: groupedActual[productName].total + groupedPredict[productName].total
     };
   });
-  // console.log(mergedGroupedActualAndPredict)
   const totalActual = Object.values(groupedActual).reduce((acc, { total }) => acc + total, 0);
   const totalmerged = Object.values(mergedGroupedActualAndPredict).reduce((acc, { total }) => acc + total, 0);
 
   const arrayPercentOfActual = Object.keys(groupedActual).map(productName => {
     const actualTotal = groupedActual[productName].total;
     const percentage = (actualTotal / totalActual) * 100;
-    return Math.round(percentage * 100) / 100; // Round to 2 decimal places
+    return Math.round(percentage * 100) / 100;
   })
 
   const arrayPercentOfMerge = Object.keys(mergedGroupedActualAndPredict).map(productName => {
     const mergedTotal = mergedGroupedActualAndPredict[productName].total;
     const percentage = (mergedTotal / totalmerged) * 100;
-    return Math.round(percentage * 100) / 100; // Round to 2 decimal places
+    return Math.round(percentage * 100) / 100; 
   })
-  console.log(`Percent of each product`)
-  console.log(arrayPercentOfActual)
-  console.log(arrayPercentOfMerge)
 
   const data = {
     labels: products,

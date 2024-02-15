@@ -288,6 +288,11 @@ def transformed_predictions_data(selected_data,transformedProduct, model):
 
 transformed_predictions_data(predictions_by_product, transformed_predictions, "DNN-Tensorflow")
 
+### **STEP 7 : Export predicted data**
+transformed_predictions['quantity_forecast']['date'] = pd.to_datetime(transformed_predictions['quantity_forecast']['date'])
+transformed_predictions['sale_forecast']['date'] = pd.to_datetime(transformed_predictions['sale_forecast']['date'])
+actual_df_copy['date'] = pd.to_datetime(actual_df_copy['date'])
+
 import firebase_admin
 from firebase_admin import credentials, firestore, storage
 
