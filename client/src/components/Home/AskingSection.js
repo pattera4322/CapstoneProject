@@ -6,11 +6,11 @@ import Popup from "../Popup.js";
 const Asking = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     days: 90,
-    salesGoal: 0,
+    salesGoal: 1,
     riskLevel: [0, 0],
     leadTime: 1,
-    costPerProductStorage: 0,
-    costPerOrder: 0,
+    costPerProductStorage: 1,
+    costPerOrder: 1,
   });
 
   useEffect(() => {
@@ -59,15 +59,24 @@ const Asking = ({ onSubmit }) => {
   };
 
   //handle if user type more than 366 days
-  const leadTimeValidation = (e) => {
-    const newValue = parseInt(e.target.value, 10);
+const leadTimeValidation = (e) => {
+  let newValue = parseInt(e.target.value, 10);
 
-    if (!isNaN(newValue) && newValue >= 1 && newValue <= 366) {
+  if (!isNaN(newValue)) {
+    if (newValue >= 1 && newValue <= 366) {
       setFormData({ ...formData, leadTime: newValue });
     } else if (newValue > 366) {
-      setFormData({ ...formData, leadTime: 366 });
+      newValue = 366;
+      setFormData({ ...formData, leadTime: newValue });
+    } else {
+      newValue = 1;
+      setFormData({ ...formData, leadTime: newValue });
     }
-  };
+  } else {
+    newValue = "";
+    setFormData({ ...formData, leadTime: newValue });
+  }
+};
 
   const [showSalesGoalAlert, setShowSalesGoalAlert] = useState(false); // New state variable
 
@@ -136,7 +145,8 @@ const Asking = ({ onSubmit }) => {
               type="number"
               label="Sales Goal"
               // placeholder="Ex. 1000000"
-              min={0}
+              min={1}
+              max={9999999999999}
               variant="outlined"
               name="salesGoal"
               value={formData.salesGoal}
@@ -273,7 +283,8 @@ const Asking = ({ onSubmit }) => {
             <Input
               type="number"
               label="Cost Per Product Storage"
-              min={0}
+              min={1}
+              max={9999999999999}
               variant="outlined"
               name="costPerProductStorage"
               value={formData.costPerProductStorage}
@@ -297,7 +308,8 @@ const Asking = ({ onSubmit }) => {
             <Input
               type="number"
               label="Cost Per Order"
-              min={0}
+              min={1}
+              max={9999999999999}
               variant="outlined"
               name="costPerOrder"
               value={formData.costPerOrder}

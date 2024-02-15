@@ -42,11 +42,11 @@ const History = () => {
         console.log(error);
       });
 
-      socketJobProgress.emit('test', (data) => {
-        console.log(`hi from socket`);
-      });
+    socketJobProgress.emit('test', (data) => {
+      console.log(`hi from socket`);
+    });
 
-      socketJobProgress.on("jobProgress", (data) => {
+    socketJobProgress.on("jobProgress", (data) => {
       console.log(data.progress);
       setProgressData(data);
       if (data.progress === 101) {
@@ -112,21 +112,47 @@ const History = () => {
     setClickedTabs(updatedClickedTabs);
   };
 
-  const renderTab = (tabNumber, label) => (
-    <li className="mr-6" key={tabNumber}>
-      {!clickedTabs[tabNumber] && <Badge />}
-      <button
-        onClick={() => onTabClick(tabNumber)}
-        className={`inline-block p-2 ${
-          activeTab === tabNumber
-            ? "text-black bg-[#F1D1AB] rounded-t-lg"
-            : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-        }`}
-      >
-        {label}
-      </button>
-    </li>
-  );
+  // const renderTab = (tabNumber, label) => (
+  //   <li className="mr-6" key={tabNumber}>
+  //     {!clickedTabs[tabNumber] && <Badge />}
+  //     <button
+  //       onClick={() => onTabClick(tabNumber)}
+  //       className={`inline-block p-2 ${
+  //         activeTab === tabNumber
+  //           ? "text-black bg-[#F1D1AB] rounded-t-lg"
+  //           : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+  //       }`}
+  //     >
+  //       {label}
+  //     </button>
+  //   </li>
+  // );
+
+  const renderTab = (tabNumber, label) => {
+    let badge = null;
+    if (tabNumber === 2) { // Analyzed success tab
+      badge = completedAnalyzed.some(item => item.errorMessage === undefined) ? <Badge /> : null;
+    } else if (tabNumber === 3) { // Analyze Failed tab
+      badge = completedAnalyzed.some(item => item.errorMessage !== undefined) ? <Badge /> : null;
+    }
+
+    return (
+      <li className="mr-6" key={tabNumber}>
+        <button
+          onClick={() => onTabClick(tabNumber)}
+          className={`relative inline-block p-2 ${activeTab === tabNumber
+              ? "text-black bg-[#F1D1AB] rounded-t-lg"
+              : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+            }`}
+        >
+          {badge && <span className="absolute top-0 right-0 mt-0 mr-0"><Badge value={badge.props.value} /></span>}
+          {label}
+        </button>
+      </li>
+    );
+  };
+
+
 
   return (
     <div>
@@ -138,7 +164,7 @@ const History = () => {
       <div className="flex justify-end mx-16 mt-8">
         <div className="">
           <NavLink to="/">
-            <ButtonComponent onClick={() => {}} children={"Analyze More"} />
+            <ButtonComponent onClick={() => { }} children={"Analyze More"} />
           </NavLink>
         </div>
       </div>

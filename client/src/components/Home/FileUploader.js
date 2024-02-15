@@ -217,7 +217,7 @@ const FileUpload = ({
                       <button onClick={handleButtonClick}>
                         <img
                           src={
-                            process.env.PUBLIC_URL + "/assets/deleteIcon.svg"
+                            process.env.PUBLIC_URL + "assets/deleteIcon.svg"
                           }
                           className="h-8 mr-2 sm:mr-4"
                           alt="deleteIcon"
