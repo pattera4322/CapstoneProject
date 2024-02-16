@@ -26,7 +26,7 @@ const Asking = ({ onSubmit }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(value);
+    // console.log(value);
     if (name === "riskLevel") {
       const arrayValues = value.split(",").map((e) => parseFloat(e));
       setFormData({
