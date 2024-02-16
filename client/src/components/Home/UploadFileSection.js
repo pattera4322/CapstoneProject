@@ -85,7 +85,7 @@ const SelectData = ({ sendfileData }) => {
           if (error.response && error.response.status === 404) {
             console.log("File Not found");
           } else {
-            console.error("Error fetching file: ", error);
+            console.log("Error fetching file: ", error);
           }
           setIsHasFile(false);
           setFileData([]);

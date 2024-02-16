@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { authMiddleware } = require("../handler/userHandler");
+// const { authMiddleware } = require("../handler/userHandler");
 const { socketio } = require("socket.io");
 
 const app = express();
