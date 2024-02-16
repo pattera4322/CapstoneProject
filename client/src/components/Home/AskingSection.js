@@ -37,25 +37,35 @@ const Asking = ({ onSubmit }) => {
     else if (name === "leadTime") {
       leadTimeValidation(e);
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
+      moneyValidation(name,e)
+      // setFormData({
+      //   ...formData,
+      //   [name]: value,
+      // });
     }
 
-    console.log(name, value);
+    // console.log(name, value);
   };
 
-  const salesGoalValidation = (event) => {
-    const inputValue = event.target.value;
+  const moneyValidation = (name,event) => {
+    let inputValue = event.target.value;
     const moneyRegex = /^\d+(\.\d{1,2})?$/;
 
     const isValidInput = moneyRegex.test(inputValue);
     if (isValidInput) {
-      setFormData({ ...formData, salesGoal: inputValue });
+      if (inputValue > 0 && inputValue <= 1000000000){
+        setFormData({ ...formData, [name]: inputValue });
+      } else if (inputValue <= 0) {
+        inputValue = 1;
+        setFormData({ ...formData, [name]: inputValue });
+      } else if (inputValue > 1000000000) {
+        inputValue = inputValue.slice(0, 10);
+        setFormData({ ...formData, [name]: inputValue });
+      }
+    } else {
+      inputValue = "";
+      setFormData({ ...formData, [name]: inputValue });
     }
-    // setMoneyInput(inputValue);
-    // setIsValid(isValidInput);
   };
 
   //handle if user type more than 366 days
@@ -112,7 +122,6 @@ const leadTimeValidation = (e) => {
   //   const nextStep = direction === "next";
   // };
 
-
   const information1 =
     "We recommend that you enter the maximum value for the sales you desire.";
   const information2 =
@@ -146,7 +155,7 @@ const leadTimeValidation = (e) => {
               label="Sales Goal"
               // placeholder="Ex. 1000000"
               min={1}
-              max={9999999999999}
+              max={1000000000}
               variant="outlined"
               name="salesGoal"
               value={formData.salesGoal}
@@ -284,7 +293,7 @@ const leadTimeValidation = (e) => {
               type="number"
               label="Cost Per Product Storage"
               min={1}
-              max={9999999999999}
+              max={1000000000}
               variant="outlined"
               name="costPerProductStorage"
               value={formData.costPerProductStorage}
@@ -309,7 +318,7 @@ const leadTimeValidation = (e) => {
               type="number"
               label="Cost Per Order"
               min={1}
-              max={9999999999999}
+              max={1000000000}
               variant="outlined"
               name="costPerOrder"
               value={formData.costPerOrder}
