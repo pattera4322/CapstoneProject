@@ -17,9 +17,9 @@ flush()
 time.sleep(2)
 print("30")
 flush()
-for x in range(60):
-  print(x)
-  flush()
+# for x in range(60):
+#   print(x)
+#   flush()
 time.sleep(5)
 print("70")
 flush()

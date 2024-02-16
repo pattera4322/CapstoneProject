@@ -1,39 +1,91 @@
-const { app} = require("./config/expressSetup");
+const { app } = require("./config/expressSetup");
 // const { io } = require("./config/socketConfig");
 // const { analyze } = require("./handler/analyzeHandler");
 // const { enqueueData, getQueues } = require("./handler/queueHandler")
-const socketio = require('socket.io');
+const socketio = require("socket.io");
 
 // WebSocket connection handling----------------------------------
 const server = app.listen(5001, () => {
-  console.log('Socket Server is running on port 5001');
+  console.log("Socket Server is running on port 5001");
 });
 
 const io = socketio(server, {
-  path: '/sj1-socket/',
+  path: "/sj1-socket/",
   cors: {
-    origin: '*',
+    origin: "*",
   },
 });
 
-io.of('/sockets/job-progress').on("connection", (socket) => {
+const progressData = {};
+const frontendSockets = {}; 
+const backendSockets = {};
+
+io.of("/sockets/job-progress").on("connection", (socket) => {
   console.log("Client connected");
-  console.log("id",socket.id);
-  socket.on('test', () => {
-          console.log(`Client connected from ${socket.id}`)
-          socket.join(socket.id)
-          console.log(`tatttttt`)
-        })
+  // console.log("id", socket.id);
+
+  socket.on("authenticate", (data) => {
+    console.log("authen:",data);
+    if (data.isFromClient) {
+      frontendSockets[data.userId] = socket.id; 
+    } else {
+      backendSockets[data.userId] = socket.id; 
+    }
+  });
+
+  socket.on("progress", (data) => {
+    socket.join(socket.id);
+    console.log(`Client from server connected from ${socket.id}`);
+    console.log(`data:`, data);
+    const sessionId = getSessionIdFromSocket(socket.id);
+    const frontendSocketId = frontendSockets[sessionId];
+
+    progressData[socket.id] = data;
+
+    io.of("/sockets/job-progress").to(frontendSocketId).emit("progressfromServer", data);
+    delete progressData[socket.id];
+  });
 
   socket.on("disconnect", () => {
     console.log("User disconnected");
+    delete progressData[socket.id];
+    removeSocketFromStore(socket.id);
   });
 });
+
+function getSessionIdFromSocket(socketId) {
+  for (const sessionId in frontendSockets) {
+    if (frontendSockets[sessionId] === socketId) {
+      return sessionId;
+    }
+  }
+  for (const sessionId in backendSockets) {
+    if (backendSockets[sessionId] === socketId) {
+      return sessionId;
+    }
+  }
+  return null; // If no session ID is found
+}
+
+
+function removeSocketFromStore(socketId) {
+  for (const sessionId in frontendSockets) {
+    if (frontendSockets[sessionId] === socketId) {
+      delete frontendSockets[sessionId];
+      return;
+    }
+  }
+  for (const sessionId in backendSockets) {
+    if (backendSockets[sessionId] === socketId) {
+      delete backendSockets[sessionId];
+      return;
+    }
+  }
+}
 
 // httpServer.listen(5001, () => {
 //   console.log("Socket server running on port 5001");
 // });
-
 
 // -------------------------------------------Analyze------------------------------------------------
 // let isRunning = false;

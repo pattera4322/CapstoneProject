@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { socketJobProgress } from "../config/socket";
+import { socketJobProgress } from "../config/socketClient";
 import { getQueues } from "../api/analyzeApi";
 import JobComponent from "../components/History/JobComponent";
 import { useLocation, NavLink } from "react-router-dom";
@@ -21,6 +21,7 @@ const History = () => {
   const [clickedTabs, setClickedTabs] = useState(
     Array.from({ length: activeTab }, () => false)
   );
+  const userId = JSON.parse(localStorage.getItem("user"));
   const location = useLocation();
   socketJobProgress.connect();
 
@@ -42,12 +43,13 @@ const History = () => {
         console.log(error);
       });
 
-    socketJobProgress.emit('test', (data) => {
-      console.log(`hi from socket`);
+    socketJobProgress.emit("authenticate", {
+      userId: userId.uid,
+      isFromClient: true,
     });
 
-    socketJobProgress.on("jobProgress", (data) => {
-      console.log(data.progress);
+    socketJobProgress.on("progressfromServer", (data) => {
+      //console.log(data.progress);
       setProgressData(data);
       if (data.progress === 101) {
         getQueues()
@@ -79,8 +81,6 @@ const History = () => {
   }, []);
 
   useEffect(() => {
-    console.log("kikiki", process.env.REACT_APP_API_URL);
-    console.log("hiiii", process.env.REACT_APP_SOCKET_BASE_URL);
     const filteredCompletedArray = completedAnalyzed.filter(
       (item) => item.errorMessage === undefined
     );
@@ -130,29 +130,42 @@ const History = () => {
 
   const renderTab = (tabNumber, label) => {
     let badge = null;
-    if (tabNumber === 2) { // Analyzed success tab
-      badge = completedAnalyzed.some(item => item.errorMessage === undefined) ? <Badge /> : null;
-    } else if (tabNumber === 3) { // Analyze Failed tab
-      badge = completedAnalyzed.some(item => item.errorMessage !== undefined) ? <Badge /> : null;
+    if (tabNumber === 2) {
+      // Analyzed success tab
+      badge = completedAnalyzed.some(
+        (item) => item.errorMessage === undefined
+      ) ? (
+        <Badge />
+      ) : null;
+    } else if (tabNumber === 3) {
+      // Analyze Failed tab
+      badge = completedAnalyzed.some(
+        (item) => item.errorMessage !== undefined
+      ) ? (
+        <Badge />
+      ) : null;
     }
 
     return (
       <li className="mr-6" key={tabNumber}>
         <button
           onClick={() => onTabClick(tabNumber)}
-          className={`relative inline-block p-2 ${activeTab === tabNumber
+          className={`relative inline-block p-2 ${
+            activeTab === tabNumber
               ? "text-black bg-[#F1D1AB] rounded-t-lg"
               : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-            }`}
+          }`}
         >
-          {badge && <span className="absolute top-0 right-0 mt-0 mr-0"><Badge value={badge.props.value} /></span>}
+          {badge && (
+            <span className="absolute top-0 right-0 mt-0 mr-0">
+              <Badge />
+            </span>
+          )}
           {label}
         </button>
       </li>
     );
   };
-
-
 
   return (
     <div>
@@ -164,7 +177,7 @@ const History = () => {
       <div className="flex justify-end mx-16 mt-8">
         <div className="">
           <NavLink to="/">
-            <ButtonComponent onClick={() => { }} children={"Analyze More"} />
+            <ButtonComponent onClick={() => {}} children={"Analyze More"} />
           </NavLink>
         </div>
       </div>

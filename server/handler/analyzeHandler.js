@@ -1,13 +1,15 @@
 const { spawn } = require("child_process");
-const { io } = require("../config/socketConfig");
+ const { socketJobProgress } = require("../config/socketServerConfig");
 const { enqueueData } = require("../handler/queueHandler");
 const { saveHistoryData } = require("../handler/userDataHandler");
 
 function analyze (requestQueue) {
-  io.emit("jobProgress", {
+
+  socketJobProgress.emit('progress', {
     fileid: 0,
-    progress: 0,
+    progress:0
   });
+
   if (requestQueue.length === 0) {
     return false;
   }
@@ -18,7 +20,7 @@ function analyze (requestQueue) {
 
   const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
   const pythonArgs = [userid, fileid];
-  // const pythonScript = "./predictmodel/test2.py";
+  //const pythonScript = "./predictmodel/test2.py";
 
   const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
 
@@ -29,10 +31,10 @@ function analyze (requestQueue) {
     const valuesToCheck = [12, 15, 20, 30, 35, 50, 65, 70, 75, 80, 90,100];
     if (valuesToCheck.includes(parseInt(data.toString()))) {
       console.log(`Received progress: ${data.toString()}`);
-      // io.emit("jobProgress", {
-      //   fileid: fileid,
-      //   progress: parseInt(data.toString()),
-      // });
+      socketJobProgress.emit('progress', {
+        fileid: fileid,
+        progress: parseInt(data.toString()),
+      });
     }
   });
 
@@ -59,7 +61,7 @@ function analyze (requestQueue) {
     requestQueue.shift();
     enqueueData(requestQueue, userid);
     console.log("hereee",requestQueue)
-    io.emit("jobProgress", {
+    socketJobProgress.emit('progress', {
       fileid: fileid,
       progress: 101,
     });

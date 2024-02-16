@@ -10,6 +10,7 @@ const {
   getHistoryData,
   getAllHistoryData,
 } = require("./handler/userDataHandler");
+const { socketJobProgress } = require("./config/socketServerConfig");
 
 app.listen(port, host, () => {
   console.log(`Server backend started on http://${host}:${port}`);
@@ -27,7 +28,7 @@ app.listen(port, host, () => {
 // httpServer.listen(5002, () => {
 //   console.log("Socket server running on port 5002");
 // });
-
+socketJobProgress.connect();
 // -------------------------------------------File------------------------------------------------
 app.post("/api/file/:userid/:fileid", upload.single("file"), (req, res) => {
   uploadFile(req, res);
@@ -52,6 +53,10 @@ app.post("/api/analyze/:userid/:fileid", (req, res) => {
   if (isRunning) {
     return;
   }
+  socketJobProgress.emit("authenticate", {
+    userId: userid,
+    isFromClient: false,
+  });
   isRunning = analyze(requestQueue);
 });
 
