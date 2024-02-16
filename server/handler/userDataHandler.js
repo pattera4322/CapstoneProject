@@ -39,9 +39,7 @@ const getData = async (req, res) => {
 };
 
 const getHistoryData = async (req, res) => {
-  //TODO: uncomment when model complete
-  //const userId = req.params.userid;
-  const userId = "clK7zB0QWpRRzpgum9QZB5XM73D3";
+  const userId = req.params.userid;
   const fileId = req.params.fileid;
   try {
     const userRef = firestore.collection("users").doc(userId);

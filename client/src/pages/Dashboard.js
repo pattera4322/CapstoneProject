@@ -24,10 +24,8 @@ ChartJS.register(CategoryScale, LinearScale, BarElement);
 const Dashboard = ({ }) => {
   const location = useLocation();
 
-  //TODO:uncomment when can use tensorflow and success do dashboard --------------------------------------------------------
-  // const fileId = location.state || {};
-  //console.log("fileIdd",fileId)
-  const fileId = 5;
+  const fileId = location.state || {};
+  console.log("fileIdd",fileId);
 
   const [analyzedData, setAnalyzedData] = useState();
   const [analyzedSalesData, setAnalyzedSalesData] = useState();
