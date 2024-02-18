@@ -82,6 +82,7 @@ const Goal = ({predictedName, predictedData, userData, actualData, togglePredict
           {percentage}
         </div>
       </div>
+      <span className="text-xs text-gray-500">that your goal is {salesGoal}</span>
     </div>
   );
 };

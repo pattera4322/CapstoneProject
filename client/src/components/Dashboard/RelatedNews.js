@@ -1,26 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { getNews } from '../../api/newsApi';
 
-const RelatedNews = ({ keywords }) => {
-
-    const [news, setNews] = useState([]);
-    const [error, setError] = useState('');
-
-    useEffect(() => {
-        getNews(keywords).then((res) => {
-                // console.log("news : ",res)
-                setNews(res);
-            
-        }).catch((error) => {
-            if (error.response.status === 403) {
-                setError(error.response.data.errors[0])
-            } else {
-                //An error occurred while fetching news.
-                console.log(error)
-                setError(error.response.data.errors[0])
-            }
-        })
-    }, [keywords]);
+const RelatedNews = ({ keywords, news , error}) => {
+    console.log(keywords)
+    console.log(news)
+    console.log(error)
 
     function formatDate(dateString) {
         const date = new Date(dateString);
@@ -42,8 +25,9 @@ const RelatedNews = ({ keywords }) => {
                         <p className="mt-16 text-sm text-gray-500">No news available.</p>
                     ) : (
                         news.map((article, index) => (
-                            <div key={index} className="text-base text-left p-4 bg-gray-200 rounded-lg">
+                            <div key={index} className="text-base text-left p-4 mb-4 bg-gray-200 rounded-lg">
                                 <div className="message">
+                                    <p>{article.index}</p>
                                     <p className="pb-2 font-bold">{article.title}</p>
                                     <p className="text-sm"> Posted Date {formatDate(article.publishedAt)}</p>
                                     <a href={article.url} className="text-xs text-gray-500">More details...</a>
