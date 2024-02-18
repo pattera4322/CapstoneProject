@@ -58,6 +58,15 @@ const StepperSection = () => {
     handleNavigation("next");
   };
 
+  const handleLogIn = () =>{
+    const baseURL = process.env.REACT_APP_API_URL;
+    if(localStorage.getItem("user") === null){
+      window.location.href = `sj1/Login`;
+    }else{
+      handleNavigation("next");
+    }
+  }
+
   return (
     <div className="w-full py-4 px-8 mt-7">
       <Stepper
@@ -130,7 +139,10 @@ const StepperSection = () => {
                   handleButtonClick();
                 } else if (activeStep === 2) {
                   handleButtonClick();
-                } else {
+                } else if (activeStep === 1){
+                  handleLogIn()
+                }
+                else {
                   handleNavigation("next");
                 }
               }}
