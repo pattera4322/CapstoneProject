@@ -31,17 +31,21 @@ export const useAuthenticate = () => {
         title: "Success!",
         text: "Signup successful.",
         showConfirmButton: true,
-        confirmButtonText: "Go to login ->"
+        confirmButtonText: "Go to login ->",
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/login");
         }
-      });;
+      });
       console.log("success create user: ", response);
       return response;
     } catch (error) {
-      setError(error.response.data.RespMessage)
       console.log("error sign up: ", error);
+      if (error.response) {
+        setError(error.response.data.RespMessage);
+      } else {
+        throw error;
+      }
     }
   };
 
@@ -59,7 +63,10 @@ export const useAuthenticate = () => {
         const userUid = result.user.uid;
         if (token) {
           localStorage.setItem("token", token);
-          localStorage.setItem("user", JSON.stringify({userName:user,uid:userUid}));
+          localStorage.setItem(
+            "user",
+            JSON.stringify({ userName: user, uid: userUid })
+          );
           console.log("Success login and this is user", user);
           await Swal.fire({
             icon: "success",
@@ -73,13 +80,17 @@ export const useAuthenticate = () => {
         setLoading(false);
         return result;
       } else {
+        setLoading(true);
         signInWithEmailAndPassword(auth, email, password)
           .then(async (userCredential) => {
             // Signed in
             const user = userCredential.user;
             const token = user.accessToken;
             localStorage.setItem("token", token);
-            localStorage.setItem("user",JSON.stringify({userName:user.email ,uid:user.uid}));
+            localStorage.setItem(
+              "user",
+              JSON.stringify({ userName: user.email, uid: user.uid })
+            );
             console.log("Success login and this is user", user);
             await Swal.fire({
               icon: "success",
@@ -144,4 +155,3 @@ export const useAuthenticate = () => {
     logOut,
   };
 };
-

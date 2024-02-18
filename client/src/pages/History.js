@@ -7,7 +7,7 @@ import ButtonComponent from "../components/Button";
 import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
 import { getUserHistories } from "../api/userDataApi";
-import showNetworkErrorAlert from "../utils/SwalAlert";
+import {showNetworkErrorAlert} from "../utils/SwalAlert";
 
 const History = () => {
   const [activeTab, setActiveTab] = useState(1);

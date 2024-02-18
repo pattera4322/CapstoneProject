@@ -17,4 +17,16 @@ const showNetworkErrorAlert = () => {
   });
 };
 
-export default showNetworkErrorAlert;
+const showLoadingAlert = () => {
+  Swal.fire({
+    title: "Logging In",
+    html: "Please wait while we log you in...",
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    onBeforeOpen: () => {
+      Swal.showLoading();
+    },
+  });
+};
+
+export { showNetworkErrorAlert, showLoadingAlert };

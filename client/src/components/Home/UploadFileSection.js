@@ -6,7 +6,7 @@ import * as XLSX from "xlsx";
 import { deleteFile } from "../../api/fileApi";
 import { getUserData } from "../../api/userDataApi";
 import Swal from "sweetalert2";
-import showNetworkErrorAlert from "../../utils/SwalAlert"
+import {showNetworkErrorAlert} from "../../utils/SwalAlert"
 
 const SelectData = ({ sendfileData }) => {
   const [fileData, setFileData] = useState([]);

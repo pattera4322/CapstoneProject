@@ -2,17 +2,25 @@ import React from "react";
 import Form from "../components/Form";
 import { NavLink } from "react-router-dom";
 import { useAuthenticate } from "../api/userApi";
+import {showNetworkErrorAlert,showLoadingAlert} from "../utils/SwalAlert";
+import Swal from "sweetalert2";
 
 function Register() {
-  const { logIn,signUp, loading, error } = useAuthenticate();
-  const handleRegister =async (formData) => {
-    if(formData.isProvider === true){
-      await logIn()
-    }else{
-      await signUp(formData.email,formData.password)
+  const { logIn, signUp, loading, error } = useAuthenticate();
+  const handleRegister = async (formData) => {
+    if (formData.isProvider === true) {
+      await logIn();
+    } else {
+      Swal.showLoading();
+      await signUp(formData.email, formData.password).catch((error) => {
+        if (error.message === "Network Error") {
+          showNetworkErrorAlert();
+        }
+      });
+      Swal.close();
     }
-    
-    console.log('Registering with:', formData);
+
+    //console.log("Registering with:", formData);
   };
   return (
     <div className="mt-28 items-center">
@@ -20,11 +28,15 @@ function Register() {
         <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 bg-[#F1D1AB]">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-            Create an account
+              Create an account
             </h1>
-            <Form onSubmit={handleRegister} isLogin={false} errorMessage={error} />
+            <Form
+              onSubmit={handleRegister}
+              isLogin={false}
+              errorMessage={error}
+            />
             <p className="text-sm font-light text-gray-700">
-            Already have an account?{" "}
+              Already have an account?{" "}
               <NavLink
                 to="/Login"
                 className="font-medium text-primary-600 hover:underline dark:text-primary-500"

@@ -2,14 +2,18 @@ import React from "react";
 import Form from "../components/Form";
 import { NavLink } from "react-router-dom";
 import { useAuthenticate } from "../api/userApi";
+import { showLoadingAlert } from "../utils/SwalAlert";
+import Swal from "sweetalert2";
 
-function Login() {
+const Login = () => {
   const { logIn, loading, error } = useAuthenticate();
   const handleLogin =async (formData) => {
     if(formData.isProvider === true){
       await logIn(null,null);
     }else{
+      Swal.showLoading();
       await logIn(formData.email,formData.password);
+      Swal.close();
     }
     
     console.log("Logging in with:", formData);
