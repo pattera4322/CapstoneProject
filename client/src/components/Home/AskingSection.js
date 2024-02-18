@@ -49,7 +49,7 @@ const Asking = ({ onSubmit }) => {
 
   const moneyValidation = (name,event) => {
     let inputValue = event.target.value;
-    const moneyRegex = /^\d+(\.\d{1,2})?$/;
+    const moneyRegex = /^(?!-)\d+(\.\d{0,2})?$/; // /^\d+(\.\d{1,2})?$/;
 
     const isValidInput = moneyRegex.test(inputValue);
     if (isValidInput) {
@@ -64,7 +64,7 @@ const Asking = ({ onSubmit }) => {
         setFormData({ ...formData, [name]: inputValue });
       }
     } else {
-      inputValue = parseFloat(inputValue).toFixed(2)
+      inputValue = inputValue.includes("-")? inputValue.replace("-", "").slice(0, 10) : parseFloat(inputValue).toFixed(2)
       setFormData({ ...formData, [name]: inputValue });
     }
   };
