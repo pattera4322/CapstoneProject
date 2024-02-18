@@ -16,7 +16,13 @@ function uploadFile(req, res) {
       .then(() => {
         return res.status(200).json({
           RespCode: 200,
-          RespMessage: "success file uploaded",
+          RespMessage: "File uploaded success.",
+        });
+      })
+      .catch((error) => {
+        return res.status(error.code).json({
+          ResponseCode: error.response.statusCode,
+          ResponseMessage: error.response.statusMessage,
         });
       });
   } catch (err) {
@@ -30,23 +36,22 @@ function uploadFile(req, res) {
 
 function getFile(req, res) {
   try {
-    console.log(`userid: ${req.params.userid}`)
-    console.log(`fileid: ${req.params.fileid}`)
+    console.log(`userid: ${req.params.userid}`);
+    console.log(`fileid: ${req.params.fileid}`);
     bucket
       .file(`${req.params.userid}/${req.params.fileid}`)
       .download()
       .then((data) => {
         //recieve data is buffer type
-        console.log("dataBuffer", data[0].buffer)
+        console.log("dataBuffer", data[0].buffer);
         res.status(200);
-        res.end(Buffer.from(data[0].buffer))
+        res.end(Buffer.from(data[0].buffer));
       })
       .catch((error) => {
-        console.error("Error fetching file content:", error.response.statusMessage);
         return res.status(error.code).json({
           ResponseCode: error.response.statusCode,
-          ResponseMessage: error.response.statusMessage
-        })
+          ResponseMessage: error.response.statusMessage,
+        });
       });
   } catch (err) {
     console.log(`mar nee dai ngai: `, err);
@@ -64,24 +69,25 @@ function deleteFile(req, res) {
       .file(`${req.params.userid}/${req.params.fileid}`)
       .delete()
       .then(() => {
-        res.status(200).json({ message: 'File deleted successfully' });
-      }).catch((error) => {
+        res.status(200).json({ message: "File deleted successfully" });
+      })
+      .catch((error) => {
         if (error.code === 404) {
-          return res.status(404).json({ 
+          return res.status(404).json({
             ResponseCode: error.response.statusCode,
-            ResponseMessage: `File ${req.params.fileid} not found`
-            });
+            ResponseMessage: `File ${req.params.fileid} not found`,
+          });
         } else {
           return res.status(error.code).json({
             ResponseCode: error.response.statusCode,
-            ResponseMessage: error.response.statusMessage
+            ResponseMessage: error.response.statusMessage,
           });
         }
-      })
+      });
   } catch (error) {
     return res.status(500).json({
       ResponseCode: 500,
-      ResponseMessage: 'Internal server error'
+      ResponseMessage: "Internal server error",
     });
   }
 }

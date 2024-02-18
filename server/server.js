@@ -44,7 +44,10 @@ app.post("/api/analyze/:userid/:fileid", (req, res) => {
   const { userid, fileid } = req.params;
   requestQueue.push({ userid, fileid });
   enqueueData(requestQueue,userid)
-  res.status(200).json({ message: "send Analyze in queue successfully." });
+  res.status(200).json({
+    ResponseCode: 200,
+    ResponseMessage: "Send data to anayze in queue successfully." ,
+  });
   console.log(requestQueue);
   if (requestQueue.length === 1) {
     isRunning = false;
@@ -67,27 +70,6 @@ app.delete("/api/file/:userid/:fileid", (req, res) => {
 app.get("/api/queues/:userid", async (req, res) => {
    getQueues(req, res);
 });
-
-// for queue the task
-// app.post("/api/enqueueJob/:userid/:fileid", async (req, res) => {
-//   try {
-//     const { userid, fileid } = req.params;
-//     const args = {
-//       userid,
-//       fileid,
-//       userData: req.body.userData,
-//     };
-//     await enqueueJob(args);
-//     res.status(200).json({ message: "Job enqueued successfully." });
-//   } catch (error) {
-//     console.error("Error enqueueing job:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
-// app.get("/api/queues/:userid", async (req, res) => {
-//   getQueues(req, res);
-// });
 
 // -------------------------------------------User------------------------------------------------
 app.post("/api/signup", (req, res) => {

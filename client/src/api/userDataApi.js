@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 // const baseURL = 'http://localhost:5000/api/:userid/';
 
 const baseURL = process.env.REACT_APP_API_URL;
@@ -12,7 +13,16 @@ export const postUserData = async (userData) => {
     );
     return response.data;
   } catch (error) {
-    throw error;
+    if(error.message === "Network Error"){
+      Swal.fire({
+        icon: "error",
+        title: error.message,
+        text: "Something went wrong! Please refresh the page"
+      });
+      throw error;
+    }else{
+      throw error;
+    }
   }
 };
 
@@ -23,7 +33,16 @@ export const getUserData = async () => {
     );
     return response.data;
   } catch (error) {
-    throw error;
+    if(error.message === "Network Error"){
+      Swal.fire({
+        icon: "error",
+        title: error.message,
+        text: "Something went wrong! Please refresh the page"
+      });
+      throw error;
+    }else{
+      throw error;
+    }
   }
 };
 
@@ -34,7 +53,16 @@ export const getUserHistory = async (fileId) => {
     );
     return response.data;
   } catch (error) {
-    throw error;
+    if(error.message === "Network Error"){
+      Swal.fire({
+        icon: "error",
+        title: error.message,
+        text: "Something went wrong! Please refresh the page"
+      });
+      throw error;
+    }else{
+      throw error;
+    }
   }
 };
 
@@ -45,7 +73,16 @@ export const getUserHistories = async () => {
     );
     return response.data;
   } catch (error) {
-    throw error;
+    if(error.message === "Network Error"){
+      Swal.fire({
+        icon: "error",
+        title: error.message,
+        text: "Something went wrong! Please refresh the page"
+      });
+      throw error;
+    }else{
+      throw error;
+    }
   }
 };
 

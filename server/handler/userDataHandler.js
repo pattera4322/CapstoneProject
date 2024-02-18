@@ -4,11 +4,16 @@ const saveData = async (req, res) => {
   try {
     const userRef = firestore.collection("users").doc(req.params.userid);
     await userRef.set(req.body); // Assuming req.body contains the user data
-
-    res.status(200).json({ message: "User data saved successfully" });
+    res.status(200).json({
+      ResponseCode: 200,
+      ResponseMessage: "User data saved successfully",
+    });
   } catch (error) {
-    console.error("Error saving user data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.log("Error saving user data:", error);
+    return res.status(error.code).json({
+      ResponseCode: error.response.statusCode,
+      ResponseMessage: error.response.statusMessage,
+    });
   }
 };
 
@@ -30,11 +35,16 @@ const getData = async (req, res) => {
 
       res.status(200).json({ data: { userData } });
     } else {
-      res.status(404).json({ error: "User not found" });
+      res.status(404).json({
+        ResponseCode: 404,
+        ResponseMessage: "User datas not found",
+      });
     }
   } catch (error) {
-    console.error("Error get user data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(error.code).json({
+      ResponseCode: error.response.statusCode,
+      ResponseMessage: error.response.statusMessage,
+    });
   }
 };
 
@@ -66,16 +76,22 @@ const getHistoryData = async (req, res) => {
 
         res.status(200).json({ data: { userData, historyData } });
       } else {
-        res
-          .status(404)
-          .json({ error: "History data not found for the specified file ID" });
+        res.status(404).json({
+          ResponseCode: 404,
+          ResponseMessage: `History data not found for fileid ${fileId}`,
+        });
       }
     } else {
-      res.status(404).json({ error: "User not found" });
+      res.status(404).json({
+        ResponseCode: 404,
+        ResponseMessage: `User not found`,
+      });
     }
   } catch (error) {
-    console.error("Error get history data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({
+      ResponseCode: 500,
+      ResponseMessage: `Internal Server Error`,
+    });
   }
 };
 
@@ -84,17 +100,21 @@ const getAllHistoryData = async (req, res) => {
   try {
     const userRef = firestore.collection("users").doc(userId);
     const userDocSnapshot = await userRef.get();
-    
+
     if (!userDocSnapshot.exists) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({
+        ResponseCode: 404,
+        ResponseMessage: `User not found`,
+      });
     }
 
     const historyRef = userRef.collection("history");
     const historySnapshot = await historyRef.get();
     if (historySnapshot.empty) {
-      return res
-        .status(404)
-        .json({ error: "History data not found for the specified user" });
+      return res.status(404).json({
+        ResponseCode: 404,
+        ResponseMessage: `History data not found for fileid ${fileId}`,
+      });
     }
     const historyData = [];
     historySnapshot.forEach((doc) => {
@@ -106,11 +126,13 @@ const getAllHistoryData = async (req, res) => {
       historyData.push(data);
     });
 
-    // console.log(`Histories data:`, historyData);
     res.status(200).json({ data: historyData });
   } catch (error) {
-    console.error("Error get history data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.log("Error get history data:", error);
+    res.status(error.code).json({
+      ResponseCode: error.response.statusCode,
+      ResponseMessage: error.response.statusMessage,
+    });
   }
 };
 

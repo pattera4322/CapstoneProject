@@ -35,7 +35,10 @@ const getQueues = async (req, res) => {
     const queuesSnapshot = await queueRef.get();
 
     if (!queuesSnapshot.exists) {
-      return res.status(404).json({ error: "Queues data not found" });
+      return res.status(404).json({
+        ResponseCode: 404,
+        ResponseMessage: "Queues data not found" ,
+      });
     }
 
     res.status(200).json(queuesSnapshot.data());
