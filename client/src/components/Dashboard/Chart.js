@@ -31,46 +31,50 @@ const Chart = ({
         },
       },
     },
-    //   scales: {
-    //     x: {
-    //         type: 'time',
-    //         time: {
-    //             displayFormats: {
-    //                 quarter: 'DD MMM YYYY'
-    //             }
-    //         }
-    //     }
-    // }
   };
 
   useEffect(() => {
+    const arrayMergedPredictData = sumValueByDate(
+      predictedData,
+      false,
+      predictedColumn
+    );
+    const arrayMergedActualData = sumValueByDate(
+      actualData,
+      true,
+      predictedColumn
+    );
+
     const latestDate = new Date(
-      actualData[actualData.length - 1].date._seconds * 1000
+      arrayMergedActualData[arrayMergedActualData.length - 1].date * 1000
     );
 
     const threeMonthsAgo = new Date(latestDate);
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
-    const filteredActualData3Months = actualData.filter((entry) => {
-      const entryDate = new Date(entry.date._seconds * 1000);
+    const filteredActualData3Months = arrayMergedActualData.filter((entry) => {
+      const entryDate = new Date(entry.date * 1000);
       return entryDate >= threeMonthsAgo;
     });
 
-    const arrayPredicted = predictedData.map((entry) =>
+    const arrayPredicted = arrayMergedPredictData.map((entry) =>
       predictedColumn === "quantity"
-        ? entry.Predicted_quantity
-        : entry.Predicted_totalSales
+        ? entry.quantity
+        : entry.totalSales
     );
     const arrayActual = filteredActualData3Months.map((entry) =>
       predictedColumn === "quantity" ? entry.quantity : entry.totalSales
     );
 
-    const predictedDataFormatted = formatDateArray(predictedData, false);
+    const predictedDataFormatted = formatDateArray(
+      arrayMergedPredictData,
+      false
+    );
     const ActualDataFormatted = formatDateArray(
       filteredActualData3Months,
       true
     );
-  
+
     const mergedDateArray = ActualDataFormatted.concat(predictedDataFormatted);
 
     const array = Array(arrayActual.length).fill("undefined");
@@ -101,23 +105,61 @@ const Chart = ({
     ],
   };
 
-  function formatDateArray(dataArray, checkActual) {
+  function formatDateArray(dataArray) {
     return dataArray.map((entry) => {
-      
       const timestamp = entry.date;
-      const milliseconds =
-        timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000;
+      const milliseconds = timestamp * 1000;
       const date = new Date(milliseconds);
 
       // const formattedDateTime = `${date.getFullYear()}-${(date.getMonth() + 1)
       //   .toString()
       //   .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
 
-      const formattedDateTime = `${date.getDate().toString().padStart(2, "0")} ${months[date.getMonth()]} ${date.getFullYear()}`;
+      const formattedDateTime = `${date
+        .getDate()
+        .toString()
+        .padStart(2, "0")} ${months[date.getMonth()]} ${date.getFullYear()}`;
 
       return formattedDateTime;
     });
+  }
+
+  function sumValueByDate(arr, checkActual, predictedColumn) {
+    const valuesSums = {};
+  
+    arr.forEach((item) => {
+      let values, date;
+      date = item.date;
+      if (checkActual) {
+        values = predictedColumn === "quantity" ? item.quantity : item.totalSales;
+      } else {
+        values = predictedColumn === "quantity" ? item.Predicted_quantity : item.Predicted_totalSales;
+      }
+  
+      const seconds = date._seconds;
+      valuesSums[seconds] = (valuesSums[seconds] || 0) + values;
+    });
+  
+    const uniqueDates = Object.keys(valuesSums).map((seconds) => ({
+      date: Number(seconds),
+      [predictedColumn === "quantity" ? "quantity" : "totalSales"]: valuesSums[seconds],
+    }));
+  
+    return uniqueDates;
   }
 
   return (
