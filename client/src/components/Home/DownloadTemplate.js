@@ -11,8 +11,8 @@ const DownloadTemplate = () => {
   };
   return (
     <div className="pt-10">
-      <div className="pb-8 text-xl text-gray-500">
-        Download our template, enter your info to align columns for analysis.
+      <div className="pb-8 text-xl font-bold text-black">
+        Please download our template, enter your info to align columns for analysis.
       </div>
       <img
         src={process.env.PUBLIC_URL + "/assets/template.svg"}
