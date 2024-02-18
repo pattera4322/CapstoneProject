@@ -1,5 +1,4 @@
 import axios from "axios";
-import Swal from "sweetalert2";
 // const baseURL = 'http://localhost:5000/api/file';
 
 const baseURL = process.env.REACT_APP_API_URL;
@@ -19,16 +18,7 @@ export const postFile = async ( index, formData, onUploadProgress) => {
     );
     return response.data;
   } catch (error) {
-    if(error.message === "Network Error"){
-      Swal.fire({
-        icon: "error",
-        title: error.message,
-        text: "Something went wrong! Please refresh the page"
-      });
-      throw error;
-    }else{
-      throw error;
-    }
+    throw error;
   }
 };
 
@@ -39,16 +29,7 @@ export const getFile = async (index) => {
     const fileContent = response.data;
     return fileContent;
   } catch (error) {
-    if(error.message === 'Network Error'){
-      Swal.fire({
-        icon: "error",
-        title: error.message,
-        text: "Something went wrong! Please refresh the page"
-      });
-      throw error;
-    }else{
-      throw error;
-    }
+    throw error;
   }
 };
 
@@ -57,16 +38,7 @@ export const deleteFile = async (index) => {
     const response = await axios.delete(`${baseURL}/file/${userId.uid}/${index}`);
     return response;
   } catch (error) {
-    if(error.message === "Network Error"){
-      Swal.fire({
-        icon: "error",
-        title: error.message,
-        text: "Something went wrong! Please refresh the page"
-      });
-      throw error;
-    }else{
-      throw error;
-    }
+    throw error;
   }
 };
 

@@ -7,6 +7,7 @@ import ButtonComponent from "../components/Button";
 import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
 import { getUserHistories } from "../api/userDataApi";
+import showNetworkErrorAlert from "../utils/SwalAlert";
 
 const History = () => {
   const [activeTab, setActiveTab] = useState(1);
@@ -31,7 +32,11 @@ const History = () => {
         setQueuesData(res.data);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.message === "Network Error") {
+          showNetworkErrorAlert();
+        } else {
+          console.log(error);
+        }
       });
 
     getUserHistories()
@@ -40,7 +45,11 @@ const History = () => {
         console.log(res.data);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.message === "Network Error") {
+          showNetworkErrorAlert();
+        } else {
+          console.log(error);
+        }
       });
 
     socketJobProgress.emit("authenticate", {
@@ -49,7 +58,7 @@ const History = () => {
     });
 
     socketJobProgress.on("progressfromServer", (data) => {
-      //console.log(data.progress);
+      console.log(data.progress);
       setProgressData(data);
       if (data.progress === 101) {
         getQueues()
