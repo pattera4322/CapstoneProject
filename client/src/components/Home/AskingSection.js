@@ -54,6 +54,7 @@ const Asking = ({ onSubmit }) => {
     const isValidInput = moneyRegex.test(inputValue);
     if (isValidInput) {
       if (inputValue > 0 && inputValue <= 1000000000){
+        inputValue = inputValue;
         setFormData({ ...formData, [name]: inputValue });
       } else if (inputValue <= 0) {
         inputValue = 1;
@@ -63,7 +64,7 @@ const Asking = ({ onSubmit }) => {
         setFormData({ ...formData, [name]: inputValue });
       }
     } else {
-      inputValue = "";
+      inputValue = parseFloat(inputValue).toFixed(2)
       setFormData({ ...formData, [name]: inputValue });
     }
   };

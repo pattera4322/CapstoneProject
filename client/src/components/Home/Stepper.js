@@ -5,6 +5,7 @@ import AskingSection from "./AskingSection";
 import AnalyzeSection from "./AnalyzeSection";
 import Popup from "../Popup.js";
 import DownloadTemplate from "./DownloadTemplate";
+import { NavLink } from "react-router-dom";
 
 const StepperSection = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -12,6 +13,8 @@ const StepperSection = () => {
   const [isFirstStep, setIsFirstStep] = useState(false);
   const [fileData, setFileData] = useState([]);
   const [fileId, setFileId] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [showAskPopup, setShowAskPopup] = useState(false);
 
   const steps = [
     "Question",
@@ -37,14 +40,13 @@ const StepperSection = () => {
     setFileId(fileId);
   };
 
-  const [showPopup, setShowPopup] = useState(false);
-
   const handleButtonClick = () => {
     setShowPopup(true);
   };
 
   const handleContinueToNextStep = () => {
     setShowPopup(false);
+    setShowAskPopup(false);
     handleNavigation("next");
   };
 
@@ -56,6 +58,14 @@ const StepperSection = () => {
     }
     // If sales goal is valid, proceed to the next step
     handleNavigation("next");
+  };
+
+  const handleLogIn = () => {
+    if (localStorage.getItem("user") === null) {
+      setShowAskPopup(true);
+    } else {
+      handleNavigation("next");
+    }
   };
 
   return (
@@ -82,7 +92,9 @@ const StepperSection = () => {
       {/* <---------------------- Detail Section --------------------> */}
       <div className="mt-20 ">
         {/* {activeStep === 0 && <AskingSection onSubmit={handleSubmit} />} */}
-        {activeStep === 0 && <AskingSection onSubmit={handleSubmitAskingSection} />}
+        {activeStep === 0 && (
+          <AskingSection onSubmit={handleSubmitAskingSection} />
+        )}
         {activeStep === 1 && <DownloadTemplate />}
         {activeStep === 2 && (
           <UploadFileSection sendfileData={receiveFileData} />
@@ -112,24 +124,14 @@ const StepperSection = () => {
           </div>
         ) : (
           <div className="flex">
-            {/* <Button
-              onClick={() => {
-                if (activeStep === 2) {
-                  handleButtonClick();
-                } else {
-                  handleNavigation("next");
-                }
-              }}
-              disabled={activeStep === 2 ? fileData === null : false}
-            >
-              Next
-            </Button> */}
             <Button
               onClick={() => {
                 if (activeStep === 0) {
                   handleButtonClick();
                 } else if (activeStep === 2) {
                   handleButtonClick();
+                } else if (activeStep === 1) {
+                  handleLogIn();
                 } else {
                   handleNavigation("next");
                 }
@@ -142,23 +144,14 @@ const StepperSection = () => {
         )}
       </div>
 
-      {/* Popup component */}
-      {/* {showPopup && (
-        <Popup
-          onClose={() => setShowPopup(false)}
-          header={"Before go to analyze!"}
-          info={
-            "Please ensure that you have reviewed and confirmed the information in the selected column before proceeding. Note that changes cannot be undone. Take a moment to double-check before clicking the 'Go' button"
-          }
-          onContinue={() => handleNavigation("next")}
-          continueText={"Go to Analyze ->"}
-        />
-      )} */}
-
       {showPopup && (
         <Popup
           onClose={() => setShowPopup(false)}
-          header={activeStep === 0 ? "Review Your Information" : "Before go to analyze!"}
+          header={
+            activeStep === 0
+              ? "Review Your Information"
+              : "Before go to analyze!"
+          }
           info={
             activeStep === 0
               ? "The data you input can be edited on the dashboard. Once you've analysed a file, you don't need to come back and change information here."
@@ -166,6 +159,16 @@ const StepperSection = () => {
           }
           onContinue={handleContinueToNextStep}
           continueText={activeStep === 0 ? "Confirm" : "Go to Analyze ->"}
+        />
+      )}
+
+      {showAskPopup && (
+        <Popup
+          onClose={() => setShowPopup(false)}
+          header={"Please Login before analyze your data!"}
+          info={"Before analyzing, we would like you to join us."}
+          onContinue={handleContinueToNextStep}
+          continueText={<NavLink to="/Login">Go to join us!</NavLink>}
         />
       )}
     </div>

@@ -22,11 +22,11 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
-const Dashboard = ({ }) => {
+const Dashboard = ({}) => {
   const location = useLocation();
 
   const fileId = location.state || {};
-  console.log("fileIdd",fileId);
+  console.log("fileId", fileId);
 
   const [analyzedData, setAnalyzedData] = useState();
   const [analyzedSalesData, setAnalyzedSalesData] = useState();
@@ -37,11 +37,13 @@ const Dashboard = ({ }) => {
   const [activeTab, setActiveTab] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState("");
   const [filteredAnalyzedSalesData, setFilteredAnalyzedSalesData] = useState();
-  const [filteredAnalyzedQuantityData, setFilteredAnalyzedQuantityData] = useState();
+  const [filteredAnalyzedQuantityData, setFilteredAnalyzedQuantityData] =
+    useState();
   const [filteredActualSalesData, setFilteredActualSalesData] = useState();
-  const [filteredActualQuantityData, setFilteredActualQuantityData] = useState();
+  const [filteredActualQuantityData, setFilteredActualQuantityData] =
+    useState();
   const [togglePredicted, setTogglePredicted] = useState(true);
-  const [keywords, setKeywords] = useState([])
+  const [keywords, setKeywords] = useState([]);
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -65,7 +67,7 @@ const Dashboard = ({ }) => {
         ];
 
         setProducts(products);
-        setKeywords(products)
+        setKeywords(products);
       })
       .catch((error) => {
         console.log("Error: ", error);
@@ -124,9 +126,16 @@ const Dashboard = ({ }) => {
       return product === "" || item.productName === product;
     });
 
-    const selectedKeywords = product === ""? products : [...new Set(filteredActualQuantityData.map((item) => item.productName))]
+    const selectedKeywords =
+      product === ""
+        ? products
+        : [
+            ...new Set(
+              filteredActualQuantityData.map((item) => item.productName)
+            ),
+          ];
 
-    setKeywords(selectedKeywords)
+    setKeywords(selectedKeywords);
     setFilteredAnalyzedSalesData(filteredAnalyzedSalesData);
     setFilteredAnalyzedQuantityData(filteredAnalyzedQuantityData);
     setFilteredActualSalesData(filteredActualSalesData);
@@ -156,10 +165,11 @@ const Dashboard = ({ }) => {
         <li className="mr-2">
           <button
             onClick={() => handleTabClick(1)}
-            className={`inline-block p-2 ${activeTab === 1
+            className={`inline-block p-2 ${
+              activeTab === 1
                 ? "text-black bg-[#F1D1AB] rounded-t-lg"
                 : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-              }`}
+            }`}
           >
             Retail Sales
           </button>
@@ -167,10 +177,11 @@ const Dashboard = ({ }) => {
         <li className="mr-2">
           <button
             onClick={() => handleTabClick(2)}
-            className={`inline-block p-2 ${activeTab === 2
+            className={`inline-block p-2 ${
+              activeTab === 2
                 ? "text-black bg-[#F1D1AB] rounded-t-lg"
                 : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-              }`}
+            }`}
           >
             Inventory
           </button>
@@ -203,7 +214,7 @@ const Dashboard = ({ }) => {
                       ? filteredAnalyzedSalesData
                       : analyzedSalesData
                   }
-                  predictedColumn={"sales"}
+                  predictedColumn={activeTab === 1 ? "sales" : "quantity"}
                   actualData={
                     filteredActualSalesData
                       ? filteredActualSalesData
@@ -288,7 +299,7 @@ const Dashboard = ({ }) => {
             </div>
             <div className="ml-2">
               <NavLink to="/">
-                <ButtonComponent onClick={() => { }} children={"Analyze More"} />
+                <ButtonComponent onClick={() => {}} children={"Analyze More"} />
               </NavLink>
             </div>
           </div>
@@ -296,8 +307,9 @@ const Dashboard = ({ }) => {
       </div>
 
       <div
-        className={`h-[80%] box-content p-4 ${activeTab === 2 ? "flex" : "hidden"
-          }`}
+        className={`h-[80%] box-content p-4 ${
+          activeTab === 2 ? "flex" : "hidden"
+        }`}
       >
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
@@ -310,7 +322,7 @@ const Dashboard = ({ }) => {
                       ? filteredAnalyzedQuantityData
                       : analyzedQuantityData
                   }
-                  predictedColumn={"quantity"}
+                  predictedColumn={activeTab === 1 ? "sales" : "quantity"}
                   actualData={
                     filteredActualQuantityData
                       ? filteredActualQuantityData
@@ -379,23 +391,23 @@ const Dashboard = ({ }) => {
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 <div>
                   {analyzedData && (
-                  <NumberOfProducts
-                    predictedName={"Predicted Quantity"}
-                    predictedData={
-                      filteredAnalyzedQuantityData
-                        ? filteredAnalyzedQuantityData
-                        : analyzedQuantityData
-                    }
-                    userData={analyzedData.userData}
-                    actualData={
-                      filteredActualQuantityData
-                        ? filteredActualQuantityData
-                        : actualQuantityData
-                    }
-                    togglePredicted={togglePredicted}
-                    products={products}
-                  />
-                )}
+                    <NumberOfProducts
+                      predictedName={"Predicted Quantity"}
+                      predictedData={
+                        filteredAnalyzedQuantityData
+                          ? filteredAnalyzedQuantityData
+                          : analyzedQuantityData
+                      }
+                      userData={analyzedData.userData}
+                      actualData={
+                        filteredActualQuantityData
+                          ? filteredActualQuantityData
+                          : actualQuantityData
+                      }
+                      togglePredicted={togglePredicted}
+                      products={products}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -421,7 +433,7 @@ const Dashboard = ({ }) => {
             </div>
             <div className="ml-2">
               <NavLink to="/">
-                <ButtonComponent onClick={() => { }} children={"Analyze More"} />
+                <ButtonComponent onClick={() => {}} children={"Analyze More"} />
               </NavLink>
             </div>
           </div>
