@@ -40,10 +40,10 @@ app.get("/api/file/:userid/:fileid", (req, res) => {
 // -------------------------------------------Analyze------------------------------------------------
 let isRunning = false;
 const requestQueue = [];
-app.post("/api/analyze/:userid/:fileid", (req, res) => {
+app.post("/api/analyze/:userid/:fileid",async (req, res) => {
   const { userid, fileid } = req.params;
   requestQueue.push({ userid, fileid });
-  enqueueData(requestQueue,userid)
+  await enqueueData(requestQueue,userid)
   res.status(200).json({
     ResponseCode: 200,
     ResponseMessage: "Send data to anayze in queue successfully." ,

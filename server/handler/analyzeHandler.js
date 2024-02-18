@@ -23,6 +23,10 @@ function analyze (requestQueue) {
   //const pythonScript = "./predictmodel/test2.py";
 
   const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
+  socketJobProgress.emit('progress', {
+    fileid: fileid,
+    progress: 5
+  });
 
   let stderrData = "";
 
@@ -45,7 +49,7 @@ function analyze (requestQueue) {
   });
 
   // Handle the Python script's exit
-  pythonProcess.on("close", (code) => {
+  pythonProcess.on("close", async (code) => {
     if (code === 0) {
       console.log("Successs");
     } else {
@@ -59,7 +63,7 @@ function analyze (requestQueue) {
       saveHistoryData(data, userid, fileid);
     }
     requestQueue.shift();
-    enqueueData(requestQueue, userid);
+    await enqueueData(requestQueue, userid);
     console.log("hereee",requestQueue)
     socketJobProgress.emit('progress', {
       fileid: fileid,

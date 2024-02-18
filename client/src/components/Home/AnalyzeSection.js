@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { enqueueData,analyzeData } from "../../api/analyzeApi";
+import { enqueueData, analyzeData } from "../../api/analyzeApi";
 import { postUserData } from "../../api/userDataApi";
 import { useNavigate } from "react-router-dom";
 import Popup from "../Popup";
@@ -15,26 +15,20 @@ const Analyzing = ({ fileId }) => {
   const [error, setError] = useState(null);
 
   const [userData, setUserData] = useState({
-     "salesGoal": askingItem.salesGoal || 0,
-     "riskLevel": askingItem.riskLevel || [0, 25],
-     "leadTime": askingItem.leadTime || 1,
-     "fileName": fileName || {},
-     "costPerProductStorage": askingItem.costPerProductStorage || 0,
-     "costPerOrder": askingItem.costPerOrder || 0
-  }
-  );
+    salesGoal: askingItem.salesGoal || 0,
+    riskLevel: askingItem.riskLevel || [0, 25],
+    leadTime: askingItem.leadTime || 1,
+    fileName: fileName || {},
+    costPerProductStorage: askingItem.costPerProductStorage || 0,
+    costPerOrder: askingItem.costPerOrder || 0,
+  });
 
   useEffect(() => {
     postUserData(userData).then(async (res) => {
-      // await enqueueData(fileId,userData).then((res) => {
-      //   console.log(res)
-      // })
-      await analyzeData(fileId).then(()=>{
-        console.log(res)
-      })
-      navigate("/History", { replace: true, state: fileId });
-    })
-
+      await analyzeData(fileId).then(() => {
+        navigate("/History", { replace: true, state: fileId });
+      });
+    });
   }, []);
 
   return (
