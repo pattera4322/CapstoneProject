@@ -69,7 +69,10 @@ function deleteFile(req, res) {
       .file(`${req.params.userid}/${req.params.fileid}`)
       .delete()
       .then(() => {
-        res.status(200).json({ message: "File deleted successfully" });
+        res.status(200).json({
+          ResponseCode: 200,
+          ResponseMessage: "File deleted successfully",
+        });
       })
       .catch((error) => {
         if (error.code === 404) {
