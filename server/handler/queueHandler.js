@@ -37,14 +37,17 @@ const getQueues = async (req, res) => {
     if (!queuesSnapshot.exists) {
       return res.status(404).json({
         ResponseCode: 404,
-        ResponseMessage: "Queues data not found" ,
+        ResponseMessage: "Queues data not found",
       });
     }
 
     res.status(200).json(queuesSnapshot.data());
   } catch (error) {
     console.error("Error get queues data:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({
+      ResponseCode: 500,
+      ResponseMessage: "Internal server error.",
+    });
   }
 };
 

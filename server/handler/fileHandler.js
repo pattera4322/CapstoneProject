@@ -27,9 +27,9 @@ function uploadFile(req, res) {
       });
   } catch (err) {
     console.error("Error upload file:", err);
-    return res.status(err.code).json({
-      RespCode: err.code,
-      RespMessage: err.message,
+    return res.status(500).json({
+      ResponseCode: 500,
+      ResponseMessage: "Internal server error.",
     });
   }
 }
@@ -56,8 +56,8 @@ function getFile(req, res) {
   } catch (err) {
     console.log(`mar nee dai ngai: `, err);
     return res.status(500).json({
-      RespCode: 500,
-      RespMessage: err.message,
+      ResponseCode: 500,
+      ResponseMessage: "Internal server error.",
     });
   }
 }

@@ -10,9 +10,9 @@ const saveData = async (req, res) => {
     });
   } catch (error) {
     console.log("Error saving user data:", error);
-    return res.status(error.code).json({
-      ResponseCode: error.response.statusCode,
-      ResponseMessage: error.response.statusMessage,
+    return res.status(500).json({
+      ResponseCode: 500,
+      ResponseMessage: "Internal server error.",
     });
   }
 };
@@ -41,9 +41,10 @@ const getData = async (req, res) => {
       });
     }
   } catch (error) {
-    return res.status(error.code).json({
-      ResponseCode: error.response.statusCode,
-      ResponseMessage: error.response.statusMessage,
+    console.log(error)
+    return res.status(500).json({
+      ResponseCode: 500,
+      ResponseMessage: "Internal server error.",
     });
   }
 };
@@ -129,9 +130,9 @@ const getAllHistoryData = async (req, res) => {
     res.status(200).json({ data: historyData });
   } catch (error) {
     console.log("Error get history data:", error);
-    res.status(error.code).json({
-      ResponseCode: error.response.statusCode,
-      ResponseMessage: error.response.statusMessage,
+    res.status(500).json({
+      ResponseCode: 500,
+      ResponseMessage: "Internal server error.",
     });
   }
 };
