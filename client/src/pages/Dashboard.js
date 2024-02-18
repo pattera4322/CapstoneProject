@@ -11,6 +11,7 @@ import Analyzed from "../components/Dashboard/Analyzed";
 import DropdownFilter from "../components/Dashboard/Filter";
 import TogglePrediction from "../components/Dashboard/TogglePrediction";
 import { getUserHistory } from "../api/userDataApi";
+import { getNews } from '../api/newsApi';
 import html2canvas from "html2canvas";
 import {
   Chart as ChartJS,
@@ -73,6 +74,28 @@ const Dashboard = ({ }) => {
         }
       });
   }, []);
+
+  const [news, setNews] = useState([]);
+  const [newsError, setNewsError] = useState('');
+
+  useEffect(() => {
+    if (news.length === 0) { // Only fetch news if it hasn't been fetched yet
+        getNews(keywords)
+            .then((res) => {
+                if (res.length > 0) {
+                    setNews(res);
+                }
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 403) {
+                    setNewsError(error.response.data.errors[0]);
+                } else {
+                    setNewsError(error.response.data.errors[0]);
+                    console.log(newsError);
+                }
+            });
+      }
+    }, [keywords]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -194,6 +217,8 @@ const Dashboard = ({ }) => {
               {analyzedSalesData && (
                 <RelatedNews 
                 keywords={keywords}
+                news={news}
+                error={newsError}
                 />
               )}
             </div>
@@ -297,8 +322,10 @@ const Dashboard = ({ }) => {
             </div>
             <div className="box-content p-4 shadow-md flex-1">
               {analyzedSalesData && (
-                <RelatedNews
+                <RelatedNews 
                 keywords={keywords}
+                news={news}
+                error={newsError}
                 />
               )}
             </div>
