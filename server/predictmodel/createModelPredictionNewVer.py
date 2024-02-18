@@ -18,7 +18,8 @@ import base64
 import firebase_admin
 from firebase_admin import credentials, storage, db, firestore
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
-from keras.wrappers.scikit_learn import KerasRegressor
+from scikeras.wrappers import KerasRegressor
+# from keras.wrappers.scikit_learn import KerasRegressor
 import joblib
 import warnings
 
