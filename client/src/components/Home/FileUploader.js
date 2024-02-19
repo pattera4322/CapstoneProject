@@ -24,7 +24,7 @@ const FileUpload = ({
   const [loadingDropFile, setLoadingDropFile] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [userData, setUserData] = useState(
-    JSON.parse(localStorage.getItem("fileName")) 
+    JSON.parse(localStorage.getItem("fileName"))
   );
 
   const override = {
@@ -45,7 +45,7 @@ const FileUpload = ({
       setSelectedFileName(null);
     }
   }, [content]);
-  
+
   const convertFileXLSX = (data) => {
     const workbook = XLSX.read(data, { type: "buffer", cellDates: true });
     const firstSheet = workbook.SheetNames[0];
@@ -80,15 +80,15 @@ const FileUpload = ({
   const handleConfirm = async () => {
     try {
       setShowProgress(true);
-  
+
       const formData = new FormData();
       formData.append("file", file);
-  
+
       await postFile(index, formData, progressEvent => {
         const progressPercentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
         setProgress(progressPercentage);
       });
-  
+
       updateFileName();
       onConfirmButtonClick();
       setIsHasFile(true);
@@ -102,7 +102,7 @@ const FileUpload = ({
       });
     }
   };
-  
+
   const updateFileName = () => {
     const updatedUserData = {
       ...userData,
@@ -146,6 +146,13 @@ const FileUpload = ({
     setShowPopup(true);
   };
 
+  const handleCancel = () => {
+    setFile(null);
+    setSelectedFileName("");
+    setShowProgress(false);
+    setData([]); // Clear the data when cancelling
+  };
+
   return (
     <div className="mt-8">
       {/* <------------------------------- Loading section --------------------------------> */}
@@ -167,9 +174,8 @@ const FileUpload = ({
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`border-dashed rounded-3xl border-4 py-32 px-4 ${
-                isDragging ? "bg-gray-200" : "bg-white"
-              }`}
+              className={`border-dashed rounded-3xl border-4 py-32 px-4 ${isDragging ? "bg-gray-200" : "bg-white"
+                }`}
             >
               {!selectedFileName && (
                 <label
@@ -271,6 +277,12 @@ const FileUpload = ({
                       }}
                     >
                       Confirm to use this data
+                    </Button>
+                    <Button
+                      className="ml-2 bg-gray-300 text-black"
+                      onClick={handleCancel}
+                    >
+                      Cancel
                     </Button>
                     <ProgressBar
                       showProgress={showProgress}
