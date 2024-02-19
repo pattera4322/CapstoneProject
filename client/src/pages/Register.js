@@ -17,7 +17,7 @@ function Register() {
           showNetworkErrorAlert();
         }
       });
-      Swal.close();
+      
     }
 
     //console.log("Registering with:", formData);
