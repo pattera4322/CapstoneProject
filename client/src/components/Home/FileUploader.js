@@ -46,6 +46,10 @@ const FileUpload = ({
     }
   }, [content]);
 
+  useEffect(() => {
+    setError("");
+  }, [index]);
+
   const convertFileXLSX = (data) => {
     const workbook = XLSX.read(data, { type: "buffer", cellDates: true });
     const firstSheet = workbook.SheetNames[0];
@@ -55,15 +59,14 @@ const FileUpload = ({
 
   const handleFileChange = (e) => {
     handleFiles(e.target.files);
-    setLoadingDropFile(true);
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
+
     handleFiles(e.dataTransfer.files);
-    setLoadingDropFile(true);
   };
 
   const handleDragOver = (e) => {
@@ -84,8 +87,10 @@ const FileUpload = ({
       const formData = new FormData();
       formData.append("file", file);
 
-      await postFile(index, formData, progressEvent => {
-        const progressPercentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      await postFile(index, formData, (progressEvent) => {
+        const progressPercentage = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
         setProgress(progressPercentage);
       });
 
@@ -98,7 +103,7 @@ const FileUpload = ({
       Swal.fire({
         icon: "error",
         title: "Something went wrong",
-        text: "Error uploading file!"
+        text: "Error uploading file!",
       });
     }
   };
@@ -121,7 +126,10 @@ const FileUpload = ({
     ];
 
     if (file) {
+      setLoadingDropFile(true);
       if (!fileTypes.includes(file.type)) {
+        setLoadingDropFile(false);
+        setSelectedFileName(file.name);
         setError("Invalid file type. Please select a CSV or Excel file.");
         return;
       }
@@ -134,6 +142,11 @@ const FileUpload = ({
       reader.onload = (e) => {
         const fileData = e.target.result;
         const excelData = convertFileXLSX(fileData);
+        if (excelData.length === 0) {
+          setError(
+            "This file is empty. Please insert some data before uploading it. Thank you!"
+          );
+        }
         setData(excelData.slice(0, 10));
         setLoadingDropFile(false);
       };
@@ -174,22 +187,24 @@ const FileUpload = ({
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              className={`border-dashed rounded-3xl border-4 py-32 px-4 ${isDragging ? "bg-gray-200" : "bg-white"
-                }`}
+              className={`border-dashed rounded-3xl border-4 py-32 px-4 ${
+                isDragging ? "bg-gray-200" : "bg-white"
+              }`}
             >
-              {!selectedFileName && (
+              {/* TODO: improve later */}
+              {true && (
                 <label
                   htmlFor="fileInput"
-                  className={`cursor-pointer opacity-100 transition-opacity duration-1000 `}
+                  className={`cursor-pointer opacity-100 transition-opacity duration-1000 text-gray-400`}
                 >
                   {isDragging
                     ? "Drop the file here"
                     : "Select a file or drop it here"}
+                  {selectedFileName && <p className="text-gray-800">Selected File: {selectedFileName}</p>}
+                  {error && <p className="text-red-600">{error}</p>}
                 </label>
               )}
 
-              {selectedFileName && <p>Selected File: {selectedFileName}</p>}
-              {error && <p className="text-red-600">{error}</p>}
               <input
                 type="file"
                 accept=".csv, .xlsx"
@@ -212,7 +227,7 @@ const FileUpload = ({
               />
             </div>
           )}
-          {data[0] && (
+          {data[0] && error === "" ? (
             <div>
               <div className="py-8">
                 <span style={{ display: "flex", alignItems: "center" }}>
@@ -296,7 +311,7 @@ const FileUpload = ({
                 // )
               }
             </div>
-          )}
+          ) : null}
         </div>
       )}
 

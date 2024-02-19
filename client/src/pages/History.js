@@ -7,7 +7,7 @@ import ButtonComponent from "../components/Button";
 import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
 import { getUserHistories } from "../api/userDataApi";
-import {showNetworkErrorAlert} from "../utils/SwalAlert";
+import { showNetworkErrorAlert } from "../utils/SwalAlert";
 
 const History = () => {
   const [activeTab, setActiveTab] = useState(1);
@@ -58,8 +58,9 @@ const History = () => {
     });
 
     socketJobProgress.on("progressfromServer", (data) => {
-      console.log(data.progress);
+      //console.log(data.progress);
       setProgressData(data);
+      localStorage.setItem("progress", JSON.stringify(data));
       if (data.progress === 101) {
         getQueues()
           .then((res) => {

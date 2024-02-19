@@ -1,9 +1,9 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 
 const ProgressContext = createContext();
 
 export const ProgressProvider = ({ children }) => {
-  const [progressData, setProgressData] = useState({});
+  const [progressData, setProgressData] = useState(JSON.parse(localStorage.getItem("progress")) || {});
 
   return (
     <ProgressContext.Provider value={{ progressData, setProgressData }}>
