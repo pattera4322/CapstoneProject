@@ -21,6 +21,7 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
     const predictedDemandRate = sumPredicted / predictedQty.length;
     const maxCombinedQty = Math.max(...combinedQty);
     const maxActualQty = Math.max(...actualQty)
+    console.log(sumActual ,(sumActual+sumPredicted))
 
     const avgActualAndPredicted = (actualDemandRate + predictedDemandRate)
     const safetyStockActual = (leadTime * maxActualQty) - (leadTime * actualDemandRate)
@@ -28,9 +29,9 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
     ROPActual = Math.round((leadTime * actualDemandRate) + safetyStockActual)
     ROPActualAndPredicted = Math.round((leadTime * (actualDemandRate + predictedDemandRate)) + safetyStockActualAndPredicted)
     // EOQActual = Math.round(Math.sqrt((2 * actualDemandRate * costPerOrder) / (costPerProductStorage / actualDemandRate)))
-    EOQActual = Math.round(Math.sqrt((2 * actualDemandRate * costPerOrder) / (costPerProductStorage / actualQty)))
+    EOQActual = Math.round(Math.sqrt((2 * actualDemandRate * costPerOrder) / (costPerProductStorage / sumActual)))
     // EOQActualAndPredicted = Math.round(Math.sqrt((2 * (actualDemandRate + predictedDemandRate) * costPerOrder) / (costPerProductStorage / (actualDemandRate + predictedDemandRate))))
-    EOQActualAndPredicted = Math.round(Math.sqrt((2 * (actualDemandRate + predictedDemandRate) * costPerOrder) / (costPerProductStorage / combinedQty)))
+    EOQActualAndPredicted = Math.round(Math.sqrt((2 * (actualDemandRate + predictedDemandRate) * costPerOrder) / (costPerProductStorage / (sumActual+sumPredicted))))
   }
 
   const salesAnalyze = (actualData, predictedData) => {
