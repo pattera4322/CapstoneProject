@@ -171,6 +171,22 @@ const FileUpload = ({
     setData([]); // Clear the data when cancelling
   };
 
+  function formatDateString(cell) {
+    const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+    if(regex.test(cell)){
+       const date = new Date(cell);
+    
+    const formattedDate = date.toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
+    
+    return formattedDate;
+    }
+   return cell;
+  }
+
   return (
     <div className="mt-8">
       {/* <------------------------------- Loading section --------------------------------> */}
@@ -274,7 +290,7 @@ const FileUpload = ({
                           <td key={cellIndex}>
                             {cell instanceof Date
                               ? cell.toLocaleDateString()
-                              : cell}
+                              : formatDateString(cell) }
                           </td>
                           // <td key={cellIndex}>{cell}</td>
                         ))}
