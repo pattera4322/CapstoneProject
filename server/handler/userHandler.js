@@ -13,14 +13,25 @@ function createUser(req, res) {
       });
     })
     .catch((error) => {
-      console.log("Error create user:", error.errorInfo);
-      if (error.errorInfo.code == "auth/email-already-exists") {
-        return res.status(409).json({
-          RespCode: error.errorInfo.code,
-          RespMessage: error.errorInfo.message,
-        });
+      console.error("Error creating user:", error.errorInfo);
+      let statusCode = 500; // Default status code for unknown errors
+      let respMessage = "An error occurred";
+
+      if (error.errorInfo.code === "auth/email-already-exists") {
+        statusCode = 409; // Conflict
+        respMessage = error.errorInfo.message;
+      } else if (
+        error.errorInfo.code === "auth/invalid-email" ||
+        error.errorInfo.code === "auth/invalid-password"
+      ) {
+        statusCode = 400; // Bad Request
+        respMessage = error.errorInfo.message;
       }
-      return error;
+
+      return res.status(statusCode).json({
+        RespCode: statusCode,
+        RespMessage: respMessage,
+      });
     });
 }
 
