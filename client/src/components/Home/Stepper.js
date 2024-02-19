@@ -164,7 +164,7 @@ const StepperSection = () => {
 
       {showAskPopup && (
         <Popup
-          onClose={() => setShowPopup(false)}
+          onClose={() => setShowAskPopup(false)}
           header={"Please Login before analyze your data!"}
           info={"Before analyzing, we would like you to join us."}
           onContinue={handleContinueToNextStep}
