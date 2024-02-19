@@ -15,6 +15,8 @@ const History = () => {
   const [completedAnalyzed, setCompletedAnalyzed] = useState([]);
   const [queuesData, setQueuesData] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
+  const [completedArray, setCompletedArray] = useState([]);
+  const [errorArray, setErrorArray] = useState([]);
 
   const { progressData, setProgressData } = useProgress();
 
@@ -58,7 +60,7 @@ const History = () => {
     });
 
     socketJobProgress.on("progressfromServer", (data) => {
-      //console.log(data.progress);
+      console.log(data.progress);
       setProgressData(data);
       localStorage.setItem("progress", JSON.stringify(data));
       if (data.progress === 101) {
@@ -97,6 +99,8 @@ const History = () => {
     const filteredErrorArray = completedAnalyzed.filter(
       (item) => item.errorMessage !== undefined
     );
+    setCompletedArray(filteredCompletedArray)
+    setErrorArray(filteredErrorArray)
     switch (activeTab) {
       case 1:
         setFilteredJobs(queuesData);
@@ -114,6 +118,11 @@ const History = () => {
         setFilteredJobs(completedAnalyzed);
     }
   }, [completedAnalyzed, queuesData, activeTab]);
+
+  const checkIsNewValue = (oldArray, newArray) => {
+    const newElements = newArray.filter(element => !oldArray.includes(element));
+    return newElements.length > 0
+  }
 
   const onTabClick = (tab) => {
     setActiveTab(tab);
@@ -140,21 +149,11 @@ const History = () => {
 
   const renderTab = (tabNumber, label) => {
     let badge = null;
-    if (tabNumber === 2) {
-      // Analyzed success tab
-      badge = completedAnalyzed.some(
-        (item) => item.errorMessage === undefined
-      ) ? (
-        <Badge />
-      ) : null;
-    } else if (tabNumber === 3) {
-      // Analyze Failed tab
-      badge = completedAnalyzed.some(
-        (item) => item.errorMessage !== undefined
-      ) ? (
-        <Badge />
-      ) : null;
-    }
+    // if (tabNumber === 2) {
+    //   badge = checkIsNewValue()
+    // } else if (tabNumber === 3) {
+    //   badge = checkIsNewValue()
+    // }
 
     return (
       <li className="mr-6" key={tabNumber}>
