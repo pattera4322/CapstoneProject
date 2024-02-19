@@ -6,6 +6,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 import ProgressBar from "../ProgressBar.js";
 import Popup from "../Popup.js";
 import Swal from "sweetalert2";
+import {showNetworkErrorAlert} from "../../utils/SwalAlert"
 
 const FileUpload = ({
   index,
@@ -100,11 +101,15 @@ const FileUpload = ({
       setShowProgress(false);
     } catch (error) {
       console.error("Error uploading file:", error);
-      Swal.fire({
+      if (error.message === "Network Error") {
+        showNetworkErrorAlert();
+      }else{
+        Swal.fire({
         icon: "error",
         title: "Something went wrong",
         text: "Error uploading file!",
       });
+      }
     }
   };
 

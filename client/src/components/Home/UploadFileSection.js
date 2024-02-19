@@ -125,6 +125,7 @@ const SelectData = ({ sendfileData }) => {
   };
 
   const removeSelectedFile = async () => {
+    Swal.showLoading();
     await deleteFile(activeTab)
       .then(() => {
         delete filesInLocal[activeTab];
@@ -148,6 +149,8 @@ const SelectData = ({ sendfileData }) => {
             title: "Not have this file in storage",
             text: "Something went wrong!",
           });
+        }else if (error.message === "Network Error") {
+          showNetworkErrorAlert();
         } else {
           console.error("Error deleting file:", error);
         }
