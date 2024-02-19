@@ -36,7 +36,7 @@ const JobComponent = ({ job, progressData,index,userIdFromLocal }) => {
             showProgress={true}
             progress={progressData.progress}
             text={"Job progress:"}
-          />: <div>Waiting for server to analyze...</div>
+          />:isJobProgress ?  <div>Waiting for server to analyze...</div> : null
         }
         {isJobWaiting && <div>Waiting for analyze...</div>}
         {isJobCompleted && (
