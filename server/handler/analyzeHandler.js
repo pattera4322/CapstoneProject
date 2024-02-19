@@ -13,9 +13,9 @@ function analyze (requestQueue) {
 
   console.log("ARGS", userid, fileid);
 
-  //const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
+  const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
   const pythonArgs = [userid, fileid];
-  const pythonScript = "./predictmodel/test2.py";
+  //const pythonScript = "./predictmodel/test2.py";
 
   const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
   socketJobProgress.emit('progress', {
