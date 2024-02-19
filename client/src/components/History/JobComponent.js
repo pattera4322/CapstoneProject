@@ -3,14 +3,16 @@ import ProgressBar from "../ProgressBar";
 import { useNavigate } from "react-router-dom";
 import ButtonComponent from "../Button";
 
-const JobComponent = ({ job, progressData,index }) => {
+const JobComponent = ({ job, progressData,index,userIdFromLocal }) => {
   const navigate = useNavigate();
   const isJobFailed = job.errorMessage !== undefined;
   const isJobCompleted = job.actualQuantityValues !== undefined;
   const isJobProgress = !isJobFailed && !isJobCompleted && index === 0;
   const isJobWaiting = !isJobFailed && !isJobCompleted && index !== 0;
+  const isSameUidProgress = userIdFromLocal === progressData.userid;
   
   console.log("this is progress data id", progressData.fileid);
+  // console.log("this is progress data of user id", progressData.userid);
 
   const OnCompletedJobClick = () => {
     console.log(JSON.stringify(job.data));
@@ -29,13 +31,13 @@ const JobComponent = ({ job, progressData,index }) => {
       
       {job.errorMessage && <div>{job.errorMessage}</div>}
       <div>
-        {isJobProgress && (
+        {isJobProgress && isSameUidProgress ? 
           <ProgressBar
             showProgress={true}
             progress={progressData.progress}
             text={"Job progress:"}
-          />
-        )}
+          />: <div>Waiting for server to analyze...</div>
+        }
         {isJobWaiting && <div>Waiting for analyze...</div>}
         {isJobCompleted && (
           <div className="mt-4 text-right">

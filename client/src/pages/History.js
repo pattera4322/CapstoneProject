@@ -61,29 +61,31 @@ const History = () => {
 
     socketJobProgress.on("progressfromServer", (data) => {
       console.log(data.progress);
-      setProgressData(data);
-      localStorage.setItem("progress", JSON.stringify(data));
-      if (data.progress === 101) {
-        getQueues()
-          .then((res) => {
-            setQueuesData(res.data);
-            console.log("on 101:", res.data);
-          })
-          .catch((error) => {
-            setQueuesData([]);
-            console.log(error);
-          });
+      if (data.userid === userId.uid) {
+        setProgressData(data);
+        localStorage.setItem("progress", JSON.stringify(data));
+        if (data.progress === 101) {
+          getQueues()
+            .then((res) => {
+              setQueuesData(res.data);
+              console.log("on 101:", res.data);
+            })
+            .catch((error) => {
+              setQueuesData([]);
+              console.log(error);
+            });
 
-        getUserHistories()
-          .then((res) => {
-            if (res) {
-              setCompletedAnalyzed(res.data);
-            }
-          })
-          .catch((error) => {
-            setCompletedAnalyzed([]);
-            console.log(error);
-          });
+          getUserHistories()
+            .then((res) => {
+              if (res) {
+                setCompletedAnalyzed(res.data);
+              }
+            })
+            .catch((error) => {
+              setCompletedAnalyzed([]);
+              console.log(error);
+            });
+        }
       }
     });
 
@@ -99,8 +101,8 @@ const History = () => {
     const filteredErrorArray = completedAnalyzed.filter(
       (item) => item.errorMessage !== undefined
     );
-    setCompletedArray(filteredCompletedArray)
-    setErrorArray(filteredErrorArray)
+    setCompletedArray(filteredCompletedArray);
+    setErrorArray(filteredErrorArray);
     switch (activeTab) {
       case 1:
         setFilteredJobs(queuesData);
@@ -120,9 +122,11 @@ const History = () => {
   }, [completedAnalyzed, queuesData, activeTab]);
 
   const checkIsNewValue = (oldArray, newArray) => {
-    const newElements = newArray.filter(element => !oldArray.includes(element));
-    return newElements.length > 0
-  }
+    const newElements = newArray.filter(
+      (element) => !oldArray.includes(element)
+    );
+    return newElements.length > 0;
+  };
 
   const onTabClick = (tab) => {
     setActiveTab(tab);
@@ -193,7 +197,7 @@ const History = () => {
       {filteredJobs.length > 0 ? (
         <div>
           {filteredJobs.map((job, index) => (
-            <JobComponent index={index} job={job} progressData={progressData} />
+            <JobComponent index={index} job={job} progressData={progressData} userIdFromLocal={userId.uid} />
           ))}
         </div>
       ) : (

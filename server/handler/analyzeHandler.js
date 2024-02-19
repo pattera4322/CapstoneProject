@@ -5,11 +5,6 @@ const { saveHistoryData } = require("../handler/userDataHandler");
 
 function analyze (requestQueue) {
 
-  socketJobProgress.emit('progress', {
-    fileid: 0,
-    progress:0
-  });
-
   if (requestQueue.length === 0) {
     return false;
   }
@@ -18,12 +13,13 @@ function analyze (requestQueue) {
 
   console.log("ARGS", userid, fileid);
 
-  const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
+  //const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
   const pythonArgs = [userid, fileid];
-  //const pythonScript = "./predictmodel/test2.py";
+  const pythonScript = "./predictmodel/test2.py";
 
   const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
   socketJobProgress.emit('progress', {
+    userid: userid,
     fileid: fileid,
     progress: 5
   });
@@ -36,6 +32,7 @@ function analyze (requestQueue) {
     if (valuesToCheck.includes(parseInt(data.toString()))) {
       console.log(`Received progress: ${data.toString()}`);
       socketJobProgress.emit('progress', {
+        userid: userid,
         fileid: fileid,
         progress: parseInt(data.toString()),
       });
@@ -66,6 +63,7 @@ function analyze (requestQueue) {
     await enqueueData(requestQueue, userid);
     console.log("hereee",requestQueue)
     socketJobProgress.emit('progress', {
+      userid: userid,
       fileid: fileid,
       progress: 101,
     });
