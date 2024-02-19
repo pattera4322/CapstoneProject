@@ -61,10 +61,10 @@ const StepperSection = () => {
   };
 
   const handleLogIn = () => {
-    if (localStorage.getItem("user") === null) {
-      setShowAskPopup(true);
-    } else {
+    if (localStorage.getItem("user")) {
       handleNavigation("next");
+    } else {
+      setShowAskPopup(true);
     }
   };
 
