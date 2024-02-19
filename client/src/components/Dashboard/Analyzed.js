@@ -126,7 +126,7 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
           <br />
           <p className="pb-4 font-bold">Economic Order Quantity</p>
           <p className="text-base">
-            The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in stock.
+            The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in order.
           </p>
         </div>
       ) : (
