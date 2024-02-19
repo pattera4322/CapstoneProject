@@ -14,9 +14,9 @@ const enqueueData = async (queueData, userid) => {
     //     };
     //     queueDataWithState.push(data);
     //   });
-
     if (queueData.length > 0) {
-      await queueRef.set({ data: queueData });
+      const filterQueuesByUserID = queueData.filter((queue) => queue.userid === userid)
+      await queueRef.set({ data: filterQueuesByUserID });
       console.log("Queue data stored in Firebase Realtime Database");
     } else {
       await queueRef.delete();
