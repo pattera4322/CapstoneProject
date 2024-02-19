@@ -6,6 +6,7 @@ import AnalyzeSection from "./AnalyzeSection";
 import Popup from "../Popup.js";
 import DownloadTemplate from "./DownloadTemplate";
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const StepperSection = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -15,7 +16,7 @@ const StepperSection = () => {
   const [fileId, setFileId] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [showAskPopup, setShowAskPopup] = useState(false);
-
+  const navigate = useNavigate();
   const steps = [
     "Question",
     "Download Template",
@@ -67,6 +68,10 @@ const StepperSection = () => {
       setShowAskPopup(true);
     }
   };
+
+  const handleGoLogin = () => {
+    navigate("/login");
+  }
 
   return (
     <div className="w-full py-4 px-8 mt-7">
@@ -167,8 +172,8 @@ const StepperSection = () => {
           onClose={() => setShowAskPopup(false)}
           header={"Please Login before analyze your data!"}
           info={"Before analyzing, we would like you to join us."}
-          onContinue={handleContinueToNextStep}
-          continueText={<NavLink to="/Login">Go to join us!</NavLink>}
+          onContinue={handleGoLogin}
+          continueText={"Go to join us!"}
         />
       )}
     </div>
