@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 const RelatedNews = ({ keywords, news , error}) => {
-    console.log(keywords)
-    console.log(news)
-    console.log(error)
+    // console.log(keywords)
+    // console.log(news)
+    // console.log(error)
 
     function formatDate(dateString) {
         const date = new Date(dateString);
