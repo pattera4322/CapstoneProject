@@ -77,7 +77,7 @@ date = list_col_name[0]
 product_column = list_col_name[1]
 price_each = list_col_name[2]
 quantity = list_col_name[3]
-total_sales = list_col_name[4]
+total_sales = "empty" if pd.isna(actual_df['totalSales']).all() else list_col_name[4]
 
 pred_date = 90 if pred_date == 0 else pred_date
 confidence_level = 95
