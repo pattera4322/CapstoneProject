@@ -89,19 +89,19 @@ const Chart = ({
     labels: formattedDates,
     datasets: [
       {
-        label: predictedName,
-        data: predictedArray,
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 1,
-      },
-      {
         label: "actualData",
         data: actualArray,
         backgroundColor: "rgba(54, 162, 235, 0.2)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
       },
+      {
+        label: predictedName,
+        data: predictedArray,
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      }
     ],
   };
 
