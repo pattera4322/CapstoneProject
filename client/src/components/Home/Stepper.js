@@ -114,6 +114,7 @@ const StepperSection = () => {
             <Button
               onClick={() => handleNavigation("prev")}
               disabled={isFirstStep}
+              className="bg-[#0068D2]"
             >
               Prev
             </Button>
@@ -142,6 +143,7 @@ const StepperSection = () => {
                 }
               }}
               disabled={activeStep === 2 ? fileData === null : false}
+              className="bg-[#0068D2]"
             >
               Next
             </Button>

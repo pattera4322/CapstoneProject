@@ -46,7 +46,7 @@ const DownloadTemplate = () => {
       <br />
 
       <div className="px-4 md:px-10 lg:px-64 py-4 text-left">
-        <h1 className="text-2xl">
+        <h1 className="text-2xl text-[#0068D2]">
           <b>Instructions</b>
         </h1>
         <div className="pt-1.5 text-lg">

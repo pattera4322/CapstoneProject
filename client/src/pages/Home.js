@@ -17,13 +17,14 @@ function HomePage() {
   }
 
   return (
-    <div className="pt-24 grid grid-cols-3 gap-4 content-center">
+    <div className="pt-24 grid grid-cols-2 gap-4 content-center">
       {/*<------------------------------ Section 1 Introduce web application ------------------------------> */}
-      <div className="mt-10 text-center px-4 sm:px-8 col-span-3">
+      {/* <div className="mt-10 text-center px-4 sm:px-8 col-span-3"> */}
+      <div className="mt-10 text-left px-4 sm:px-8 col-span-1 ml-20">
         <h1 className="text-4xl sm:text-5xl font-bold">
           Step into a Smarter Retail Experience!
         </h1>
-        <div className="text-lg sm:text-xl mt-6">
+        <div className="text-lg sm:text-xl mt-6 text-left">
           <p>Maximize the potential of your workforce by automating</p>
           <p>complex tasks and optimizing workflows with our</p>
           <p>predictive stocking data.</p>
@@ -54,16 +55,32 @@ function HomePage() {
         </div>
       </div>
       {/* <div className="mt-24 mb-24 h-56 grid grid-cols-3 gap-4 content-center "> */} 
-      <div className={` grid grid-cols-subgrid gap-4 h-33  ${toggleIn ? "col-span-2 transition-transform -translate-x-10 duration-1000" : 'col-span-3 transition-transform translate-x-0 duration-1000'}`}>
+      {/* <div className={` grid grid-cols-subgrid gap-4 h-33  ${toggleIn ? "col-span-2 transition-transform -translate-x-10 duration-1000" : 'col-span-3 transition-transform translate-x-0 duration-1000'}`}> */}
+      {
+        !toggleIn ? (
+          <div className={`grid grid-cols-subgrid h-33 col-span-1 transition-transform translate-x-0 duration-1000`}>
+            <img
+              src={process.env.PUBLIC_URL + "/assets/SmartStockHomeBG.svg"}
+              alt="SmartStock Home Image"
+              className="mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
+            />
+          </div>
+        ) : null
+      }
+      {/* <div className={` grid grid-cols-subgrid gap-4 h-33  ${toggleIn ? "col-span-2 transition-transform -translate-x-10 duration-1000" : 'col-span-1 transition-transform translate-x-0 duration-1000'}`}>
         <img
-          src={process.env.PUBLIC_URL + "/assets/Openedbox.svg"}
+          src={process.env.PUBLIC_URL + "/assets/SmartStockHomeBG.svg"}
           alt="open box"
           className="mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
         />
-      </div>
-      <div className={`pl-0 pr-24 pt-24 ${toggleIn ? 'opacity-100 transition-opacity duration-1000' : 'opacity-0 invisible'}`}>
-        { toggleIn && <DetailSection/>}
-      </div>
+      </div> */}
+      {
+        toggleIn ? (
+          <div className={`pl-0 pr-24 pt-24 opacity-100 transition-opacity duration-1000`}>
+            { toggleIn && <DetailSection/>}
+          </div>
+        ) : null
+      }
       
 
       {/*<------------------------------ Section 2 Stepper------------------------------> */}

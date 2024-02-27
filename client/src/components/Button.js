@@ -7,7 +7,7 @@ const ButtonComponent = ({ onClick, children }) => {
 
   return (
     <div>
-      <Button onClick={handleButtonClick}>{children}</Button>
+      <Button onClick={handleButtonClick} className="bg-[#0068D2]">{children}</Button>
     </div>
   );
 };

@@ -507,10 +507,10 @@ data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
     'actualSalesValues' : actual_df_copy[['date','productName','totalSales']].to_dict(orient='records'),
-    'actualQuantityValues' : actual_df_copy[['date','productName','quantity']].to_dict(orient='records')
+    'actualQuantityValues' : actual_df_copy[['date','productName','quantity']].to_dict(orient='records'),
     # # Evaluate result
-    # 'evalTotalSales': evaluation_results_total_sales,
-    # 'evalQuantity': evaluation_results_quantity,
+    'evalTotalSales': evaluation_results_total_sales,
+    'evalQuantity': evaluation_results_quantity,
     # 'best_params_models': best_params_all_products
 }
 models_file_name = f'models_by_product_of_{actual_file_name}'

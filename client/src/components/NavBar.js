@@ -21,9 +21,9 @@ const NavBar = () => {
             className="h-12 mr-2 sm:mr-4"
             alt="Smart Stock"
           />
-          <span className="self-center text-lg font-semibold whitespace-nowrap dark:text-white">
+          {/* <span className="self-center text-lg font-semibold whitespace-nowrap dark:text-white">
             Smart Stock
-          </span>
+          </span> */}
         </NavLink>
         <div className="md:hidden"></div>
         <div className="hidden md:flex md:w-auto">

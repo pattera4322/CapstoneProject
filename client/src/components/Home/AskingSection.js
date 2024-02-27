@@ -135,14 +135,14 @@ const leadTimeValidation = (e) => {
   return (
     <div className="text-black">
       <h2 className="text-xl pt-10">
-        At <b>Smart Stock</b>, we aim to provide you with personalized insights
+        At <b className="text-[#0068D2]">Smart Stock</b>, we aim to provide you with personalized insights
         and recommendations. To better tailor our services to your needs, please
         provide the following information.
       </h2>
       <div onSubmit={handleSubmit} className="pt-10 text-left">
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            1. Please share your current <span className="bg-[#F1D1AB]">sales goal</span> with us.
+            1. Please share your current <span className="text-[#0068D2] font-bold">sales goal</span> with us.
           </label>
           <InfoPopup infoText={information1} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
@@ -282,7 +282,7 @@ const leadTimeValidation = (e) => {
         </div> */}
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            2. Please provide details about <span className="bg-[#F1D1AB]">cost of product storage for the entire year</span>.
+            2. Please provide details about <span className="text-[#0068D2] font-bold">cost of product storage for the entire year</span>.
           </label>
           <InfoPopup infoText={information2} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
@@ -306,7 +306,7 @@ const leadTimeValidation = (e) => {
         </div>
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            3. Please provide details about <span className="bg-[#F1D1AB]">cost of each order</span>.
+            3. Please provide details about <span className="text-[#0068D2] font-bold">cost of each order</span>.
           </label>
           <InfoPopup infoText={information3} />
           <p className="text-s text-gray-500 pl-4 pt-1.5">
@@ -331,7 +331,7 @@ const leadTimeValidation = (e) => {
         </div>
         <div className="pt-10 pl-10">
           <label className="text-lg">
-            4. Please kindly provide us with insights into your average <span className="bg-[#F1D1AB]">lead
+            4. Please kindly provide us with insights into your average <span className="text-[#0068D2] font-bold">lead
             time</span>.
           </label>
           <InfoPopup infoText={information4} />
