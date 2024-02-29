@@ -165,7 +165,7 @@ const History = () => {
           onClick={() => onTabClick(tabNumber)}
           className={`relative inline-block p-2 ${
             activeTab === tabNumber
-              ? "text-black bg-[#F1D1AB] rounded-t-lg"
+              ? "text-white bg-[#0068D2] rounded-t-lg"
               : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
           }`}
         >

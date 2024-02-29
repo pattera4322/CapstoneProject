@@ -36,7 +36,7 @@ function HomePage() {
           >
             Let’s get started!
           </button> */}
-          <button
+          {/* <button
             onClick={toggleInstruction}
             className="relative inline-flex items-center justify-center p-0.5 mr-10 mb-2 me-2 overflow-hidden text-lg font-medium text-gray-900 rounded-full group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"
           >
@@ -49,6 +49,22 @@ function HomePage() {
             className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-lg font-medium text-gray-900 rounded-full group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400"
           >
             <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0">
+              Let’s get started
+            </span>
+          </button> */}
+          <button
+            onClick={toggleInstruction}
+            className="relative inline-flex items-center justify-center p-0.5 mr-10 mb-2 me-2 overflow-hidden text-lg font-medium text-gray-900 rounded-full group bg-[#0068D2]"
+          >
+            <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 group-hover:text-white">
+              Read Instructions
+            </span>
+          </button>
+          <button
+            onClick={scrolldown}
+            className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-lg font-medium text-gray-900 rounded-full group bg-[#0068D2]"
+          >
+            <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 group-hover:text-white">
               Let’s get started
             </span>
           </button>

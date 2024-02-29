@@ -79,9 +79,15 @@ const StepperSection = () => {
         activeStep={activeStep}
         isLastStep={(value) => setIsLastStep(value)}
         isFirstStep={(value) => setIsFirstStep(value)}
+        lineClassName="bg-[#0068D2]/25"
+        activeLineClassName="bg-[#0068D2]"
       >
         {steps.map((label, index) => (
-          <Step key={index}>
+          <Step key={index}
+            className="!bg-[#80B3E9] text-white/90"
+            activeClassName="ring-0 !bg-[#0068D2] text-white"
+            completedClassName="!bg-[#0068D2] text-white"
+          >
             {index + 1}
             <div className="absolute -bottom-[2.5rem] w-max text-center">
               <Typography
