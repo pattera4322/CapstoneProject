@@ -58,7 +58,9 @@ export const useAuthenticate = () => {
         const result = await signInWithPopup(auth, provider);
 
         const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
+        // const token = credential.idToken;
+        const token = await auth.currentUser.getIdToken();
+        //console.log(token)
         const user = result.user.displayName;
         const userUid = result.user.uid;
         if (token) {

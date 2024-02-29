@@ -114,7 +114,7 @@ const getAllHistoryData = async (req, res) => {
     if (historySnapshot.empty) {
       return res.status(404).json({
         ResponseCode: 404,
-        ResponseMessage: `History data not found for fileid ${fileId}`,
+        ResponseMessage: `History data not found`,
       });
     }
     const historyData = [];

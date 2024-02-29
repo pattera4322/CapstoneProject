@@ -35,21 +35,30 @@ function createUser(req, res) {
     });
 }
 
-function authMiddleware(request, response, next) {
-  const headerToken = request.headers.authorization;
-  if (!headerToken) {
-    return response.send({ message: "No token provided" }).status(401);
+const authenticateJWT = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  console.log("authhh " + authHeader);
+  if (authHeader) {
+    const idToken = authHeader.split(" ")[1];
+    
+    auth
+      .verifyIdToken(idToken)
+      .then((decodedToken) => {
+        return next();
+      })
+      .catch((error) => {
+        console.log(error.errorInfo.message);
+        return res.status(403).json({
+          ResponseCode: 403,
+          ResponseMessage: error.errorInfo.message,
+        });
+      });
+  } else {
+    res.status(401).json({
+      ResponseCode: 401,
+      ResponseMessage: "Unauthorized",
+    });
   }
+};
 
-  if (headerToken && headerToken.split(" ")[0] !== "Bearer") {
-    response.send({ message: "Invalid token" }).status(401);
-  }
-
-  const token = headerToken.split(" ")[1];
-  auth
-    .verifyIdToken(token)
-    .then(() => next())
-    .catch(() => response.send({ message: "Could not authorize" }).status(403));
-}
-
-module.exports = { createUser, authMiddleware };
+module.exports = { createUser, authenticateJWT };
