@@ -193,7 +193,7 @@ const FileUpload = ({
       {loading && (
         <div className="mt-8 mb-48">
           <PropagateLoader
-            color="#F1D1AB"
+            color="#0068D2"
             loading={loading}
             cssOverride={override}
             aria-label="Loading Spinner"
@@ -273,7 +273,7 @@ const FileUpload = ({
               </div>
               <div className="w-full overflow-auto">
                 <table className="w-full text-m text-left text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-left text-gray-700 uppercase bg-[#F1D1AB]">
+                  <thead className="text-xs text-left text-white uppercase bg-[#0068D2]">
                     <tr>
                       {data[0] &&
                         Object.keys(data[0]).map((header, index) => (
@@ -311,6 +311,7 @@ const FileUpload = ({
                       onClick={() => {
                         handleConfirm();
                       }}
+                      className="bg-[#0068D2] text-white"
                     >
                       Confirm to use this data
                     </Button>

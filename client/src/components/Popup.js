@@ -29,7 +29,7 @@ const Popup = ({
           >
             Cancel
           </Button>
-          <Button onClick={onContinue}>{continueText}</Button>
+          <Button onClick={onContinue} className="bg-[#0068D2]">{continueText}</Button>
         </div>
       </div>
     </div>

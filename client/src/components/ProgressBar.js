@@ -12,7 +12,7 @@ const ProgressBar = ({ showProgress, progress, text }) => {
       <div className="pt-1">
         <div className="flex mb-2 items-center justify-between">
           <div>
-            <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-white bg-black">
+            <span className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full bg-[#0068D2] text-white">
               {text}
             </span>
           </div>
@@ -26,7 +26,7 @@ const ProgressBar = ({ showProgress, progress, text }) => {
           <div className="w-full overflow-hidden h-8 mb-4 text-xs flex rounded bg-gray-200">
             <div
               style={{ width: `${progress}%`,  transition:'width 1s linear', }}
-              className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-black"
+              className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#0068D2]"
             ></div>
             <img
               src={process.env.PUBLIC_URL + "/assets/cat3.gif"}

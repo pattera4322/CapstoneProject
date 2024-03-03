@@ -69,7 +69,7 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
     <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
       <div>
         <label className="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-          Your Email:
+          Email:
           <input
             className="bg-[#F6F6F6] text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
             type="text"
@@ -124,34 +124,36 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
 
       {/* {errorMessage && <Alert severity="error">{errorMessage}</Alert>} */}
 
-      <button
-        className="w-full text-black bg-white hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        type="submit"
-        onClick={() => setisProvider(false)}
-      >
-        {isLogin ? "Login" : "Register"}
-      </button>
+      <span className="flex flex-row gap-3">
+        <button
+          className="w-full text-white bg-[#0068D2] hover:bg-black font-medium rounded-lg text-sm px-5 py-2.5 text-center basis-1/4"
+          type="submit"
+          onClick={() => setisProvider(false)}
+        >
+          {isLogin ? "Login" : "Register"}
+        </button>
 
-      <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
-        <p className="mx-4 mb-0 text-center font-medium text-gray-900 dark:text-white">
-          or
-        </p>
-      </div>
+        {/* <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
+          <p className="mx-4 mb-0 text-center font-medium text-gray-900 dark:text-white">
+            or
+          </p>
+        </div> */}
 
-      <button
-        className="w-full text-black bg-white hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5"
-        type="submit"
-        onClick={() => setisProvider(true)}
-      >
-        <div className="text-center">
-          <img
-            src={process.env.PUBLIC_URL + "/assets/google.png"}
-            alt="google"
-            className=" me-3 h-6 w-6"
-          />
-          Continue with Google
-        </div>
-      </button>
+        <button
+          className="w-full text-white bg-[#0068D2] hover:bg-[#80B3E9] hover:text-black font-medium rounded-lg text-sm px-5 py-2.5 basis-3/4"
+          type="submit"
+          onClick={() => setisProvider(true)}
+        >
+          <div className="text-center">
+            <img
+              src={process.env.PUBLIC_URL + "/assets/google.png"}
+              alt="google"
+              className=" me-3 h-6 w-6"
+            />
+            Continue with Google
+          </div>
+        </button>
+      </span>
     </form>
   );
 };

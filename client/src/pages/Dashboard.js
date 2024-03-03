@@ -68,6 +68,7 @@ const Dashboard = ({}) => {
 
         setProducts(products);
         setKeywords(products);
+        console.log(res.data)
       })
       .catch((error) => {
         console.log("Error: ", error);
@@ -167,7 +168,7 @@ const Dashboard = ({}) => {
             onClick={() => handleTabClick(1)}
             className={`inline-block p-2 ${
               activeTab === 1
-                ? "text-black bg-[#F1D1AB] rounded-t-lg"
+                ? "text-white bg-[#0068D2] rounded-t-lg"
                 : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
             }`}
           >
@@ -179,7 +180,7 @@ const Dashboard = ({}) => {
             onClick={() => handleTabClick(2)}
             className={`inline-block p-2 ${
               activeTab === 2
-                ? "text-black bg-[#F1D1AB] rounded-t-lg"
+                ? "text-white bg-[#0068D2] rounded-t-lg"
                 : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
             }`}
           >

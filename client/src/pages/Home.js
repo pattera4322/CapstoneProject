@@ -21,10 +21,10 @@ function HomePage() {
       {/*<------------------------------ Section 1 Introduce web application ------------------------------> */}
       {/* <div className="mt-10 text-center px-4 sm:px-8 col-span-3"> */}
       <div className="mt-10 text-left px-4 sm:px-8 col-span-1 ml-20">
-        <h1 className="text-4xl sm:text-5xl font-bold">
+        <h1 className="text-6xl sm:text-6xl font-bold">
           Step into a Smarter Retail Experience!
         </h1>
-        <div className="text-lg sm:text-xl mt-6 text-left">
+        <div className="text-lg sm:text-lg mt-6 text-left">
           <p>Maximize the potential of your workforce by automating</p>
           <p>complex tasks and optimizing workflows with our</p>
           <p>predictive stocking data.</p>

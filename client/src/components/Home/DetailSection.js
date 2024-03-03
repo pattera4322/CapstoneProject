@@ -2,7 +2,7 @@ import React from "react";
 
 const DetailSection = () => {
   return (
-    <div className=" overflow-y-auto h-64 grid grid-cols-subgrid gap-4 col-span-1">
+    <div className=" overflow-y-auto h-96 grid grid-cols-subgrid gap-4 col-span-1">
       <h1 className="text-2xl text-[#0068D2]">
         <b>Instructions</b>
       </h1>
