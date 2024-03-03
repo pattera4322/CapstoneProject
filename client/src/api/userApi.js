@@ -87,7 +87,7 @@ export const useAuthenticate = () => {
           .then(async (userCredential) => {
             // Signed in
             const user = userCredential.user;
-            const token = user.accessToken;
+            const token = await user.getIdToken();
             localStorage.setItem("token", token);
             localStorage.setItem(
               "user",

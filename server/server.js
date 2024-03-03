@@ -2,8 +2,12 @@ const { app, port, host } = require("./config/expressSetup");
 const { uploadFile, getFile, deleteFile } = require("./handler/fileHandler");
 const { upload } = require("./config/firebaseConfig");
 const { analyze } = require("./handler/analyzeHandler");
-const { createUser, authenticateJWT } = require("./handler/userHandler");
-const { enqueueData, getQueues } = require("./handler/queueHandler")
+const {
+  signUpUser,
+  getToken,
+  authenticateJWT,
+} = require("./handler/userHandler");
+const { enqueueData, getQueues } = require("./handler/queueHandler");
 const {
   saveData,
   getData,
@@ -31,9 +35,14 @@ app.listen(port, host, () => {
 socketJobProgress.connect();
 
 // -------------------------------------------File------------------------------------------------
-app.post("/api/file/:userid/:fileid", upload.single("file"), authenticateJWT,(req, res) => {
-  uploadFile(req, res);
-});
+app.post(
+  "/api/file/:userid/:fileid",
+  upload.single("file"),
+  authenticateJWT,
+  (req, res) => {
+    uploadFile(req, res);
+  }
+);
 app.get("/api/file/:userid/:fileid", authenticateJWT, (req, res) => {
   getFile(req, res);
 });
@@ -41,13 +50,13 @@ app.get("/api/file/:userid/:fileid", authenticateJWT, (req, res) => {
 // -------------------------------------------Analyze------------------------------------------------
 let isRunning = false;
 const requestQueue = [];
-app.post("/api/analyze/:userid/:fileid",authenticateJWT,async (req, res) => {
+app.post("/api/analyze/:userid/:fileid", authenticateJWT, async (req, res) => {
   const { userid, fileid } = req.params;
   requestQueue.push({ userid, fileid });
-  await enqueueData(requestQueue,userid)
+  await enqueueData(requestQueue, userid);
   res.status(200).json({
     ResponseCode: 200,
-    ResponseMessage: "Send data to anayze in queue successfully." ,
+    ResponseMessage: "Send data to anayze in queue successfully.",
   });
   console.log(requestQueue);
   if (requestQueue.length === 1) {
@@ -64,32 +73,36 @@ app.post("/api/analyze/:userid/:fileid",authenticateJWT,async (req, res) => {
   isRunning = analyze(requestQueue);
 });
 
-app.delete("/api/file/:userid/:fileid",authenticateJWT, (req, res) => {
+app.delete("/api/file/:userid/:fileid", authenticateJWT, (req, res) => {
   deleteFile(req, res);
 });
 
-app.get("/api/queues/:userid",authenticateJWT, async (req, res) => {
-   getQueues(req, res);
+app.get("/api/queues/:userid", authenticateJWT, async (req, res) => {
+  getQueues(req, res);
 });
 
 // -------------------------------------------User------------------------------------------------
 app.post("/api/signup", (req, res) => {
-  createUser(req, res);
+  signUpUser(req, res);
+});
+
+app.get("/api/token", (req, res) => {
+  getToken(req, res);
 });
 
 // -------------------------------------------User Data------------------------------------------------
-app.post("/api/saveUserData/:userid",authenticateJWT, (req, res) => {
+app.post("/api/saveUserData/:userid", authenticateJWT, (req, res) => {
   saveData(req, res);
 });
 
-app.get("/api/userData/:userid",authenticateJWT, (req, res) => {
+app.get("/api/userData/:userid", authenticateJWT, (req, res) => {
   getData(req, res);
 });
 
-app.get("/api/userHistory/:userid/:fileid",authenticateJWT, (req, res) => {
+app.get("/api/userHistory/:userid/:fileid", authenticateJWT, (req, res) => {
   getHistoryData(req, res);
 });
 
-app.get("/api/userHistory/:userid",authenticateJWT, (req, res) => {
+app.get("/api/userHistory/:userid", authenticateJWT, (req, res) => {
   getAllHistoryData(req, res);
 });
