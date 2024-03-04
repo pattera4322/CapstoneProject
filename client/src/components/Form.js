@@ -68,10 +68,10 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
   return (
     <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
       <div>
-        <label className="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        <label className="text-left block mb-2 text-base font-medium text-gray-900 dark:text-white">
           Email:
           <input
-            className="bg-[#F6F6F6] text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+            className="bg-[#F6F6F6] text-gray-900 text-base rounded-lg block w-full p-2.5"
             type="text"
             value={email}
             placeholder="name@company.com"
@@ -81,10 +81,10 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
         </label>
       </div>
       <div>
-        <label className="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+        <label className="text-left block mb-2 text-base font-medium text-gray-900 dark:text-white">
           Password:
           <input
-            className="bg-[#F6F6F6] text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+            className="bg-[#F6F6F6] text-gray-900 text-base rounded-lg block w-full p-2.5"
             type="password"
             value={password}
             placeholder="••••••••"
@@ -96,10 +96,10 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
       {isLogin ? null : (
         <>
           <div>
-            <label className="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+            <label className="text-left block mb-2 text-base font-medium text-gray-900 dark:text-white">
               Confirm Password:
               <input
-                className="bg-[#F6F6F6] text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                className="bg-[#F6F6F6] text-gray-900 text-base rounded-lg block w-full p-2.5"
                 type="password"
                 value={confirmPassword}
                 placeholder="••••••••"
@@ -126,7 +126,7 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
 
       <span className="flex flex-row gap-3">
         <button
-          className="w-full text-white bg-[#0068D2] hover:bg-black font-medium rounded-lg text-sm px-5 py-2.5 text-center basis-1/4"
+          className="w-full text-white bg-[#0068D2] hover:bg-[#3386DB] font-medium rounded-lg text-base px-5 py-2.5 text-center basis-1/4"
           type="submit"
           onClick={() => setisProvider(false)}
         >
@@ -140,7 +140,7 @@ const FormComponent = ({ onSubmit, isLogin, errorMessage }) => {
         </div> */}
 
         <button
-          className="w-full text-white bg-[#0068D2] hover:bg-[#80B3E9] hover:text-black font-medium rounded-lg text-sm px-5 py-2.5 basis-3/4"
+          className="w-full text-white bg-[#0068D2] hover:bg-[#3386DB] font-medium rounded-lg text-base px-5 py-2.5 basis-3/4"
           type="submit"
           onClick={() => setisProvider(true)}
         >

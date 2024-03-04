@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
-
 import "../index.css";
 import StepperSection from "../components/Home/Stepper";
 import DetailSection from "../components/Home/DetailSection";
+import ButtonComponent from "../components/Button";
+
 
 function HomePage() {
   const StepSection = useRef(null);
@@ -17,14 +18,15 @@ function HomePage() {
   }
 
   return (
-    <div className="pt-24 grid grid-cols-2 gap-4 content-center">
+    <div className="pt-32 grid grid-cols-2 gap-4 content-center">
       {/*<------------------------------ Section 1 Introduce web application ------------------------------> */}
       {/* <div className="mt-10 text-center px-4 sm:px-8 col-span-3"> */}
       <div className="mt-10 text-left px-4 sm:px-8 col-span-1 ml-20">
         <h1 className="text-6xl sm:text-6xl font-bold">
-          Step into a Smarter Retail Experience!
+          Step into a Smarter <br />
+          Retail Experience!
         </h1>
-        <div className="text-lg sm:text-lg mt-6 text-left">
+        <div className="text-base sm:text-lg mt-6 text-left">
           <p>Maximize the potential of your workforce by automating</p>
           <p>complex tasks and optimizing workflows with our</p>
           <p>predictive stocking data.</p>
@@ -53,24 +55,38 @@ function HomePage() {
             </span>
           </button> */}
           <button
+            className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] font-medium rounded-lg text-base px-5 py-2.5 text-center basis-1/4 mr-4"
+            type="submit"
+            onClick={toggleInstruction}
+          >
+            Read Instructions
+          </button>
+          {/* <button
             onClick={toggleInstruction}
             className="relative inline-flex items-center justify-center p-0.5 mr-10 mb-2 me-2 overflow-hidden text-lg font-medium text-gray-900 rounded-full group bg-[#0068D2]"
           >
             <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 group-hover:text-white">
               Read Instructions
             </span>
-          </button>
+          </button> */}
           <button
+            className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] font-medium rounded-lg text-base px-5 py-2.5 text-center basis-1/4"
+            type="submit"
+            onClick={scrolldown}
+          >
+            Let’s get started
+          </button>
+          {/* <button
             onClick={scrolldown}
             className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-lg font-medium text-gray-900 rounded-full group bg-[#0068D2]"
           >
             <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-opacity-0 group-hover:text-white">
               Let’s get started
             </span>
-          </button>
+          </button> */}
         </div>
       </div>
-      {/* <div className="mt-24 mb-24 h-56 grid grid-cols-3 gap-4 content-center "> */} 
+      {/* <div className="mt-24 mb-24 h-56 grid grid-cols-3 gap-4 content-center "> */}
       {/* <div className={` grid grid-cols-subgrid gap-4 h-33  ${toggleIn ? "col-span-2 transition-transform -translate-x-10 duration-1000" : 'col-span-3 transition-transform translate-x-0 duration-1000'}`}> */}
       {
         !toggleIn ? (
@@ -93,11 +109,11 @@ function HomePage() {
       {
         toggleIn ? (
           <div className={`pl-0 pr-24 pt-24 opacity-100 transition-opacity duration-1000`}>
-            { toggleIn && <DetailSection/>}
+            {toggleIn && <DetailSection />}
           </div>
         ) : null
       }
-      
+
 
       {/*<------------------------------ Section 2 Stepper------------------------------> */}
 

@@ -23,8 +23,8 @@ function Register() {
     //console.log("Registering with:", formData);
   };
   return (
-    <div className="pt-20 grid grid-cols-2 gap-4 content-center">
-      <div className="flex flex-col items-center justify-center px-6 py-8 lg:py-0 text-left col-span-1">
+    <div className="pt-32 grid grid-cols-2 gap-4 content-center">
+      <div className="flex flex-col items-center px-6 py-8 lg:py-0 text-left col-span-1">
           <div className="p-2 space-y-4 md:space-y-6 sm:p-8 w-full">
             <h1 className="text-6xl font-bold leading-tight tracking-tight text-gray-900 md:text-6xl dark:text-white">
               Create an account

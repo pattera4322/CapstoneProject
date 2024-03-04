@@ -6,7 +6,8 @@ module.exports = withMT({
   theme: {
     extend: {
       fontFamily: {
-        'amiko': ['Amiko', 'sans'],
+        // 'amiko': ['Amiko', 'sans'],
+        'sans': ['Noto Sans', 'sans-serif']
       }
     }
   },

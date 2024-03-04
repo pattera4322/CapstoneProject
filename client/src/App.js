@@ -12,7 +12,7 @@ import History from "./pages/History.js";
 
 function App() {
   return (
-    <div className="text-center font-amiko">
+    <div className="text-center">
       <NavBar/>
       <Routes>
         <Route path="/" element={<HomePage />} />

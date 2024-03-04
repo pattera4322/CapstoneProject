@@ -11,8 +11,8 @@ const DownloadTemplate = () => {
   };
   return (
     <div className="pt-10">
-      <div className="pb-8 text-xl font-bold text-black">
-        Please download our template, enter your info to align columns for analysis.
+      {/* <div className="pb-8 text-xl font-bold text-black">
+        Please download our template and enter your data as required to align the columns for analysis.
       </div>
       <img
         src={process.env.PUBLIC_URL + "/assets/template.svg"}
@@ -25,27 +25,27 @@ const DownloadTemplate = () => {
       <br />
       <br />
       <div className="flex justify-center mx-16 mt-8">
-      <a href={process.env.PUBLIC_URL + "/assets/template.xlsx"} download>
-        <ButtonComponent
-          onClick={() => {}}
-          children={
-            <div>
-              <svg
-                className="fill-current w-4 h-4 mr-2 inline"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
-              </svg>
-              Template
-            </div>
-          }
-        ></ButtonComponent>{" "}
-      </a>
+        <a href={process.env.PUBLIC_URL + "/assets/template.xlsx"} download>
+          <ButtonComponent
+            onClick={() => { }}
+            children={
+              <div>
+                <svg
+                  className="fill-current w-4 h-4 mr-2 inline"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+                </svg>
+                Template
+              </div>
+            }
+          ></ButtonComponent>{" "}
+        </a>
       </div>
-      <br />
+      <br /> */}
 
-      <div className="px-4 md:px-10 lg:px-64 py-4 text-left">
+      {/* <div className="px-4 md:px-10 lg:px-64 py-4 text-left">
         <h1 className="text-2xl text-[#0068D2]">
           <b>Instructions</b>
         </h1>
@@ -80,65 +80,51 @@ const DownloadTemplate = () => {
                 optional.
               </li>
             </ul>
-            </div>
-            {/* <p className="text-lg pt-5">
-              <b>Data Input Template</b>
-            </p>
-            <ol className="list-decimal pl-4">
-              <li>
-                Download Template: Click <u>here</u> or download template in
-                step 2 to download the data input template.
-              </li>
-              <li>
-                Fill in Data: Enter your data into the template, following the
-                specified formats.
-              </li>
-              <li>Save Template: Save the completed template.</li>
-            </ol>
-            <p className="pt-5">
-              Please note the following format requirements to align with the
-              template to maintain data integrity and ensure accurate
-              predictions:
-            </p>
-            <ul className="list-disc pl-4">
-              <li>
-                Date Format: Use the format YYYY-MM-DD (e.g., 2024-01-17).
-              </li>
-              <li>
-                Product Name/Product Category Format: Ensure the name or
-                category follows standard text conventions.
-              </li>
-              <li>
-                Price per Unit, Quantity, and Total Sales: Ensure the type of
-                value is a number.
-              </li>
-            </ul>
           </div>
-          <div className="pt-5">
-            <label className="text-lg">
-              <b>2. Data Submission</b>
-            </label>
-            <div className="text-s pl-4 pt-1">
-              <p>
-                Once you have filled in the data in the template, follow these
-                steps to submit it:
-              </p>
-              <ol className="list-decimal pl-4">
-                <li>
-                  Please click next step navigate you to step 3 for upload
-                  filled template.
-                </li>
-                <li>
-                  Upload Template: Find the option to upload data, and upload
-                  the completed template.
-                </li>
-                <li>
-                  Submit Data: Click the submit button to upload your data for
-                  analysis.
-                </li>
-              </ol>
-            </div>
-          </div> */}
+        </div>
+      </div> */}
+
+      <div className="text-xl font-bold text-black">
+        Please download our template and enter your data as required to align the columns for analysis.
+      </div>
+
+      <div className="pt-12 grid grid-cols-2 gap-4 content-center">
+        <div className={`grid grid-cols-subgrid col-span-1 transition-transform translate-x-0 duration-1000`}>
+          <img
+            src={process.env.PUBLIC_URL + "/assets/SmartStockTemplate.svg"}
+            alt="SmartStock Log in"
+            className="mx-auto w-72 max-w-xl sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
+          />
+        </div>
+        <div>
+          <img
+            src={process.env.PUBLIC_URL + "/assets/template.svg"}
+            // style={{ transform: isZoomed ? "scale(1.5)" : "scale(1)" }}
+            className="shadow-md w-full"
+            alt="resetIcon"
+            // onClick={toggleZoom}
+          />
+
+          <br />
+          <br />
+
+          <a href={process.env.PUBLIC_URL + "/assets/template.xlsx"} download>
+            <ButtonComponent
+              onClick={() => { }}
+              children={
+                <div>
+                  <svg
+                    className="fill-current w-4 h-4 mr-2 inline"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+                  </svg>
+                  Template
+                </div>
+              }
+            ></ButtonComponent>{" "}
+          </a>
         </div>
       </div>
     </div>
