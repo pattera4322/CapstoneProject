@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { socketJobProgress } from "../config/socketClient";
 import { getQueues } from "../api/analyzeApi";
 import JobComponent from "../components/History/JobComponent";
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink, useNavigate } from "react-router-dom";
 import ButtonComponent from "../components/Button";
 import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
 import { getUserHistories } from "../api/userDataApi";
-import { showNetworkErrorAlert } from "../utils/SwalAlert";
+import { showNetworkErrorAlert, showExpiredTokenAlert } from "../utils/SwalAlert";
 
 const History = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(1);
 
   const [completedAnalyzed, setCompletedAnalyzed] = useState([]);
@@ -36,6 +37,10 @@ const History = () => {
       .catch((error) => {
         if (error.message === "Network Error") {
           showNetworkErrorAlert();
+        } else if (error.response && error.response.status === 403) {
+          showExpiredTokenAlert(() => {
+            navigate("/Login");
+          });
         } else {
           console.log(error);
         }
@@ -49,6 +54,10 @@ const History = () => {
       .catch((error) => {
         if (error.message === "Network Error") {
           showNetworkErrorAlert();
+        } else if (error.response && error.response.status === 403) {
+          showExpiredTokenAlert(() => {
+            navigate("/Login");
+          });
         } else {
           console.log(error);
         }
@@ -197,7 +206,12 @@ const History = () => {
       {filteredJobs.length > 0 ? (
         <div>
           {filteredJobs.map((job, index) => (
-            <JobComponent index={index} job={job} progressData={progressData} userIdFromLocal={userId.uid} />
+            <JobComponent
+              index={index}
+              job={job}
+              progressData={progressData}
+              userIdFromLocal={userId.uid}
+            />
           ))}
         </div>
       ) : (

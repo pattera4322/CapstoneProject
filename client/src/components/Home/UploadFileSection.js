@@ -6,9 +6,14 @@ import * as XLSX from "xlsx";
 import { deleteFile } from "../../api/fileApi";
 import { getUserData } from "../../api/userDataApi";
 import Swal from "sweetalert2";
-import {showNetworkErrorAlert} from "../../utils/SwalAlert"
+import {
+  showNetworkErrorAlert,
+  showExpiredTokenAlert,
+} from "../../utils/SwalAlert";
+import { useNavigate } from "react-router-dom";
 
 const SelectData = ({ sendfileData }) => {
+  const navigate = useNavigate();
   const [fileData, setFileData] = useState([]);
   const [isHasFile, setIsHasFile] = useState(false);
   const [isConfirmClicked, setIsConfirmClicked] = useState(false);
@@ -64,6 +69,10 @@ const SelectData = ({ sendfileData }) => {
         console.log(error);
         if (error.message === "Network Error") {
           showNetworkErrorAlert();
+        } else if (error.response && error.response.status === 403) {
+          showExpiredTokenAlert(() => {
+            navigate("/Login");
+          });
         }
       });
   }, []);
@@ -149,7 +158,7 @@ const SelectData = ({ sendfileData }) => {
             title: "Not have this file in storage",
             text: "Something went wrong!",
           });
-        }else if (error.message === "Network Error") {
+        } else if (error.message === "Network Error") {
           showNetworkErrorAlert();
         } else {
           console.error("Error deleting file:", error);

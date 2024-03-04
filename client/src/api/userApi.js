@@ -8,7 +8,7 @@ import {
   signInWithPopup,
   signOut,
   signInWithEmailAndPassword,
-} from "./firebase";
+} from "../config/firebase.js";
 import Popup from "../components/Popup.js";
 import styled from "@emotion/styled";
 // const baseURL = 'http://localhost:5000/api/file';
@@ -125,7 +125,7 @@ export const useAuthenticate = () => {
         await Swal.fire({
           // icon: "warning",
           title: "Wanna leave?",
-          confirmButtonColor: "#1E1E1E",
+          confirmButtonColor: "#0068D2",
           showCancelButton: true,
           cancelButtonColor: "#DCDBDC",
           confirmButtonText: "Sign out",

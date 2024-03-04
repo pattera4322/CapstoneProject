@@ -17,6 +17,27 @@ const showNetworkErrorAlert = () => {
   });
 };
 
+const showExpiredTokenAlert = (callback) => {
+  const handleConfirmButton = () => {
+    localStorage.clear();
+  };
+
+  Swal.fire({
+    icon: "error",
+    title: "Your session has expired.",
+    text: "Please log in again to continue use our website",
+    confirmButtonText: "Login again",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      handleConfirmButton();
+      if (callback) {
+        callback();
+        window.location.reload();
+      }
+    }
+  });
+};
+
 const showLoadingAlert = () => {
   Swal.fire({
     title: "Logging In",
@@ -29,4 +50,4 @@ const showLoadingAlert = () => {
   });
 };
 
-export { showNetworkErrorAlert, showLoadingAlert };
+export { showNetworkErrorAlert, showLoadingAlert, showExpiredTokenAlert };
