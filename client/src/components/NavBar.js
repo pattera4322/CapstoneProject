@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import NavLinkItem from "./NavLinkItem";
-import { useAuthenticate } from "../api/userApi";
+import { useAuthenticate } from "../api/authenApi";
 import Dropdown  from "./DropdownNavbar";
 
 const NavBar = () => {

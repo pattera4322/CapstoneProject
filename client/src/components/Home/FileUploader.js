@@ -6,7 +6,8 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 import ProgressBar from "../ProgressBar.js";
 import Popup from "../Popup.js";
 import Swal from "sweetalert2";
-import {showNetworkErrorAlert} from "../../utils/SwalAlert"
+import { showNetworkErrorAlert } from "../../utils/SwalAlert";
+import { updateUserData,postUserData } from "../../api/userDataApi";
 
 const FileUpload = ({
   index,
@@ -103,23 +104,36 @@ const FileUpload = ({
       console.error("Error uploading file:", error);
       if (error.message === "Network Error") {
         showNetworkErrorAlert();
-      }else{
+      } else {
         Swal.fire({
-        icon: "error",
-        title: "Something went wrong",
-        text: "Error uploading file!",
-      });
+          icon: "error",
+          title: "Something went wrong",
+          text: "Error uploading file!",
+        });
       }
     }
   };
 
-  const updateFileName = () => {
+  const updateFileName = async () => {
     const updatedUserData = {
       ...userData,
       [index]: selectedFileName,
     };
     setUserData(updatedUserData);
     localStorage.setItem("fileName", JSON.stringify(updatedUserData));
+    // TODO: change to update in future POST when user was create smth
+    //await updateUserData({fileName: updatedUserData});
+    await postUserData({fileName: updatedUserData}).catch((error) => {
+      if (error.response) {
+        Swal.fire({
+          icon: "error",
+          title: "Something went wrong!",
+          text: `${error.response}`,
+        });
+      } else if (error.message === "Network Error") {
+        showNetworkErrorAlert();
+      } 
+    });
   };
 
   const handleFiles = (files) => {
@@ -173,18 +187,18 @@ const FileUpload = ({
 
   function formatDateString(cell) {
     const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-    if(regex.test(cell)){
-       const date = new Date(cell);
-    
-    const formattedDate = date.toLocaleDateString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric'
-    });
-    
-    return formattedDate;
+    if (regex.test(cell)) {
+      const date = new Date(cell);
+
+      const formattedDate = date.toLocaleDateString("en-US", {
+        month: "2-digit",
+        day: "2-digit",
+        year: "numeric",
+      });
+
+      return formattedDate;
     }
-   return cell;
+    return cell;
   }
 
   return (
@@ -221,7 +235,11 @@ const FileUpload = ({
                   {isDragging
                     ? "Drop the file here"
                     : "Select a file or drop it here"}
-                  {selectedFileName && <p className="text-gray-800">Selected File: {selectedFileName}</p>}
+                  {selectedFileName && (
+                    <p className="text-gray-800">
+                      Selected File: {selectedFileName}
+                    </p>
+                  )}
                   {error && <p className="text-red-600">{error}</p>}
                 </label>
               )}
@@ -290,7 +308,7 @@ const FileUpload = ({
                           <td key={cellIndex}>
                             {cell instanceof Date
                               ? cell.toLocaleDateString()
-                              : formatDateString(cell) }
+                              : formatDateString(cell)}
                           </td>
                           // <td key={cellIndex}>{cell}</td>
                         ))}
@@ -346,7 +364,7 @@ const FileUpload = ({
             " Do you want to delete this file? This file cannot be restored."
           }
           onContinue={() => {
-            removeSelectedFile("delete");
+            removeSelectedFile();
             setShowPopup(false);
           }}
         />

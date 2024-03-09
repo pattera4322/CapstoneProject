@@ -105,10 +105,6 @@ const leadTimeValidation = (e) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.salesGoal === 0) {
-      alert("Invalid email address");
-      return;
-    }
     onSubmit(formData);
   };
 

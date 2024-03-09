@@ -5,7 +5,6 @@ import AskingSection from "./AskingSection";
 import AnalyzeSection from "./AnalyzeSection";
 import Popup from "../Popup.js";
 import DownloadTemplate from "./DownloadTemplate";
-import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const StepperSection = () => {
@@ -51,13 +50,11 @@ const StepperSection = () => {
     handleNavigation("next");
   };
 
-  const handleSubmitAskingSection = (formData) => {
-    // Add validation for sales goal
+  const handleSubmitAskingSection = async (formData) => {
     if (formData.salesGoal === 0) {
-      setShowPopup(true); // Show the popup with an error message
-      return; // Prevent navigation
+      setShowPopup(true); 
+      return; 
     }
-    // If sales goal is valid, proceed to the next step
     handleNavigation("next");
   };
 

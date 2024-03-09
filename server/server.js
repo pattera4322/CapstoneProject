@@ -6,14 +6,19 @@ const {
   signUpUser,
   getToken,
   authenticateJWT,
-} = require("./handler/userHandler");
+} = require("./handler/authenHandler");
 const { enqueueData, getQueues } = require("./handler/queueHandler");
 const {
   saveData,
+  updateData,
   getData,
   getHistoryData,
   getAllHistoryData,
 } = require("./handler/userDataHandler");
+const {
+  createInsightData,
+  updateInsightData
+} = require("./handler/userInsightHandler");
 const { socketJobProgress } = require("./config/socketServerConfig");
 
 app.listen(port, host, () => {
@@ -91,18 +96,33 @@ app.get("/api/token", (req, res) => {
 });
 
 // -------------------------------------------User Data------------------------------------------------
-app.post("/api/saveUserData/:userid", authenticateJWT, (req, res) => {
+app.post("/api/userData/:userid", authenticateJWT, (req, res) => {
   saveData(req, res);
+});
+
+app.put("/api/userData/:userid", authenticateJWT, (req, res) => {
+  updateData(req, res);
 });
 
 app.get("/api/userData/:userid", authenticateJWT, (req, res) => {
   getData(req, res);
 });
 
+// -------------------------------------------User History Data------------------------------------------------
 app.get("/api/userHistory/:userid/:fileid", authenticateJWT, (req, res) => {
   getHistoryData(req, res);
 });
 
 app.get("/api/userHistory/:userid", authenticateJWT, (req, res) => {
   getAllHistoryData(req, res);
+});
+
+// -------------------------------------------User History Data------------------------------------------------
+
+app.post("/api/userInsight/:userid/:fileid", (req, res) => {
+  createInsightData(req, res);
+});
+
+app.put("/api/userInsight/:userid/:fileid", (req, res) => {
+  updateInsightData(req, res);
 });

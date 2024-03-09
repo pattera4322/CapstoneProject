@@ -4,13 +4,13 @@ import FileUpload from "./FileUploader";
 import { getFile } from "../../api/fileApi";
 import * as XLSX from "xlsx";
 import { deleteFile } from "../../api/fileApi";
-import { getUserData } from "../../api/userDataApi";
+import { getUserData, updateUserData } from "../../api/userDataApi";
 import Swal from "sweetalert2";
 import {
   showNetworkErrorAlert,
   showExpiredTokenAlert,
 } from "../../utils/SwalAlert";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
 
 const SelectData = ({ sendfileData }) => {
   const navigate = useNavigate();
@@ -135,18 +135,29 @@ const SelectData = ({ sendfileData }) => {
 
   const removeSelectedFile = async () => {
     Swal.showLoading();
-    await deleteFile(activeTab)
-      .then(() => {
+    await deleteFile (activeTab)
+      .then(async () => {
         delete filesInLocal[activeTab];
         delete fileName[activeTab];
         localStorage.setItem("files", JSON.stringify(filesInLocal));
         localStorage.setItem("fileName", JSON.stringify(fileName));
         setFileData([]);
         setIsHasFile(false);
+        await updateUserData({fileName: fileName}).catch((error) => {
+          if (error.response) {
+            Swal.fire({
+              icon: "error",
+              title: "Something went wrong!",
+              text: `${error.response}`,
+            });
+          } else if (error.message === "Network Error") {
+            showNetworkErrorAlert();
+          } 
+        });
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "The file has been reomoved!",
+          title: "The file has been removed!",
           showConfirmButton: false,
           timer: 1500,
         });

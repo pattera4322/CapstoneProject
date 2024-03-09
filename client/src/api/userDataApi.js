@@ -8,7 +8,24 @@ const token = localStorage.getItem("token");
 export const postUserData = async (userData) => {
   try {
     const response = await axios.post(
-      `${baseURL}/saveUserData/${user.uid}`,
+      `${baseURL}/userData/${user.uid}`,
+      userData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUserData = async (userData) => {
+  try {
+    const response = await axios.put(
+      `${baseURL}/userData/${user.uid}`,
       userData,
       {
         headers: {
@@ -69,4 +86,3 @@ export const getUserHistories = async () => {
     throw error;
   }
 };
-

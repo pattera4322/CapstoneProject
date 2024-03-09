@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { enqueueData, analyzeData } from "../../api/analyzeApi";
-import { postUserData } from "../../api/userDataApi";
+import { postUserInsight } from "../../api/userInsightApi.js";
 import { useNavigate } from "react-router-dom";
 import Popup from "../Popup";
 
@@ -14,17 +14,17 @@ const Analyzing = ({ fileId }) => {
   );
   const [error, setError] = useState(null);
 
-  const [userData, setUserData] = useState({
+  const [insightData, setInsightData] = useState({
     salesGoal: askingItem.salesGoal || 0,
     riskLevel: askingItem.riskLevel || [0, 25],
     leadTime: askingItem.leadTime || 1,
-    fileName: fileName || {},
+    // fileName: fileName || {},
     costPerProductStorage: askingItem.costPerProductStorage || 0,
     costPerOrder: askingItem.costPerOrder || 0,
   });
 
   useEffect(() => {
-    postUserData(userData).then(async (res) => {
+    postUserInsight(insightData, fileId).then(async () => {
       await analyzeData(fileId).then(() => {
         navigate("/History", { replace: true, state: fileId });
       });

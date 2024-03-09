@@ -3,7 +3,24 @@ const { firestore } = require("../config/firebaseConfig");
 const saveData = async (req, res) => {
   try {
     const userRef = firestore.collection("users").doc(req.params.userid);
-    await userRef.set(req.body); // Assuming req.body contains the user data
+    await userRef.set(req.body); 
+    res.status(200).json({
+      ResponseCode: 200,
+      ResponseMessage: "User data saved successfully",
+    });
+  } catch (error) {
+    console.log("Error saving user data:", error);
+    return res.status(500).json({
+      ResponseCode: 500,
+      ResponseMessage: "Internal server error.",
+    });
+  }
+};
+
+const updateData = async (req, res) => {
+  try {
+    const userRef = firestore.collection("users").doc(req.params.userid);
+    await userRef.update(req.body); 
     res.status(200).json({
       ResponseCode: 200,
       ResponseMessage: "User data saved successfully",
@@ -57,13 +74,15 @@ const getHistoryData = async (req, res) => {
     const userDocSnapshot = await userRef.get();
 
     if (userDocSnapshot.exists) {
+      const insightRef = userRef.collection("insight").doc(fileId);
+      const insightSnapshot = await insightRef.get();
+
       const userData = {
-        riskLevel: userDocSnapshot.data().riskLevel,
-        leadTime: userDocSnapshot.data().leadTime,
-        salesGoal: userDocSnapshot.data().salesGoal,
-        fileName: userDocSnapshot.data().fileName,
-        costPerProductStorage: userDocSnapshot.data().costPerProductStorage,
-        costPerOrder: userDocSnapshot.data().costPerOrder,
+        riskLevel: insightSnapshot.data().riskLevel,
+        leadTime: insightSnapshot.data().leadTime,
+        salesGoal: insightSnapshot.data().salesGoal,
+        costPerProductStorage: insightSnapshot.data().costPerProductStorage,
+        costPerOrder: insightSnapshot.data().costPerOrder,
       };
 
       const historyRef = userRef.collection("history").doc(fileId);
@@ -89,6 +108,7 @@ const getHistoryData = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       ResponseCode: 500,
       ResponseMessage: `Internal Server Error`,
@@ -149,6 +169,7 @@ const saveHistoryData = async (data, userid, fileid) => {
 
 module.exports = {
   saveData,
+  updateData,
   getData,
   getHistoryData,
   saveHistoryData,
