@@ -17,6 +17,23 @@ const saveData = async (req, res) => {
   }
 };
 
+const updateData = async (req, res) => {
+  try {
+    const userRef = firestore.collection("users").doc(req.params.userid);
+    await userRef.update(req.body); // Assuming req.body contains the user data
+    res.status(200).json({
+      ResponseCode: 200,
+      ResponseMessage: "User data saved successfully",
+    });
+  } catch (error) {
+    console.log("Error saving user data:", error);
+    return res.status(500).json({
+      ResponseCode: 500,
+      ResponseMessage: "Internal server error.",
+    });
+  }
+};
+
 const getData = async (req, res) => {
   const userId = req.params.userid;
   try {
@@ -160,6 +177,7 @@ const saveHistoryData = async (data, userid, fileid) => {
 
 module.exports = {
   saveData,
+  updateData,
   getData,
   getHistoryData,
   saveHistoryData,
