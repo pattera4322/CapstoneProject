@@ -2,7 +2,7 @@ import React from "react";
 import Form from "../components/Form";
 import { NavLink } from "react-router-dom";
 import { useAuthenticate } from "../api/authenApi";
-import {showNetworkErrorAlert,showLoadingAlert} from "../utils/SwalAlert";
+import {showErrorAlert} from "../utils/SwalAlert";
 import Swal from "sweetalert2";
 
 function Register() {
@@ -14,7 +14,7 @@ function Register() {
       Swal.showLoading();
       await signUp(formData.email, formData.password).catch((error) => {
         if (error.message === "Network Error") {
-          showNetworkErrorAlert();
+          showErrorAlert("Network");
         }
       });
       

@@ -6,8 +6,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 import ProgressBar from "../ProgressBar.js";
 import Popup from "../Popup.js";
 import Swal from "sweetalert2";
-import { showNetworkErrorAlert } from "../../utils/SwalAlert";
-import { updateUserData,postUserData } from "../../api/userDataApi";
+import { updateUserData, postUserData } from "../../api/userDataApi";
 
 const FileUpload = ({
   index,
@@ -94,24 +93,18 @@ const FileUpload = ({
           (progressEvent.loaded * 100) / progressEvent.total
         );
         setProgress(progressPercentage);
-      });
-
-      updateFileName();
-      onConfirmButtonClick();
-      setIsHasFile(true);
-      setShowProgress(false);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      if (error.message === "Network Error") {
-        showNetworkErrorAlert();
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Something went wrong",
-          text: "Error uploading file!",
+      })
+        .then(() => {
+          updateFileName();
+          onConfirmButtonClick();
+          setIsHasFile(true);
+          setShowProgress(false);
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+          setShowProgress(false);
         });
-      }
-    }
+    } catch (error) {}
   };
 
   const updateFileName = async () => {
@@ -120,20 +113,22 @@ const FileUpload = ({
       [index]: selectedFileName,
     };
     setUserData(updatedUserData);
-    localStorage.setItem("fileName", JSON.stringify(updatedUserData));
+
     // TODO: change to update in future POST when user was create smth
     //await updateUserData({fileName: updatedUserData});
-    await postUserData({fileName: updatedUserData}).catch((error) => {
-      if (error.response) {
-        Swal.fire({
-          icon: "error",
-          title: "Something went wrong!",
-          text: `${error.response}`,
-        });
-      } else if (error.message === "Network Error") {
-        showNetworkErrorAlert();
-      } 
-    });
+    await postUserData({ fileName: updatedUserData })
+      .then(() => {
+        localStorage.setItem("fileName", JSON.stringify(updatedUserData));
+      })
+      .catch((error) => {
+        if (error.response) {
+          Swal.fire({
+            icon: "error",
+            title: "Something went wrong!",
+            text: `${error.response}`,
+          });
+        }
+      });
   };
 
   const handleFiles = (files) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Chart from "../components/Dashboard/Chart";
-import { useLocation, NavLink, useNavigate } from "react-router-dom";
+import { useLocation, NavLink } from "react-router-dom";
 import RelatedNews from "../components/Dashboard/RelatedNews";
 import Goal from "../components/Dashboard/Goal";
 import ProductPieChart from "../components/Dashboard/ProductPieChart";
@@ -9,7 +9,7 @@ import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
 import DropdownFilter from "../components/Dashboard/Filter";
 import TogglePrediction from "../components/Dashboard/TogglePrediction";
-import { getUserHistory } from "../api/userDataApi";
+import { getUserHistory } from "../api/userHistoryApi";
 import { getNews } from '../api/newsApi';
 
 import html2canvas from "html2canvas";
@@ -19,13 +19,11 @@ import {
   LinearScale,
   BarElement,
 } from "chart.js";
-import { showExpiredTokenAlert } from "../utils/SwalAlert";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
 const Dashboard = ({}) => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const fileId = location.state || {};
   console.log("fileId", fileId);
@@ -76,10 +74,6 @@ const Dashboard = ({}) => {
         console.log("Error: ", error);
         if (error.response.status === 404) {
           console.log("Not found history data");
-        }else if (error.response && error.response.status === 403) {
-          showExpiredTokenAlert(() => {
-            navigate("/Login");
-          });
         }
       });
   }, []);

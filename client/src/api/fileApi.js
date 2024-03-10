@@ -1,19 +1,15 @@
-import axios from "axios";
-// const baseURL = 'http://localhost:5000/api/file';
+import api from "../config/axiosConfig";
 
-const baseURL = process.env.REACT_APP_API_URL;
 const user = JSON.parse(localStorage.getItem("user"));
-const token = localStorage.getItem("token");
 
 export const postFile = async (index, formData, onUploadProgress) => {
   try {
-    const response = await axios.post(
-      `${baseURL}/file/${user.uid}/${index}`,
+    const response = await api.post(
+      `/file/${user.uid}/${index}`,
       formData,
       {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
         },
         onUploadProgress,
       }
@@ -26,11 +22,8 @@ export const postFile = async (index, formData, onUploadProgress) => {
 
 export const getFile = async (index) => {
   try {
-    const response = await axios.get(`${baseURL}/file/${user.uid}/${index}`, {
+    const response = await api.get(`/file/${user.uid}/${index}`, {
       responseType: "arraybuffer",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
     const fileContent = response.data;
     return fileContent;
@@ -41,10 +34,7 @@ export const getFile = async (index) => {
 
 export const deleteFile = async (index) => {
   try {
-    const response = await axios.delete(`${baseURL}/file/${user.uid}/${index}`,{
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
+    const response = await api.delete(`/file/${user.uid}/${index}`,{
     });
     return response;
   } catch (error) {

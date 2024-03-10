@@ -15,8 +15,8 @@ function uploadFile(req, res) {
       })
       .then(() => {
         return res.status(200).json({
-          RespCode: 200,
-          RespMessage: "File uploaded success.",
+          ResponseCode: 200,
+          ResponseMessage: "File uploaded success.",
         });
       })
       .catch((error) => {

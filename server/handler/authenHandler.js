@@ -29,35 +29,15 @@ function signUpUser(req, res) {
       }
 
       return res.status(statusCode).json({
-        RespCode: statusCode,
-        RespMessage: respMessage,
+        ResponseCode: statusCode,
+        ResponseMessage: respMessage,
       });
     });
 }
 
-const getToken = async (req, res) => {
-  const email = req.body.email;
-  
-  auth.getUserByEmail(email)
-    .then((userRecord) => {
-      console.log(userRecord)
-      return auth.createCustomToken(userRecord.uid);
-    })
-    .then((customToken) => {
-      res.status(200).json({ token: customToken });
-    })
-    .catch((error) => {
-      console.log("Error fetching user data:", error);
-      res.status(400).json({
-        ResponseCode: 400,
-        ResponseMessage: "User not found or invalid credentials",
-      });
-    });
-};
-
 const authenticateJWT = async (req, res, next) => {
   const authHeader = req.headers.authorization;
-  console.log("authhh " + authHeader);
+  // console.log("authhh " + authHeader);
   if (authHeader) {
     const idToken = authHeader.split(" ")[1];
 
@@ -79,6 +59,26 @@ const authenticateJWT = async (req, res, next) => {
       ResponseMessage: "Unauthorized",
     });
   }
+};
+
+const getToken = async (req, res) => {
+  const email = req.body.email;
+  
+  auth.getUserByEmail(email)
+    .then((userRecord) => {
+      console.log(userRecord)
+      return auth.createCustomToken(userRecord.uid);
+    })
+    .then((customToken) => {
+      res.status(200).json({ token: customToken });
+    })
+    .catch((error) => {
+      console.log("Error fetching user data:", error);
+      res.status(400).json({
+        ResponseCode: 400,
+        ResponseMessage: "User not found or invalid credentials",
+      });
+    });
 };
 
 module.exports = { signUpUser, getToken, authenticateJWT };

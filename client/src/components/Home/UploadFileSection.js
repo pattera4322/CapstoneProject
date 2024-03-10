@@ -6,14 +6,8 @@ import * as XLSX from "xlsx";
 import { deleteFile } from "../../api/fileApi";
 import { getUserData, updateUserData } from "../../api/userDataApi";
 import Swal from "sweetalert2";
-import {
-  showNetworkErrorAlert,
-  showExpiredTokenAlert,
-} from "../../utils/SwalAlert";
-import { useNavigate } from "react-router-dom"
 
 const SelectData = ({ sendfileData }) => {
-  const navigate = useNavigate();
   const [fileData, setFileData] = useState([]);
   const [isHasFile, setIsHasFile] = useState(false);
   const [isConfirmClicked, setIsConfirmClicked] = useState(false);
@@ -67,13 +61,6 @@ const SelectData = ({ sendfileData }) => {
       })
       .catch((error) => {
         console.log(error);
-        if (error.message === "Network Error") {
-          showNetworkErrorAlert();
-        } else if (error.response && error.response.status === 403) {
-          showExpiredTokenAlert(() => {
-            navigate("/Login");
-          });
-        }
       });
   }, []);
 
@@ -99,8 +86,6 @@ const SelectData = ({ sendfileData }) => {
         .catch((error) => {
           if (error.response && error.response.status === 404) {
             console.log("File Not found");
-          } else if (error.message === "Network Error") {
-            showNetworkErrorAlert();
           } else {
             console.log("Error fetching file: ", error);
           }
@@ -135,7 +120,7 @@ const SelectData = ({ sendfileData }) => {
 
   const removeSelectedFile = async () => {
     Swal.showLoading();
-    await deleteFile (activeTab)
+    await deleteFile(activeTab)
       .then(async () => {
         delete filesInLocal[activeTab];
         delete fileName[activeTab];
@@ -143,16 +128,8 @@ const SelectData = ({ sendfileData }) => {
         localStorage.setItem("fileName", JSON.stringify(fileName));
         setFileData([]);
         setIsHasFile(false);
-        await updateUserData({fileName: fileName}).catch((error) => {
-          if (error.response) {
-            Swal.fire({
-              icon: "error",
-              title: "Something went wrong!",
-              text: `${error.response}`,
-            });
-          } else if (error.message === "Network Error") {
-            showNetworkErrorAlert();
-          } 
+        await updateUserData({ fileName: fileName }).catch((error) => {
+          console.error("Error update file:", error);
         });
         Swal.fire({
           position: "center",
@@ -169,8 +146,6 @@ const SelectData = ({ sendfileData }) => {
             title: "Not have this file in storage",
             text: "Something went wrong!",
           });
-        } else if (error.message === "Network Error") {
-          showNetworkErrorAlert();
         } else {
           console.error("Error deleting file:", error);
         }
