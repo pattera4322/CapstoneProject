@@ -92,15 +92,16 @@ const Chart = ({
         label: "actualData",
         data: actualArray,
         backgroundColor: "rgba(0, 104, 210, 0.2)",
-        borderColor: "rgba(0, 104, 210, 1)",
+        borderColor: "rgba(0, 104, 210)",
         borderWidth: 1,
       },
       {
         label: predictedName,
         data: predictedArray,
-        backgroundColor: "rgba(255, 165, 0, 0.2)",
-        borderColor: "rgba(255, 165, 0, 1)",
+        backgroundColor: "rgba(0, 219, 114, 0.2)",
+        borderColor: "rgba(0, 219, 114)",
         borderWidth: 1,
+        borderDash: [12, 2],
       }
     ],
   };

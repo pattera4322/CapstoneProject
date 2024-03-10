@@ -110,11 +110,11 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
 
   const getTextColor = (trend) => {
     if (trend === 'increase') {
-      return 'green';
+      return '#5EB8FF';
     } else if (trend === 'decrease') {
-      return 'red';
+      return '#FF5F3C';
     } else {
-      return 'black'; // default color
+      return '#000000'; // default color
     }
   };
 
@@ -124,12 +124,12 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
         <div>
           <p className="pb-4 font-bold">Reorder point</p>
           <p className="text-base">
-            while your products are <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? ROPActualAndPredicted : ROPActual}</span> items in stock.
+            while your products are <span style={{ color: '#5EB8FF', fontWeight: 'bold' }}>{togglePredicted === true ? ROPActualAndPredicted : ROPActual}</span> items in stock.
           </p>
           <br />
           <p className="pb-4 font-bold">Economic Order Quantity</p>
           <p className="text-base">
-            The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#B62000', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in order.
+            The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#5EB8FF', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in order.
           </p>
         </div>
       ) : (

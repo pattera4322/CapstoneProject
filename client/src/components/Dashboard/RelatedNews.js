@@ -25,7 +25,7 @@ const RelatedNews = ({ keywords, news , error}) => {
                         <p className="mt-16 text-sm text-gray-500">No news available.</p>
                     ) : (
                         news.map((article, index) => (
-                            <div key={index} className="text-base text-left p-4 mb-4 bg-gray-200 rounded-lg">
+                            <div key={index} className="text-base text-left p-4 mb-4 bg-gray-100 rounded-lg">
                                 <div className="message">
                                     <p>{article.index}</p>
                                     <p className="pb-2 font-bold">{article.title}</p>

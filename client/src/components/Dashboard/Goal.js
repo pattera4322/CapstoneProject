@@ -20,11 +20,28 @@ const Goal = ({predictedName, predictedData, userData, actualData, togglePredict
       {
         label: "Goal",
         data: [togglePredicted? actualAndPredeictedPercent  : actualPercent],
-        backgroundColor: "rgba(255, 165, 0, 0.2)",
-        borderColor: "rgba(255, 165, 0, 1)",
+        backgroundColor: "rgba(0, 219, 114)",
+        borderColor: "rgba(0, 219, 114)",
         borderWidth: 1,
         barThickness: 30,
       }
+    // datasets: [
+    //   {
+    //     label: "Goal",
+    //     data: [100],
+    //     backgroundColor: "#F5F5F5",
+    //     borderColor: "#F5F5F5",
+    //     borderWidth: 1,
+    //     barThickness: 30,
+    //   },
+    //   {
+    //     label: "Present",
+    //     data: [togglePredicted? actualAndPredeictedPercent  : actualPercent],
+    //     backgroundColor: "rgba(0, 219, 114)",
+    //     borderColor: "rgba(0, 219, 114)",
+    //     borderWidth: 1,
+    //     barThickness: 30,
+    //   }
     ],
   };
 
@@ -37,7 +54,8 @@ const Goal = ({predictedName, predictedData, userData, actualData, togglePredict
     indexAxis: "y",
     elements: {
       bar: {
-        borderWidth: 2,
+        // borderWidth: 2,
+        borderRadius: 9,
       },
     },
     responsive: true,
@@ -58,13 +76,13 @@ const Goal = ({predictedName, predictedData, userData, actualData, togglePredict
 
   return (
     <div className="w-full">
-      <p className="pb-4 font-bold">The effort you're investing brings you closer to your goal</p>
+      <p className="font-bold">The effort you're investing brings you closer to your goal</p>
       <div
         style={{
           position: "relative",
           height: "80px",
           // width: "100%",
-          overflow: "hidden",
+          // overflow: "hidden",
         }}
       >
         <Bar data={data} options={options} />
@@ -82,7 +100,7 @@ const Goal = ({predictedName, predictedData, userData, actualData, togglePredict
           {percentage}
         </div>
       </div>
-      <span className="text-xs text-gray-500">that your goal is {salesGoal}</span>
+      <span className="text-xs text-gray-500">that your goal is {salesGoal} Baht</span>
     </div>
   );
 };
