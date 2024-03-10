@@ -9,7 +9,7 @@ import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
 import DropdownFilter from "../components/Dashboard/Filter";
 import TogglePrediction from "../components/Dashboard/TogglePrediction";
-import { getUserHistory } from "../api/userDataApi";
+import { getUserHistory } from "../api/userHistoryApi";
 import { getNews } from '../api/newsApi';
 import html2canvas from "html2canvas";
 import {

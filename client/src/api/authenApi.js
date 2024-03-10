@@ -9,9 +9,6 @@ import {
   signOut,
   signInWithEmailAndPassword,
 } from "../config/firebase.js";
-import Popup from "../components/Popup.js";
-import styled from "@emotion/styled";
-// const baseURL = 'http://localhost:5000/api/file';
 
 const baseURL = process.env.REACT_APP_API_URL;
 

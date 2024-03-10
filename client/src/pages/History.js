@@ -6,7 +6,7 @@ import { useLocation, NavLink, useNavigate } from "react-router-dom";
 import ButtonComponent from "../components/Button";
 import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
-import { getUserHistories } from "../api/userDataApi";
+import { getUserHistories } from "../api/userHistoryApi";
 import { showNetworkErrorAlert, showExpiredTokenAlert } from "../utils/SwalAlert";
 
 const History = () => {
