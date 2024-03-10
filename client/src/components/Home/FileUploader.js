@@ -93,15 +93,17 @@ const FileUpload = ({
           (progressEvent.loaded * 100) / progressEvent.total
         );
         setProgress(progressPercentage);
-
-        updateFileName();
-        onConfirmButtonClick();
-        setIsHasFile(true);
-        setShowProgress(false);
-      }).catch((error) => {
-        console.error("Error uploading file:", error);
-        setShowProgress(false);
-      });
+      })
+        .then(() => {
+          updateFileName();
+          onConfirmButtonClick();
+          setIsHasFile(true);
+          setShowProgress(false);
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+          setShowProgress(false);
+        });
     } catch (error) {}
   };
 
