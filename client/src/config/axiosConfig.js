@@ -1,6 +1,6 @@
 import axios from "axios";
 import {
-  showNetworkErrorAlert,
+  showErrorAlert,
   showExpiredTokenAlert,
 } from "../utils/SwalAlert";
 
@@ -18,13 +18,16 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.message === "Network Error") {
-      showNetworkErrorAlert();
+      showErrorAlert("Network");
     }
     if (error.response) {
       if (error.response.status === 403) {
         showExpiredTokenAlert(() => {
           window.location.href = `${process.env.PUBLIC_URL}/Login`;
         });
+      }
+      if (error.response.status === 500) {
+        showErrorAlert("Internal Server");
       }
     }
     return Promise.reject(error);

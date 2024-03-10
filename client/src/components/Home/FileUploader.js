@@ -100,11 +100,7 @@ const FileUpload = ({
         setShowProgress(false);
       }).catch((error) => {
         console.error("Error uploading file:", error);
-        Swal.fire({
-          icon: "error",
-          title: "Something went wrong",
-          text: "Error uploading file!",
-        });
+        setShowProgress(false);
       });
     } catch (error) {}
   };

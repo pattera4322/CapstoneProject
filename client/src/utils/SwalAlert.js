@@ -1,13 +1,13 @@
 import Swal from "sweetalert2";
 
-const showNetworkErrorAlert = () => {
+const showErrorAlert = (error) => {
   const handleRefresh = () => {
     window.location.reload();
   };
 
   Swal.fire({
     icon: "error",
-    title: "Network Error",
+    title: `${error} Error`,
     text: "Something went wrong! Please refresh the page",
     confirmButtonText: "Refresh",
   }).then((result) => {
@@ -50,4 +50,4 @@ const showLoadingAlert = () => {
   });
 };
 
-export { showNetworkErrorAlert, showLoadingAlert, showExpiredTokenAlert };
+export { showErrorAlert, showLoadingAlert, showExpiredTokenAlert };
