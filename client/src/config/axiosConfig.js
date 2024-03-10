@@ -1,8 +1,5 @@
 import axios from "axios";
-import {
-  showErrorAlert,
-  showExpiredTokenAlert,
-} from "../utils/SwalAlert";
+import { showErrorAlert, showExpiredTokenAlert } from "../utils/SwalAlert";
 
 const baseURL = process.env.REACT_APP_API_URL;
 const token = localStorage.getItem("token");
@@ -22,9 +19,7 @@ api.interceptors.response.use(
     }
     if (error.response) {
       if (error.response.status === 403) {
-        showExpiredTokenAlert(() => {
-          window.location.href = `${process.env.PUBLIC_URL}/Login`;
-        });
+        showExpiredTokenAlert();
       }
       if (error.response.status === 500) {
         showErrorAlert("Internal Server");

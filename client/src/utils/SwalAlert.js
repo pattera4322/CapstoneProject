@@ -17,9 +17,12 @@ const showErrorAlert = (error) => {
   });
 };
 
-const showExpiredTokenAlert = (callback) => {
+//TODO: test on prod is it work
+const showExpiredTokenAlert = () => {
   const handleConfirmButton = () => {
     localStorage.clear();
+    window.location.reload();
+    window.location.href = `${process.env.PUBLIC_URL}/Login`;
   };
 
   Swal.fire({
@@ -30,10 +33,6 @@ const showExpiredTokenAlert = (callback) => {
   }).then((result) => {
     if (result.isConfirmed) {
       handleConfirmButton();
-      if (callback) {
-        callback();
-        window.location.reload();
-      }
     }
   });
 };
