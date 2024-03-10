@@ -45,6 +45,10 @@ function analyze (requestQueue) {
     stderrData = data.toString();
   });
 
+  pythonProcess.on("error", (data) => {
+    console.log(`Error: ${data.toString()}`);
+  });
+
   // Handle the Python script's exit
   pythonProcess.on("close", async (code) => {
     if (code === 0) {
@@ -62,6 +66,7 @@ function analyze (requestQueue) {
     requestQueue.shift();
     await enqueueData(requestQueue, userid);
     console.log("hereee",requestQueue)
+
     socketJobProgress.emit('progress', {
       userid: userid,
       fileid: fileid,
