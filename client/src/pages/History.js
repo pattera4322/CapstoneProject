@@ -7,7 +7,6 @@ import ButtonComponent from "../components/Button";
 import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
 import { getUserHistories } from "../api/userHistoryApi";
-import { showNetworkErrorAlert, showExpiredTokenAlert } from "../utils/SwalAlert";
 
 const History = () => {
   const navigate = useNavigate();
@@ -35,15 +34,7 @@ const History = () => {
         setQueuesData(res.data);
       })
       .catch((error) => {
-        if (error.message === "Network Error") {
-          showNetworkErrorAlert();
-        } else if (error.response && error.response.status === 403) {
-          showExpiredTokenAlert(() => {
-            navigate("/Login");
-          });
-        } else {
-          console.log(error);
-        }
+        console.log(error);
       });
 
     getUserHistories()
@@ -52,15 +43,7 @@ const History = () => {
         console.log(res.data);
       })
       .catch((error) => {
-        if (error.message === "Network Error") {
-          showNetworkErrorAlert();
-        } else if (error.response && error.response.status === 403) {
-          showExpiredTokenAlert(() => {
-            navigate("/Login");
-          });
-        } else {
-          console.log(error);
-        }
+        console.log(error);
       });
 
     socketJobProgress.emit("authenticate", {

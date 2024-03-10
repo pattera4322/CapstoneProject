@@ -91,9 +91,9 @@ app.post("/api/signup", (req, res) => {
   signUpUser(req, res);
 });
 
-app.get("/api/token", (req, res) => {
-  getToken(req, res);
-});
+// app.get("/api/token", (req, res) => {
+//   getToken(req, res);
+// });
 
 // -------------------------------------------User Data------------------------------------------------
 app.post("/api/userData/:userid", authenticateJWT, (req, res) => {
