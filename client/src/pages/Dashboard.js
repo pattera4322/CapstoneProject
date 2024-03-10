@@ -11,6 +11,7 @@ import DropdownFilter from "../components/Dashboard/Filter";
 import TogglePrediction from "../components/Dashboard/TogglePrediction";
 import { getUserHistory } from "../api/userDataApi";
 import { getNews } from '../api/newsApi';
+
 import html2canvas from "html2canvas";
 import {
   Chart as ChartJS,
@@ -165,6 +166,26 @@ const Dashboard = ({}) => {
     }
   };
 
+  const getR2score = () => {
+    if (selectedProduct == "") {
+      const products = activeTab==1? Object.values(analyzedData.historyData.history.evalTotalSales) : Object.values(analyzedData.historyData.history.evalQuantity);
+      const totalR2 = products.reduce((acc, product) => acc + product.R2, 0);
+      return (totalR2 / products.length)*100 || 0;
+    } else {
+      return activeTab==1? (analyzedData.historyData.history.evalTotalSales[selectedProduct].R2)*100 : (analyzedData.historyData.history.evalQuantity[selectedProduct].R2)*100
+    }
+  }
+  const getMSEscore = () => {
+    if (selectedProduct == "") {
+      const products = activeTab==1? Object.values(analyzedData.historyData.history.evalTotalSales) : Object.values(analyzedData.historyData.history.evalQuantity);
+      const totalMSE = products.reduce((acc, product) => acc + product.MSE, 0);
+      console.log(totalMSE,products.length)
+      return (totalMSE / products.length).toFixed(2) || 0;
+    } else {
+      return activeTab==1? (analyzedData.historyData.history.evalTotalSales[selectedProduct].MSE)*100 : (analyzedData.historyData.history.evalQuantity[selectedProduct].MSE)*100
+    }
+  }
+
   return (
     <div>
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 pt-20 pr-8 pl-8">
@@ -227,6 +248,8 @@ const Dashboard = ({}) => {
                       : actualSalesData
                   }
                   togglePredicted={togglePredicted}
+                  getR2score={getR2score()}
+                  getMSEscore={getMSEscore()}
                 />
               )}
             </div>
@@ -335,6 +358,8 @@ const Dashboard = ({}) => {
                       : actualQuantityData
                   }
                   togglePredicted={togglePredicted}
+                  getR2score={getR2score()}
+                  getMSEscore={getMSEscore()}
                 />
               )}
             </div>

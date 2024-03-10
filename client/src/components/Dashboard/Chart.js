@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import InfoPopup from "../../components/Home/InfoPopup";
 
 const Chart = ({
   predictedName,
@@ -7,6 +8,8 @@ const Chart = ({
   predictedColumn,
   actualData = [],
   togglePredicted,
+  getR2score,
+  getMSEscore
 }) => {
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
@@ -54,7 +57,8 @@ const Chart = ({
 
     const filteredActualData3Months = arrayMergedActualData.filter((entry) => {
       const entryDate = new Date(entry.date * 1000);
-      return entryDate >= threeMonthsAgo;
+      // return entryDate >= threeMonthsAgo;
+      return entryDate
     });
 
     const arrayPredicted = arrayMergedPredictData.map((entry) =>
@@ -162,18 +166,23 @@ const Chart = ({
   
     return uniqueDates;
   }
+  const infoChart = `The prediction fit ${getR2score} % to data and estimate error of predicetion data is ${getMSEscore} `;
 
   return (
     <div className="h-full overflow-hidden">
+      <div className="text-left pl-5">
+        <label className="pb-2 font-bold">{predictedColumn === "quantity" ? "Inventory Forecast" : "Retail Sales Forecast"}</label>
+        <InfoPopup infoText={infoChart}/>
+      </div>
       <div className="flex-grow flex items-center justify-center h-full">
         {/* <Line data={chartData} options={options} /> */}
         {togglePredicted === true ? (
-          <Line data={chartData} options={options} />
+          <Line data={chartData} options={options}/>
         ) : chartData.datasets && chartData.datasets.length >= 2 ? (
           <Line
             data={{
               labels: chartData.labels,
-              datasets: [chartData.datasets[1]], // Only using the first dataset (Actual Data)
+              datasets: [chartData.datasets[0]], // Only using the first dataset (Actual Data)
             }}
             options={options}
           />

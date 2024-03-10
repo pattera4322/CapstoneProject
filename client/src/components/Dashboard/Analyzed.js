@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import InfoPopup from "../../components/Home/InfoPopup";
 
 const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePredicted }) => {
 
@@ -106,7 +107,7 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
   }
 
   predictedName === "Predicted Quantity" ? inventoryROP(actualData, predictedData) : salesAnalyze(actualData, predictedData)
-
+  const infoAnalyze = "This visualization illustrates the percentage of trends and movement in each month's prediction data."
 
   const getTextColor = (trend) => {
     if (trend === 'increase') {
@@ -134,7 +135,8 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
         </div>
       ) : (
         <div>
-          <p className="pb-4 font-bold">Analyze Sales</p>
+          <label className="pb-4 font-bold">Analyze Sales</label>
+          <InfoPopup infoText={infoAnalyze}/>
           {analyzedSalesWithComparison && analyzedSalesWithComparison.map((item) => (
             item.Trend !== "unchanged" ? (
               <div key={item.Month}>
