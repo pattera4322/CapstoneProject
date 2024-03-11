@@ -1,6 +1,7 @@
 import React from "react";
 import 'chart.js/auto';
 import { Doughnut } from 'react-chartjs-2';
+import InfoPopup from "../../components/Home/InfoPopup";
 
 const ProductPieChart = ({predictedName, predictedData, userData, actualData, togglePredicted}) => {
 
@@ -95,8 +96,14 @@ const ProductPieChart = ({predictedName, predictedData, userData, actualData, to
     paddingRight: "100px"
   };
 
+  const infoPie = `This graph depicts the percentage of sales quantity for each product.`;
+
   return (
     <div style={containerStyle}>
+      <div className="pb-2">
+        <label className="pb-4 font-bold">% of Products</label>
+        <InfoPopup infoText={infoPie}/>
+      </div>
       <Doughnut data={data} options={options} />
     </div>
   );

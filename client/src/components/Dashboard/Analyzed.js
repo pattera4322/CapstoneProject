@@ -22,7 +22,6 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
     const predictedDemandRate = sumPredicted / predictedQty.length;
     const maxCombinedQty = Math.max(...combinedQty);
     const maxActualQty = Math.max(...actualQty)
-    console.log(sumActual ,(sumActual+sumPredicted))
 
     const avgActualAndPredicted = (actualDemandRate + predictedDemandRate)
     const safetyStockActual = (leadTime * maxActualQty) - (leadTime * actualDemandRate)
@@ -107,7 +106,9 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
   }
 
   predictedName === "Predicted Quantity" ? inventoryROP(actualData, predictedData) : salesAnalyze(actualData, predictedData)
-  const infoAnalyze = "This visualization illustrates the percentage of trends and movement in each month's prediction data."
+  const infoAnalyze = "This visualization illustrates the percentage of trends and movement in each month's prediction data.";
+  const infoROP = `This estimated Reorder point indicates the minimum stock level at which new goods should be ordered to avoid a stockout, calculated using an estimate of lead time and demand rate.`;
+  const infoEOQ = `This estimated economic order quantity is used to reduce inventory costs while maintaining product availability through balanced inventory levels. It is calculated based on an estimate of holding cost, ordering cost, and demand rate.`;
 
   const getTextColor = (trend) => {
     if (trend === 'increase') {
@@ -123,20 +124,28 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
     <div className="">
       {predictedName === "Predicted Quantity" ? (
         <div>
-          <p className="pb-4 font-bold">Reorder point</p>
+          <div className="pb-2">
+            <label className="pb-4 font-bold">Reorder point</label>
+            <InfoPopup infoText={infoROP}/>
+          </div>
           <p className="text-base">
             while your products are <span style={{ color: '#5EB8FF', fontWeight: 'bold' }}>{togglePredicted === true ? ROPActualAndPredicted : ROPActual}</span> items in stock.
           </p>
           <br />
-          <p className="pb-4 font-bold">Economic Order Quantity</p>
+          <div className="pb-2">
+            <label className="pb-4 font-bold">Economic Order Quantity</label>
+            <InfoPopup infoText={infoEOQ}/>
+          </div>
           <p className="text-base">
             The Economic Order Quantity (EOQ) that maximizes cost-effectiveness and efficiency is <span style={{ color: '#5EB8FF', fontWeight: 'bold' }}>{togglePredicted === true ? EOQActualAndPredicted : EOQActual}</span> items in order.
           </p>
         </div>
       ) : (
         <div>
-          <label className="pb-4 font-bold">Analyze Sales</label>
-          <InfoPopup infoText={infoAnalyze}/>
+          <div className="pb-2">
+            <label className="pb-4 font-bold">Analyze Sales</label>
+            <InfoPopup infoText={infoAnalyze}/>
+          </div>
           {analyzedSalesWithComparison && analyzedSalesWithComparison.map((item) => (
             item.Trend !== "unchanged" ? (
               <div key={item.Month}>

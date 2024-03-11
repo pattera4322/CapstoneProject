@@ -1,4 +1,5 @@
 import React from "react";
+import InfoPopup from "../../components/Home/InfoPopup";
 
 const NumberOfProducts = ({predictedName, predictedData, userData, actualData, togglePredicted, products}) => {
 
@@ -36,9 +37,15 @@ const NumberOfProducts = ({predictedName, predictedData, userData, actualData, t
     };
   });
 
+  const infoNoOfProduct = `This graph depicts a number of sales quantity for each product.`;
+
   return (
     <div>
-      <p className="pb-4 font-bold">Number of Products</p>
+      <div className="pb-2">
+        <label className="pb-4 font-bold">Number of Products</label>
+        <InfoPopup infoText={infoNoOfProduct}/>
+      </div>
+      
       <div className="p-4">
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-300">

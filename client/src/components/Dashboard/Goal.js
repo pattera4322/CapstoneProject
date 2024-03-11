@@ -1,6 +1,7 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
+import InfoPopup from "../../components/Home/InfoPopup";
 
 const Goal = ({predictedName, predictedData, userData, actualData, togglePredicted}) => { 
   const salesGoal = userData.salesGoal === 0? 1 : userData.salesGoal
@@ -73,10 +74,14 @@ const Goal = ({predictedName, predictedData, userData, actualData, togglePredict
       },
     },
   };
+  const infoGoal = `This visualization shows the percentage of sales growth compared to your set goal of ${salesGoal} Baht.`;
 
   return (
     <div className="w-full">
-      <p className="font-bold">The effort you're investing brings you closer to your goal</p>
+      <div>
+        <label className="font-bold">The effort you're investing brings you closer to your goal</label>
+        <InfoPopup infoText={infoGoal}/>
+      </div>
       <div
         style={{
           position: "relative",

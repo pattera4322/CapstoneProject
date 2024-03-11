@@ -177,7 +177,7 @@ const Chart = ({
       <div className="flex-grow flex items-center justify-center h-full">
         {/* <Line data={chartData} options={options} /> */}
         {togglePredicted === true ? (
-          <Line data={chartData} options={options}/>
+          <Line data={chartData} options={options} className="scroll-auto"/>
         ) : chartData.datasets && chartData.datasets.length >= 2 ? (
           <Line
             data={{
