@@ -16,7 +16,7 @@ function App() {
       <NavBar/>
       <Routes>
         //TODO:test on production
-        <Route path={process.env.NODE_ENV ==="production"? process.env.PUBLIC_URL : "/"} element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Register" element={<Register />} />
