@@ -17,7 +17,7 @@ const {
 } = require("./handler/userDataHandler");
 const {
   createInsightData,
-  updateInsightData
+  updateInsightData,
 } = require("./handler/userInsightHandler");
 const { socketJobProgress } = require("./config/socketServerConfig");
 
@@ -61,7 +61,7 @@ app.post("/api/analyze/:userid/:fileid", authenticateJWT, async (req, res) => {
   await enqueueData(requestQueue, userid);
   res.status(200).json({
     ResponseCode: 200,
-    ResponseMessage: "Send data to anayze in queue successfully.",
+    ResponseMessage: "Send data to analyze in queue successfully.",
   });
   console.log(requestQueue);
   if (requestQueue.length === 1) {
@@ -119,10 +119,10 @@ app.get("/api/userHistory/:userid", authenticateJWT, (req, res) => {
 
 // -------------------------------------------User History Data------------------------------------------------
 
-app.post("/api/userInsight/:userid/:fileid", (req, res) => {
+app.post("/api/userInsight/:userid/:fileid", authenticateJWT, (req, res) => {
   createInsightData(req, res);
 });
 
-app.put("/api/userInsight/:userid/:fileid", (req, res) => {
+app.put("/api/userInsight/:userid/:fileid", authenticateJWT, (req, res) => {
   updateInsightData(req, res);
 });

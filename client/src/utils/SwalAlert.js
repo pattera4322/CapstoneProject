@@ -3,11 +3,12 @@ import Swal from "sweetalert2";
 const showErrorAlert = (error) => {
   const handleRefresh = () => {
     window.location.reload();
+    window.location.href = `${process.env.PUBLIC_URL}/Login`;
   };
-
+//TODO: test on prod is it work
   Swal.fire({
     icon: "error",
-    title: `${error} Error`,
+    title: `${error} Error [${process.env.PUBLIC_URL}]`,
     text: "Something went wrong! Please refresh the page",
     confirmButtonText: "Refresh",
   }).then((result) => {
