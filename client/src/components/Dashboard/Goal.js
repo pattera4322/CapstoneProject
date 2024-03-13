@@ -16,11 +16,11 @@ const Goal = ({predictedName, predictedData, userData, actualData, togglePredict
   const percentage = `${togglePredicted? actualAndPredeictedPercent  : actualPercent}%`;
 
   const data = {
-    labels: ["Red"],
+    labels: ["Sales Achievement"],
     datasets: [
       {
         label: "Goal",
-        data: [togglePredicted? actualAndPredeictedPercent  : actualPercent],
+        data: [togglePredicted? actualAndPredeictedPercent : actualPercent],
         backgroundColor: "rgba(0, 219, 114)",
         borderColor: "rgba(0, 219, 114)",
         borderWidth: 1,

@@ -16,7 +16,7 @@ const RelatedNews = ({ keywords, news , error}) => {
 
     return (
         <div className="">
-            <div className="text-base text-left p-4 overflow-y-auto" style={{ maxHeight: '300px' }}>
+            <div className="text-base text-left p-4 overflow-y-auto max-h-96" >
                 <p className="pb-2 font-bold">Related News</p>
                 {error ? (
                     <p className=" text-sm text-gray-500">{error}</p>

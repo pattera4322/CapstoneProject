@@ -11,6 +11,7 @@ import DropdownFilter from "../components/Dashboard/Filter";
 import TogglePrediction from "../components/Dashboard/TogglePrediction";
 import { getUserHistory } from "../api/userHistoryApi";
 import { getNews } from '../api/newsApi';
+import ReAnalyzed from "../components/Dashboard/ReAnalyzed";
 
 import html2canvas from "html2canvas";
 import {
@@ -44,6 +45,7 @@ const Dashboard = ({}) => {
     useState();
   const [togglePredicted, setTogglePredicted] = useState(true);
   const [keywords, setKeywords] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -160,6 +162,10 @@ const Dashboard = ({}) => {
     }
   };
 
+  const handleReAnalyzed = () => {
+    setShowPopup(true); 
+  }
+
   const getR2score = () => {
     if (selectedProduct == "") {
       const products = activeTab==1? Object.values(analyzedData.historyData.history.evalTotalSales) : Object.values(analyzedData.historyData.history.evalQuantity);
@@ -207,7 +213,16 @@ const Dashboard = ({}) => {
             Inventory
           </button>
         </li>
-        <li className="ml-auto mr-4">
+        <li className="ml-auto mr-0">
+          <button
+            className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5"
+            type="submit"
+            onClick={handleReAnalyzed}
+          >
+            Change Personalized Insights
+          </button>
+        </li>
+        <li className="ml-4 mr-4">
           <DropdownFilter
             products={products}
             selectedProduct={selectedProduct}
@@ -222,6 +237,11 @@ const Dashboard = ({}) => {
           />
         </li>
       </ul>
+
+      {showPopup && (
+        <ReAnalyzed
+        />
+      )}
 
       <div className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}>
         <div className="flex flex-col lg:w-full pl-4 pr-4">
