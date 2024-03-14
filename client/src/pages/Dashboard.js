@@ -20,6 +20,7 @@ import {
   LinearScale,
   BarElement,
 } from "chart.js";
+import { analyzeData } from "../api/analyzeApi";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
@@ -240,6 +241,9 @@ const Dashboard = ({}) => {
 
       {showPopup && (
         <ReAnalyzed
+        handleClose={() => setShowPopup(false)}
+        userData={analyzedData.userData}
+        fileId={analyzedData.historyData.fileId}
         />
       )}
 
