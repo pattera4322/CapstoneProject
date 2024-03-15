@@ -241,7 +241,14 @@ const Dashboard = ({}) => {
 
       {showPopup && (
         <ReAnalyzed
-        handleClose={() => setShowPopup(false)}
+        handleClose={() => {
+          setShowPopup(false) 
+          setAnalyzedData(prevState => ({
+          ...prevState,
+          userData: JSON.parse(localStorage.getItem('askingItems'))
+          }))
+          console.log(analyzedData.userData)
+        }}
         userData={analyzedData.userData}
         fileId={analyzedData.historyData.fileId}
         />

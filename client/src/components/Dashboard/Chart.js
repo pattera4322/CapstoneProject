@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import InfoPopup from "../../components/Home/InfoPopup";
+import { Button } from "@material-tailwind/react";
+// import ChartjsPluginScrollBar from 'chartjs-plugin-scroll-bar';
 
 const Chart = ({
   predictedName,
@@ -14,6 +16,7 @@ const Chart = ({
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
+  // Line.register(ChartjsPluginScrollBar);
 
   const options = {
     maintainAspectRatio: false,
@@ -34,6 +37,9 @@ const Chart = ({
         },
       },
     },
+    // plugins: {
+    //   scrollBar: {enable: true, scrollType: 'Horizontal'},
+    // },
   };
 
   useEffect(() => {
@@ -174,10 +180,10 @@ const Chart = ({
         <label className="pb-2 font-bold">{predictedColumn === "quantity" ? "Inventory Forecast" : "Retail Sales Forecast"}</label>
         <InfoPopup infoText={infoChart}/>
       </div>
-      <div className="flex-grow flex items-center justify-center h-full">
+      <div className="flex-grow flex flex-col items-center justify-center h-full scroll-auto">
         {/* <Line data={chartData} options={options} /> */}
         {togglePredicted === true ? (
-          <Line data={chartData} options={options} className="scroll-auto"/>
+          <Line data={chartData} options={options} className=""/>
         ) : chartData.datasets && chartData.datasets.length >= 2 ? (
           <Line
             data={{
@@ -185,10 +191,29 @@ const Chart = ({
               datasets: [chartData.datasets[0]], // Only using the first dataset (Actual Data)
             }}
             options={options}
+            className=""
           />
         ) : (
-          <Line data={chartData} options={options} />
+          <Line data={chartData} options={options} className=""/>
         )}
+        
+        {/* <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+          <li>
+            <Button className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
+              1 Year
+            </Button>
+          </li>
+          <li>
+            <Button className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
+              2 Months
+            </Button>
+          </li>
+          <li>
+            <Button className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
+              3 Months
+            </Button>
+          </li>
+        </ul> */}
       </div>
     </div>
   );
