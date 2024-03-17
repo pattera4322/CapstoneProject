@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const RelatedNews = ({ keywords, news , error}) => {
+const RelatedNews = ({ keywords, news, error }) => {
     // console.log(keywords)
     // console.log(news)
     // console.log(error)
@@ -15,11 +15,11 @@ const RelatedNews = ({ keywords, news , error}) => {
     }
 
     return (
-        <div className="">
-            <div className="text-base text-left p-4 overflow-y-auto max-h-96" >
+        <div className="h-full">
+            <div className="text-base text-left p-4 overflow-y-auto" style={{ height: '100%' }}>
                 <p className="pb-2 font-bold">Related News</p>
                 {error ? (
-                    <p className=" text-sm text-gray-500">{error}</p>
+                    <p className="text-sm text-gray-500">{error}</p>
                 ) : (
                     news.length === 0 ? (
                         <p className="mt-16 text-sm text-gray-500">No news available.</p>
