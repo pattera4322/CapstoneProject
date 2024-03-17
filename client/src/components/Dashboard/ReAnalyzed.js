@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input} from "@material-tailwind/react";
-import { postUserInsight } from "../../api/userInsightApi.js";
+import { updateUserInsight } from "../../api/userInsightApi.js";
 
 const ReAnalyzed = ({ handleClose, userData, fileId}) => {
   const [formData, setFormData] = useState({
@@ -80,7 +80,7 @@ const ReAnalyzed = ({ handleClose, userData, fileId}) => {
     if (localStorage.getItem("user")) {
       localStorage.setItem("askingItems", JSON.stringify(formData))
     }
-    postUserInsight(formData, fileId).then(handleClose)
+    updateUserInsight(formData, fileId).then(handleClose)
   };
 
   return (
