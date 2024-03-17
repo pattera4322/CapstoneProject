@@ -180,7 +180,7 @@ const Chart = ({
         <label className="pb-2 font-bold">{predictedColumn === "quantity" ? "Inventory Forecast" : "Retail Sales Forecast"}</label>
         <InfoPopup infoText={infoChart}/>
       </div>
-      <div className="flex-grow flex flex-col items-center justify-center h-full scroll-auto">
+      <div className="flex-grow flex flex-col items-center justify-center h-[95%] scroll-auto">
         {/* <Line data={chartData} options={options} /> */}
         {togglePredicted === true ? (
           <Line data={chartData} options={options} className=""/>
