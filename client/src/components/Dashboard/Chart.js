@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
+import React, { useEffect, useState, useRef } from "react";
+import { Line, toBase64Image } from "react-chartjs-2";
 import InfoPopup from "../../components/Home/InfoPopup";
-import { Button } from "@material-tailwind/react";
+import ButtonComponent from "../Button";
+import { saveAs } from "file-saver";
 // import ChartjsPluginScrollBar from 'chartjs-plugin-scroll-bar';
 
 const Chart = ({
@@ -11,11 +12,12 @@ const Chart = ({
   actualData = [],
   togglePredicted,
   getR2score,
-  getMSEscore
+  getMSEscore,
 }) => {
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
+  const chartRef = useRef(null);
   // Line.register(ChartjsPluginScrollBar);
 
   const options = {
@@ -64,13 +66,11 @@ const Chart = ({
     const filteredActualData3Months = arrayMergedActualData.filter((entry) => {
       const entryDate = new Date(entry.date * 1000);
       // return entryDate >= threeMonthsAgo;
-      return entryDate
+      return entryDate;
     });
 
     const arrayPredicted = arrayMergedPredictData.map((entry) =>
-      predictedColumn === "quantity"
-        ? entry.quantity
-        : entry.totalSales
+      predictedColumn === "quantity" ? entry.quantity : entry.totalSales
     );
     const arrayActual = filteredActualData3Months.map((entry) =>
       predictedColumn === "quantity" ? entry.quantity : entry.totalSales
@@ -112,7 +112,7 @@ const Chart = ({
         borderColor: "rgba(0, 219, 114)",
         borderWidth: 1,
         borderDash: [12, 2],
-      }
+      },
     ],
   };
 
@@ -151,41 +151,99 @@ const Chart = ({
 
   function sumValueByDate(arr, checkActual, predictedColumn) {
     const valuesSums = {};
-  
+
     arr.forEach((item) => {
       let values, date;
       date = item.date;
       if (checkActual) {
-        values = predictedColumn === "quantity" ? item.quantity : item.totalSales;
+        values =
+          predictedColumn === "quantity" ? item.quantity : item.totalSales;
       } else {
-        values = predictedColumn === "quantity" ? item.Predicted_quantity : item.Predicted_totalSales;
+        values =
+          predictedColumn === "quantity"
+            ? item.Predicted_quantity
+            : item.Predicted_totalSales;
       }
-  
+
       const seconds = date._seconds;
       valuesSums[seconds] = (valuesSums[seconds] || 0) + values;
     });
-  
+
     const uniqueDates = Object.keys(valuesSums).map((seconds) => ({
       date: Number(seconds),
-      [predictedColumn === "quantity" ? "quantity" : "totalSales"]: valuesSums[seconds],
+      [predictedColumn === "quantity" ? "quantity" : "totalSales"]:
+        valuesSums[seconds],
     }));
-  
+
     return uniqueDates;
   }
+
+  const generateCSVData = (data) => {
+    let csvContent = `Date,${predictedColumn}PredictedValue\n`;
+    console.log("seees", data);
+    data.labels.forEach((label, index) => {
+      const predicted = data.datasets[1].data[index];
+      if (predicted !== "undefined") {
+        csvContent += `"${label}",${predicted}\n`;
+      }
+    });
+
+    return csvContent;
+  };
+
+  const handleDownload = () => {
+    const base64Image = chartRef.current.toBase64Image();
+    saveAs(base64Image, `${predictedColumn}ForecastGraph.png`);
+
+    // Download graph data
+    const csvData = generateCSVData(chartData);
+    const blob = new Blob([csvData], { type: "text/csv" });
+    saveAs(blob, `${predictedColumn}_graph_data.csv`);
+  };
+
   const infoChart = `The prediction fit ${getR2score} % to data and estimate error of predicetion data is ${getMSEscore} `;
 
   return (
     <div className="h-full overflow-hidden">
       <div className="text-left pl-5">
-        <label className="pb-2 font-bold">{predictedColumn === "quantity" ? "Inventory Forecast" : "Retail Sales Forecast"}</label>
-        <InfoPopup infoText={infoChart}/>
+        <label className="pb-2 font-bold">
+          {predictedColumn === "quantity"
+            ? "Inventory Forecast"
+            : "Retail Sales Forecast"}
+        </label>
+        <InfoPopup infoText={infoChart} />
       </div>
+
+      <div className="text-right">
+        <ButtonComponent
+          onClick={handleDownload}
+          children={
+            <div>
+              <svg
+                className="fill-current w-4 h-4 mr-2 inline"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+              </svg>
+              Download
+            </div>
+          }
+        />
+      </div>
+
       <div className="flex-grow flex flex-col items-center justify-center h-[95%] scroll-auto">
         {/* <Line data={chartData} options={options} /> */}
         {togglePredicted === true ? (
-          <Line data={chartData} options={options} className=""/>
+          <Line
+            ref={chartRef}
+            data={chartData}
+            options={options}
+            className=""
+          />
         ) : chartData.datasets && chartData.datasets.length >= 2 ? (
           <Line
+            ref={chartRef}
             data={{
               labels: chartData.labels,
               datasets: [chartData.datasets[0]], // Only using the first dataset (Actual Data)
@@ -194,9 +252,9 @@ const Chart = ({
             className=""
           />
         ) : (
-          <Line data={chartData} options={options} className=""/>
+          <Line data={chartData} options={options} className="" />
         )}
-        
+
         {/* <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
           <li>
             <Button className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
