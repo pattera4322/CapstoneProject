@@ -4,7 +4,6 @@ const { upload } = require("./config/firebaseConfig");
 const { analyze } = require("./handler/analyzeHandler");
 const {
   signUpUser,
-  getToken,
   authenticateJWT,
 } = require("./handler/authenHandler");
 const { enqueueData, getQueues } = require("./handler/queueHandler");
@@ -57,8 +56,9 @@ let isRunning = false;
 const requestQueue = [];
 app.post("/api/analyze/:userid/:fileid", authenticateJWT, async (req, res) => {
   const { userid, fileid } = req.params;
-  requestQueue.push({ userid, fileid });
-  await enqueueData(requestQueue, userid);
+  const state = "wait"
+  requestQueue.push({ userid, fileid, state });
+  await enqueueData(requestQueue);
   res.status(200).json({
     ResponseCode: 200,
     ResponseMessage: "Send data to analyze in queue successfully.",

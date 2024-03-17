@@ -3,16 +3,13 @@ import ProgressBar from "../ProgressBar";
 import { useNavigate } from "react-router-dom";
 import ButtonComponent from "../Button";
 
-const JobComponent = ({ job, progressData,index,userIdFromLocal }) => {
+const JobComponent = ({ job, progressData, index, userIdFromLocal }) => {
   const navigate = useNavigate();
   const isJobFailed = job.errorMessage !== undefined;
   const isJobCompleted = job.actualQuantityValues !== undefined;
-  const isJobProgress = !isJobFailed && !isJobCompleted && index === 0;
-  const isJobWaiting = !isJobFailed && !isJobCompleted && index !== 0;
-  const isSameUidProgress = userIdFromLocal === progressData.userid;
-  
-  console.log("this is progress data id", progressData.fileid);
-  // console.log("this is progress data of user id", progressData.userid);
+  const isJobProgress =
+    !isJobFailed && !isJobCompleted && job.state === "running";
+  const isJobWaiting = !isJobFailed && !isJobCompleted && job.state === "wait";
 
   const OnCompletedJobClick = () => {
     console.log(JSON.stringify(job.data));
@@ -22,22 +19,30 @@ const JobComponent = ({ job, progressData,index,userIdFromLocal }) => {
   };
 
   return (
-    <div key={index}
+    <div
+      key={index}
       className={`transition ease-in-out hover:-translate-y-1 hover:scale-10 mx-16 my-8 px-8 py-8 rounded-md text-left shadow-[0px_10px_1px_rgba(221,221,221,1),0_10px_20px_rgba(204,204,204,1)]`}
     >
-      {isJobProgress || isJobWaiting ? <div>IN QUEUE: {index + 1}</div>:null}
-      <div>FILE ID: {isJobProgress || isJobWaiting? job.fileid:job.id}</div>
-      {isJobCompleted || isJobFailed ? <div>FILE NAME: {job.fileName || "Not found file name"}</div>:null}
-      
+      {isJobProgress || isJobWaiting ? <div>IN QUEUE: {index + 1}</div> : null}
+      <div>FILE ID: {isJobProgress || isJobWaiting ? job.fileid : job.id}</div>
+      {isJobCompleted || isJobFailed ? (
+        <div>FILE NAME: {job.fileName || "Not found file name"}</div>
+      ) : null}
+
       {job.errorMessage && <div>{job.errorMessage}</div>}
       <div>
-        {isJobProgress && isSameUidProgress ? 
+        {isJobProgress && progressData.progress !== 101 ? (
           <ProgressBar
             showProgress={true}
             progress={progressData.progress}
             text={"Job progress:"}
-          />:isJobProgress ?  <div>Waiting for server to analyze...</div> : null
-        }
+          />
+        ) : !isJobWaiting ? (
+          <div>Prepare data to Analyze...</div>
+        ) : null}
+
+        {/* <div>Waiting for server to analyze...</div> : null */}
+
         {isJobWaiting && <div>Waiting for analyze...</div>}
         {isJobCompleted && (
           <div className="mt-4 text-right">

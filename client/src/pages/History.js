@@ -19,72 +19,71 @@ const History = () => {
   const [errorArray, setErrorArray] = useState([]);
 
   const { progressData, setProgressData } = useProgress();
+  const [isStart, setIsStart] = useState(false);
 
   const [text, setText] = useState("");
   const [clickedTabs, setClickedTabs] = useState(
     Array.from({ length: activeTab }, () => false)
   );
   const userId = JSON.parse(localStorage.getItem("user"));
+  const progressInLocal = JSON.parse(localStorage.getItem("progress"));
   const location = useLocation();
   socketJobProgress.connect();
 
   useEffect(() => {
-    getQueues()
-      .then((res) => {
-        setQueuesData(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (isStart === false) {
+      getQueues()
+        .then((res) => {
+          setQueuesData(res);
+          console.log(res);
+          if (!progressInLocal) {
+            setProgressData(res[0]);
+          }
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 404) {
+            setQueuesData([]);
+          }
+          console.log(error);
+        });
 
-    getUserHistories()
-      .then((res) => {
-        setCompletedAnalyzed(res.data);
-        console.log(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      getUserHistories()
+        .then((res) => {
+          setCompletedAnalyzed(res.data);
+          console.log(res.data);
+          setIsStart(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
 
     socketJobProgress.emit("authenticate", {
       userId: userId.uid,
       isFromClient: true,
     });
 
-    socketJobProgress.on("progressfromServer", (data) => {
+    const handleProgressFromServer = (data) => {
       console.log(data.progress);
       if (data.userid === userId.uid) {
-        setProgressData(data);
-        localStorage.setItem("progress", JSON.stringify(data));
-        if (data.progress === 101) {
-          getQueues()
-            .then((res) => {
-              setQueuesData(res.data);
-              console.log("on 101:", res.data);
-            })
-            .catch((error) => {
-              setQueuesData([]);
-              console.log(error);
-            });
+        if (isStart) {
+          setProgressData(data);
+        }
 
-          getUserHistories()
-            .then((res) => {
-              if (res) {
-                setCompletedAnalyzed(res.data);
-              }
-            })
-            .catch((error) => {
-              setCompletedAnalyzed([]);
-              console.log(error);
-            });
+        localStorage.setItem("progress", JSON.stringify(data));
+
+        if (data.progress === 101) {
+          setIsStart(false);
         }
       }
-    });
+    };
 
-    // return () => {
-    //   socket.disconnect(); // Cleanup the socket connection on component unmount
-    // };
-  }, []);
+    socketJobProgress.on("progressfromServer", handleProgressFromServer);
+
+    return () => {
+      socketJobProgress.off("progressfromServer", handleProgressFromServer);
+    };
+  }, [isStart]);
 
   useEffect(() => {
     const filteredCompletedArray = completedAnalyzed.filter(

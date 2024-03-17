@@ -1,9 +1,8 @@
 const { firestore } = require("../config/firebaseConfig");
 
-const enqueueData = async (queueData, userid) => {
+const enqueueData = async (queueData) => {
   try {
-    const userRef = firestore.collection("users").doc(userid);
-    const queueRef = userRef.collection("queue").doc("queueDocument");
+    const queueRef = firestore.collection("queues").doc("queueDocument");
     console.log(queueData);
     // const queueDataWithState = [];
     //   queueData.forEach((queue) => {
@@ -15,8 +14,7 @@ const enqueueData = async (queueData, userid) => {
     //     queueDataWithState.push(data);
     //   });
     if (queueData.length > 0) {
-      const filterQueuesByUserID = queueData.filter((queue) => queue.userid === userid)
-      await queueRef.set({ data: filterQueuesByUserID });
+      await queueRef.set( {queueData });
       console.log("Queue data stored in Firebase Realtime Database");
     } else {
       await queueRef.delete();
@@ -30,9 +28,8 @@ const enqueueData = async (queueData, userid) => {
 const getQueues = async (req, res) => {
   const userId = req.params.userid;
   try {
-    const userRef = firestore.collection("users").doc(userId);
-    const queueRef = userRef.collection("queue").doc("queueDocument");
-    const queuesSnapshot = await queueRef.get();
+    const userRef = firestore.collection("queues").doc("queueDocument");
+    const queuesSnapshot = await userRef.get();
 
     if (!queuesSnapshot.exists) {
       return res.status(404).json({
@@ -40,8 +37,11 @@ const getQueues = async (req, res) => {
         ResponseMessage: "Queues data not found",
       });
     }
-
-    res.status(200).json(queuesSnapshot.data());
+    const queuesData = queuesSnapshot.data().queueData;
+    const filterQueuesData = queuesData.filter(
+      (queue) => queue.userid === userId
+    );
+    res.status(200).json(filterQueuesData);
   } catch (error) {
     console.error("Error get queues data:", error);
     res.status(500).json({
