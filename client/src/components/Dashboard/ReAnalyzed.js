@@ -86,13 +86,13 @@ const ReAnalyzed = ({ handleClose, userData, fileId}) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-gray-800 opacity-50"></div>
-      <div className="z-50 bg-white p-8 rounded-md shadow-lg flex flex-col w-96">
+      <div className="z-50 bg-white p-8 rounded-md shadow-lg flex flex-col w-auto">
         <div className="mb-4 text-s text-left">
           {/* SalesGoal */}
           <div>
             <label className="text-lg font-bold">Sales goal</label>
           </div> 
-          <div className="w-64 pt-2 pl-4 inline-block">
+          <div className="w-64 pt-2 inline-block">
               <Input
                 type="number"
                 label="Sales Goal"
@@ -112,7 +112,7 @@ const ReAnalyzed = ({ handleClose, userData, fileId}) => {
           <div className="pt-3">
             <label className="text-lg font-bold">Cost of storage per unit per year</label>
           </div> 
-          <div className="w-64 pt-2 pl-4 inline-block">
+          <div className="w-64 pt-2 inline-block">
               <Input
                 type="number"
                 label="costPerProductStorage"
@@ -132,7 +132,7 @@ const ReAnalyzed = ({ handleClose, userData, fileId}) => {
           <div className="pt-3">
             <label className="text-lg font-bold">Cost per order</label>
           </div> 
-          <div className="w-64 pt-2 pl-4 inline-block">
+          <div className="w-64 pt-2 inline-block">
               <Input
                 type="number"
                 label="costPerOrder"
@@ -152,7 +152,7 @@ const ReAnalyzed = ({ handleClose, userData, fileId}) => {
           <div className="pt-3">
             <label className="text-lg font-bold">Lead time</label>
           </div> 
-          <div className="w-64 pt-2 pl-4 inline-block">
+          <div className="w-64 pt-2 inline-block">
               <Input
                 type="number"
                 label="leadTime"
@@ -166,7 +166,7 @@ const ReAnalyzed = ({ handleClose, userData, fileId}) => {
                 className="inline-block float-left"
               />
             </div>
-            <span className="inline-block pl-2.5">Baht</span>
+            <span className="inline-block pl-2.5">Day</span>
         </div>
 
         <div className="flex justify-end mt-4">
