@@ -388,7 +388,7 @@ const Dashboard = ({}) => {
                 />
               )}
             </div>
-            <div className="box-content p-4 shadow-md flex-1">
+            <div className="box-content p-4 shadow-md flex-1 lg:h-[90%]">
               {analyzedSalesData && (
                 <RelatedNews 
                 keywords={keywords}
