@@ -94,8 +94,8 @@ const FileUpload = ({
         );
         setProgress(progressPercentage);
       })
-        .then(() => {
-          updateFileName();
+        .then(async () => {
+          await updateFileName();
           onConfirmButtonClick();
           setIsHasFile(true);
           setShowProgress(false);

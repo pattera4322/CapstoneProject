@@ -3,9 +3,7 @@ import Swal from "sweetalert2";
 const showErrorAlert = (error) => {
   const handleRefresh = () => {
     window.location.reload();
-    window.location.href = `${process.env.PUBLIC_URL}/Login`;
   };
-//TODO: test on prod is it work
   Swal.fire({
     icon: "error",
     title: `${error} Error [${process.env.PUBLIC_URL}]`,
@@ -18,7 +16,6 @@ const showErrorAlert = (error) => {
   });
 };
 
-//TODO: test on prod is it work
 const showExpiredTokenAlert = () => {
   const handleConfirmButton = () => {
     localStorage.clear();

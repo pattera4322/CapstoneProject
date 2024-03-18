@@ -187,8 +187,8 @@ const SelectData = ({ sendfileData }) => {
             isFileUploaded={isHasFile}
             loading={loading}
             onConfirmButtonClick={() => {
-              setIsConfirmClicked(true);
               setFileName(JSON.parse(localStorage.getItem("fileName")));
+              setIsConfirmClicked(true);
             }}
             removeSelectedFile={removeSelectedFile}
           />
