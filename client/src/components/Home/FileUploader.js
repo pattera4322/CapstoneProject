@@ -5,7 +5,7 @@ import { postFile } from "../../api/fileApi";
 import PropagateLoader from "react-spinners/PropagateLoader";
 import ProgressBar from "../ProgressBar.js";
 import Popup from "../Popup.js";
-import Swal from "sweetalert2";
+import { showErrorAlert } from "../../utils/SwalAlert.js";
 import { updateUserData, postUserData } from "../../api/userDataApi";
 
 const FileUpload = ({
@@ -122,11 +122,7 @@ const FileUpload = ({
       })
       .catch((error) => {
         if (error.response) {
-          Swal.fire({
-            icon: "error",
-            title: "Something went wrong!",
-            text: `${error.response}`,
-          });
+          showErrorAlert("Something went wrong!",`${error.response}`);
         }
       });
   };
@@ -268,7 +264,6 @@ const FileUpload = ({
                   Preview data
                   {isHasFile ? (
                     <div className="ml-auto">
-                      {/* <button onClick={removeSelectedFile}> */}
                       <button onClick={handleButtonClick}>
                         <img
                           src={

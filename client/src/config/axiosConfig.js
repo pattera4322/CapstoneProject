@@ -1,5 +1,5 @@
 import axios from "axios";
-import { showErrorAlert, showExpiredTokenAlert } from "../utils/SwalAlert";
+import { showErrorAlertWithRefresh, showExpiredTokenAlert } from "../utils/SwalAlert";
 
 const baseURL = process.env.REACT_APP_API_URL;
 const token = localStorage.getItem("token");
@@ -15,17 +15,17 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.message === "Network Error") {
-      showErrorAlert("Network");
+      showErrorAlertWithRefresh("Network");
     }
     if (error.response) {
       if (error.response.status === 403) {
         showExpiredTokenAlert();
       }
       if (error.response.status === 500) {
-        showErrorAlert("Internal Server");
+        showErrorAlertWithRefresh("Internal Server");
       }
       if (error.response.status === 502) {
-        showErrorAlert("Bad gatewayr");
+        showErrorAlertWithRefresh("Bad gatewayr");
       }
     }
     return Promise.reject(error);

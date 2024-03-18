@@ -2,8 +2,8 @@ import React from "react";
 import Form from "../components/Form";
 import { NavLink } from "react-router-dom";
 import { useAuthenticate } from "../api/authenApi";
-import {showErrorAlert} from "../utils/SwalAlert";
-import Swal from "sweetalert2";
+import {showErrorAlertWithRefresh} from "../utils/SwalAlert";
+import LoadingPage from "../components/LoadingPage";
 
 function Register() {
   const { logIn, signUp, loading, error } = useAuthenticate();
@@ -11,10 +11,9 @@ function Register() {
     if (formData.isProvider === true) {
       await logIn();
     } else {
-      Swal.showLoading();
       await signUp(formData.email, formData.password).catch((error) => {
         if (error.message === "Network Error") {
-          showErrorAlert("Network");
+          showErrorAlertWithRefresh("Network");
         }
       });
       
@@ -24,6 +23,7 @@ function Register() {
   };
   return (
     <div className="pt-32 grid grid-cols-2 gap-4 content-center">
+      <LoadingPage loading={loading}/>
       <div className="flex flex-col items-center px-6 py-8 lg:py-0 text-left col-span-1">
           <div className="p-2 space-y-4 md:space-y-6 sm:p-8 w-full">
             <h1 className="text-6xl font-bold leading-tight tracking-tight text-gray-900 md:text-6xl dark:text-white">

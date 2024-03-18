@@ -5,13 +5,15 @@ import { getFile } from "../../api/fileApi";
 import * as XLSX from "xlsx";
 import { deleteFile } from "../../api/fileApi";
 import { getUserData, updateUserData } from "../../api/userDataApi";
-import Swal from "sweetalert2";
+import { showSuccessAlert, showErrorAlert } from "../../utils/SwalAlert";
+import LoadingPage from "../LoadingPage";
 
 const SelectData = ({ sendfileData }) => {
   const [fileData, setFileData] = useState([]);
   const [isHasFile, setIsHasFile] = useState(false);
   const [isConfirmClicked, setIsConfirmClicked] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showloadingPage, setShowLoadingPage] = useState(false);
   const [filesInLocal, setFilesInLocal] = useState(
     JSON.parse(localStorage.getItem("files")) || {}
   );
@@ -119,7 +121,7 @@ const SelectData = ({ sendfileData }) => {
   };
 
   const removeSelectedFile = async () => {
-    Swal.showLoading();
+    setShowLoadingPage(true);
     await deleteFile(activeTab)
       .then(async () => {
         delete filesInLocal[activeTab];
@@ -129,23 +131,15 @@ const SelectData = ({ sendfileData }) => {
         setFileData([]);
         setIsHasFile(false);
         await updateUserData({ fileName: fileName }).catch((error) => {
-          console.error("Error update file:", error);
+          console.log("Error update file:", error);
         });
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "The file has been removed!",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        setShowLoadingPage(false);
+        await showSuccessAlert("The file has been removed!");
       })
       .catch((error) => {
+        setShowLoadingPage(false);
         if (error.response && error.response.status === 404) {
-          Swal.fire({
-            icon: "error",
-            title: "Not have this file in storage",
-            text: "Something went wrong!",
-          });
+          showErrorAlert("Not have this file in storage","");
         } else {
           console.error("Error deleting file:", error);
         }
@@ -181,6 +175,7 @@ const SelectData = ({ sendfileData }) => {
           ))}
         </TabsHeader>
         <TabsBody>
+          <LoadingPage loading={showloadingPage} />
           <FileUpload
             index={activeTab}
             content={fileData}

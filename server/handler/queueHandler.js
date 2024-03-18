@@ -22,6 +22,7 @@ const enqueueData = async (queueData) => {
     }
   } catch (error) {
     console.log("Error save queue data:", error);
+    throw error;
   }
 };
 

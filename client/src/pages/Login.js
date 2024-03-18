@@ -2,8 +2,7 @@ import React from "react";
 import Form from "../components/Form";
 import { NavLink } from "react-router-dom";
 import { useAuthenticate } from "../api/authenApi";
-import { showLoadingAlert } from "../utils/SwalAlert";
-import Swal from "sweetalert2";
+import LoadingPage from "../components/LoadingPage";
 
 const Login = () => {
   const { logIn, loading, error } = useAuthenticate();
@@ -11,9 +10,7 @@ const Login = () => {
     if(formData.isProvider === true){
       await logIn(null,null);
     }else{
-      Swal.showLoading();
       await logIn(formData.email,formData.password);
-      Swal.close();
     }
     
     console.log("Logging in with:", formData);
@@ -21,9 +18,7 @@ const Login = () => {
 
   return (
     <div className="pt-32 grid grid-cols-2 gap-4 content-center">
-      {/* <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
-        <div className="w-full rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 bg-[#F1D1AB]">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8"> */}
+      <LoadingPage loading={loading}/>
       <div className="flex flex-col items-center px-6 py-8 lg:py-0 text-left col-span-1">
           <div className="p-2 md:space-y-6 sm:p-8 w-full">
             <h1 className="text-6xl font-bold leading-tight tracking-tight text-gray-900 md:text-6xl dark:text-white">

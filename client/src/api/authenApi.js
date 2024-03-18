@@ -1,5 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
+import { showSuccessAlert } from "../utils/SwalAlert.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -19,14 +20,15 @@ export const useAuthenticate = () => {
   const signUp = async (email, password) => {
     setError("");
     try {
+      setLoading(true);
       const response = await axios.post(`${baseURL}/signup`, {
         email: email,
         password: password,
       });
+      setLoading(false)
       Swal.fire({
         icon: "success",
-        title: "Success!",
-        text: "Signup successful.",
+        title: "Register successful!",
         showConfirmButton: true,
         confirmButtonText: "Go to login ->",
       }).then((result) => {
@@ -37,9 +39,10 @@ export const useAuthenticate = () => {
       console.log("success create user: ", response);
       return response;
     } catch (error) {
+      setLoading(false)
       console.log("error sign up: ", error);
       if (error.response) {
-        setError(error.response.data.RespMessage);
+        setError(error.response.data.ResponseMessage);
       } else {
         throw error;
       }
@@ -67,16 +70,11 @@ export const useAuthenticate = () => {
             JSON.stringify({ userName: user, uid: userUid })
           );
           console.log("Success login and this is user", user);
-          await Swal.fire({
-            icon: "success",
-            title: "You are now sign in!",
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          await showSuccessAlert("You are now sign in!");
+          setLoading(false);
           navigate("/");
           window.location.reload();
         }
-        setLoading(false);
         return result;
       } else {
         setLoading(true);
@@ -91,12 +89,8 @@ export const useAuthenticate = () => {
               JSON.stringify({ userName: user.email, uid: user.uid })
             );
             console.log("Success login and this is user", user);
-            await Swal.fire({
-              icon: "success",
-              title: "You are now sign in!",
-              showConfirmButton: false,
-              timer: 1500,
-            });
+            await showSuccessAlert("You are now sign in!");
+            setLoading(false);
             navigate("/");
             window.location.reload();
             return user;
@@ -128,12 +122,7 @@ export const useAuthenticate = () => {
           confirmButtonText: "Sign out",
         }).then(async (result) => {
           if (result.isConfirmed) {
-            await Swal.fire({
-              icon: "success",
-              title: "You are now sign out!",
-              showConfirmButton: false,
-              timer: 1500,
-            });
+            await showSuccessAlert("You are now sign out!");
             navigate("/");
             localStorage.clear();
             window.location.reload();

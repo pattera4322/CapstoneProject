@@ -2,10 +2,7 @@ const { app, port, host } = require("./config/expressSetup");
 const { uploadFile, getFile, deleteFile } = require("./handler/fileHandler");
 const { upload } = require("./config/firebaseConfig");
 const { analyze } = require("./handler/analyzeHandler");
-const {
-  signUpUser,
-  authenticateJWT,
-} = require("./handler/authenHandler");
+const { signUpUser, authenticateJWT } = require("./handler/authenHandler");
 const { enqueueData, getQueues } = require("./handler/queueHandler");
 const {
   saveData,
@@ -56,26 +53,34 @@ let isRunning = false;
 const requestQueue = [];
 app.post("/api/analyze/:userid/:fileid", authenticateJWT, async (req, res) => {
   const { userid, fileid } = req.params;
-  const state = "wait"
+  const state = "wait";
   requestQueue.push({ userid, fileid, state });
-  await enqueueData(requestQueue);
-  res.status(200).json({
-    ResponseCode: 200,
-    ResponseMessage: "Send data to analyze in queue successfully.",
-  });
-  console.log(requestQueue);
-  if (requestQueue.length === 1) {
-    isRunning = false;
-  }
-  console.log(isRunning);
-  if (isRunning) {
-    return;
-  }
-  socketJobProgress.emit("authenticate", {
-    userId: userid,
-    isFromClient: false,
-  });
-  isRunning = analyze(requestQueue);
+  await enqueueData(requestQueue)
+    .then(() => {
+      res.status(200).json({
+        ResponseCode: 200,
+        ResponseMessage: "Send data to analyze in queue successfully.",
+      });
+      console.log(requestQueue);
+      if (requestQueue.length === 1) {
+        isRunning = false;
+      }
+      console.log(isRunning);
+      if (isRunning) {
+        return;
+      }
+      socketJobProgress.emit("authenticate", {
+        userId: userid,
+        isFromClient: false,
+      });
+      isRunning = analyze(requestQueue);
+    })
+    .catch((error) => {
+      res.status(500).json({
+        ResponseCode: 500,
+        ResponseMessage: "Internal server error.",
+      });
+    });
 });
 
 app.delete("/api/file/:userid/:fileid", authenticateJWT, (req, res) => {
