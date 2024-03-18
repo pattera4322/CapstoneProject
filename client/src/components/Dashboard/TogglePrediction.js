@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState } from "react";
+import "./TogglePrediction.css";
 
 const TogglePrediction = ({ label, defaultChecked, onToggle }) => {
   const [isChecked, setIsChecked] = useState(defaultChecked);
@@ -10,19 +11,29 @@ const TogglePrediction = ({ label, defaultChecked, onToggle }) => {
   };
 
   return (
-    <div className="">
-      <label className="relative inline-flex items-center cursor-pointer">
-        <input
-          type="checkbox"
-          className="sr-only peer"
-          checked={isChecked}
-          onChange={handleToggle}
-        />
-        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2.2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-[#0068D2]"></div>
-        <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{label}</span>
+    <div class="checkbox-wrapper-35">
+      <input
+        value="private"
+        name="switch"
+        id="switch"
+        type="checkbox"
+        class="switch"
+        checked={isChecked}
+        onChange={handleToggle}
+      />
+      <label for="switch">
+        <span class="switch-x-text">Prediction is </span>
+        <span class="switch-x-toggletext">
+          <span class="switch-x-unchecked">
+            <span class="switch-x-hiddenlabel">Unchecked: </span>Off
+          </span>
+          <span class="switch-x-checked">
+            <span class="switch-x-hiddenlabel">Checked: </span>On
+          </span>
+        </span>
       </label>
     </div>
   );
-}
+};
 
 export default TogglePrediction;
