@@ -29,8 +29,8 @@ function HomePage() {
           <p>complex tasks and optimizing workflows with our</p>
           <p>predictive stocking data.</p>
         </div>
-        <div className="grid grid-cols-2 gap-2 pr-8 pt-8 sm:pt-10 pb-10 bg-no-repeat bg-bottom bg-auto">
-          <span >
+        <div className="grid grid-cols-2 gap-2 pt-8 sm:pt-10 pb-10 bg-no-repeat bg-bottom bg-auto">
+          <span>
             <Button3D
               onClick={toggleInstruction}
               children={"Read Instructions"}
