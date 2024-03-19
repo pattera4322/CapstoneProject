@@ -1,6 +1,6 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { showSuccessAlert } from "../utils/SwalAlert.js";
+import { showSuccessAlert,showErrorAlertWithRefresh } from "../utils/SwalAlert.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -96,10 +96,13 @@ export const useAuthenticate = () => {
             return user;
           })
           .catch((error) => {
+            setLoading(false);
             const errorCode = error.code;
             const errorMessage = error.message;
             if (errorCode === "auth/invalid-credential") {
               setError("Incorrect username or password");
+            }else if (errorCode === 'auth/network-request-failed'){
+              showErrorAlertWithRefresh("Internet Connection")
             }
             console.log("Login failed with: ", errorCode, errorMessage);
           });
