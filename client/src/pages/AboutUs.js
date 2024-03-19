@@ -29,11 +29,16 @@ const AboutUs = () => {
 
       <div className="grid grid-cols-2 col-span-1 transition-transform duration-1000">
         <div className="flex-col justify-between items-end">
-          <img
-            src={process.env.PUBLIC_URL + "/assets/Max.svg"}
-            alt="SmartStock Log in"
-            className="lg:w-64 3xl:w-80 mb-16"
-          />
+          <div className="relative">
+            <img
+              src={process.env.PUBLIC_URL + "/assets/Max.svg"}
+              alt="SmartStock Log in"
+              className="lg:w-64 3xl:w-80 mb-16"
+            />
+            {/* <div className="absolute left-0 lg:w-30 3xl:w-80 h-64 inset-x-0 bottom-0 bg-gray-800 bg-opacity-75 text-white flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+              Hover Text
+            </div> */}
+          </div>
           <img
             src={process.env.PUBLIC_URL + "/assets/Mint.svg"}
             alt="SmartStock Log in"

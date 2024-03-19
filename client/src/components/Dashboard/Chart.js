@@ -214,7 +214,7 @@ const Chart = ({
         <InfoPopup infoText={infoChart} />
       </div>
 
-      <div className="text-right">
+      {/* <div className="text-right">
         <ButtonComponent
           onClick={handleDownload}
           children={
@@ -230,7 +230,7 @@ const Chart = ({
             </div>
           }
         />
-      </div>
+      </div> */}
 
       <div className="flex-grow flex flex-col items-center justify-center h-[95%] scroll-auto">
         {/* <Line data={chartData} options={options} /> */}

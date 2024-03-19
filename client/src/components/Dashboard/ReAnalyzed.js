@@ -3,7 +3,8 @@ import { Button, Input} from "@material-tailwind/react";
 import { updateUserInsight } from "../../api/userInsightApi.js";
 
 const ReAnalyzed = ({ handleClose, userData, fileId}) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(
+    localStorage.getItem("askingItems")? JSON.parse(localStorage.getItem("askingItems")) : {
     days: 90,
     salesGoal: 1,
     riskLevel: [0, 0],

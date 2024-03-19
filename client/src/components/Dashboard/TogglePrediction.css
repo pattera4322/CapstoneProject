@@ -97,7 +97,7 @@
   }
   
   .checkbox-wrapper-35 .switch:checked + label::before {
-    background-color: #d2ac00;
+    background-color: #0068D2;
   }
   
   .checkbox-wrapper-35 .switch:checked + label::after {

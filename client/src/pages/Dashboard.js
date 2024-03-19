@@ -12,6 +12,7 @@ import TogglePrediction from "../components/Dashboard/TogglePrediction";
 import { getUserHistory } from "../api/userHistoryApi";
 import { getNews } from '../api/newsApi';
 import ReAnalyzed from "../components/Dashboard/ReAnalyzed";
+import { saveAs } from "file-saver";
 
 import html2canvas from "html2canvas";
 import {
@@ -186,6 +187,30 @@ const Dashboard = ({}) => {
       return activeTab==1? (analyzedData.historyData.history.evalTotalSales[selectedProduct].MSE)*100 : (analyzedData.historyData.history.evalQuantity[selectedProduct].MSE)*100
     }
   }
+
+  const generateCSVData = (data) => {
+    let csvContent = `Date,${activeTab === 1? "sales": "quantity"}PredictedValue\n`;
+    console.log("seees", data);
+    data.labels.forEach((label, index) => {
+      const predicted = data.datasets[1].data[index];
+      if (predicted !== "undefined") {
+        csvContent += `"${label}",${predicted}\n`;
+      }
+    });
+
+    return csvContent;
+  };
+
+  const handleDownload = () => {
+    // const base64Image = chartRef.current.toBase64Image();
+    // saveAs(base64Image, `${activeTab === 1? "sales": "quantity"}ForecastGraph.png`);
+
+    // Download graph data
+    const chartData = activeTab === 1? [...actualSalesData, ...analyzedSalesData]:[...actualQuantityData, ...analyzedQuantityData]
+    const csvData = generateCSVData(chartData);
+    const blob = new Blob([csvData], { type: "text/csv" });
+    saveAs(blob, `${activeTab === 1? "sales": "quantity"}_graph_data.csv`);
+  };
 
   return (
     <div>
@@ -471,7 +496,7 @@ const Dashboard = ({}) => {
           <div className="flex mt-4 ml-auto">
             <div>
               <ButtonComponent
-                onClick={handleScreenshot}
+                onClick={handleDownload}
                 children={
                   <div>
                     <svg
