@@ -4,7 +4,7 @@ import { useLocation, NavLink } from "react-router-dom";
 import RelatedNews from "../components/Dashboard/RelatedNews";
 import Goal from "../components/Dashboard/Goal";
 import ProductPieChart from "../components/Dashboard/ProductPieChart";
-import ButtonComponent from "../components/Button";
+import ButtonComponent from "../components/Button/Button";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
 import DropdownFilter from "../components/Dashboard/Filter";

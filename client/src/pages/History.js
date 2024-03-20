@@ -3,10 +3,11 @@ import { socketJobProgress } from "../config/socketClient";
 import { getQueues } from "../api/analyzeApi";
 import JobComponent from "../components/History/JobComponent";
 import { useLocation, NavLink, useNavigate } from "react-router-dom";
-import ButtonComponent from "../components/Button";
+import ButtonComponent from "../components/Button/Button";
 import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
 import { getUserHistories } from "../api/userHistoryApi";
+import LoadingPage from "../components/LoadingPage";
 
 const History = () => {
   const navigate = useNavigate();
@@ -15,11 +16,12 @@ const History = () => {
   const [completedAnalyzed, setCompletedAnalyzed] = useState([]);
   const [queuesData, setQueuesData] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
-  const [completedArray, setCompletedArray] = useState([]);
-  const [errorArray, setErrorArray] = useState([]);
+  // const [completedArray, setCompletedArray] = useState([]);
+  // const [errorArray, setErrorArray] = useState([]);
 
   const { progressData, setProgressData } = useProgress();
   const [isStart, setIsStart] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [text, setText] = useState("");
   const [clickedTabs, setClickedTabs] = useState(
@@ -32,6 +34,7 @@ const History = () => {
 
   useEffect(() => {
     if (isStart === false) {
+      setIsLoading(true);
       getQueues()
         .then((res) => {
           setQueuesData(res);
@@ -41,19 +44,23 @@ const History = () => {
           }
         })
         .catch((error) => {
+          setIsLoading(false);
           if (error.response && error.response.status === 404) {
             setQueuesData([]);
           }
           console.log(error);
         });
-
+        
+      setIsLoading(true);
       getUserHistories()
         .then((res) => {
           setCompletedAnalyzed(res.data);
           console.log(res.data);
           setIsStart(true);
+          setIsLoading(false);
         })
         .catch((error) => {
+          setIsLoading(false);
           console.log(error);
         });
     }
@@ -86,27 +93,27 @@ const History = () => {
   }, [isStart]);
 
   useEffect(() => {
-    const filteredCompletedArray = completedAnalyzed.filter(
-      (item) => item.errorMessage === undefined
-    );
-    const filteredErrorArray = completedAnalyzed.filter(
-      (item) => item.errorMessage !== undefined
-    );
-    setCompletedArray(filteredCompletedArray);
-    setErrorArray(filteredErrorArray);
+    // const filteredCompletedArray = completedAnalyzed.filter(
+    //   (item) => item.errorMessage === undefined
+    // );
+    // const filteredErrorArray = completedAnalyzed.filter(
+    //   (item) => item.errorMessage !== undefined
+    // );
+    // setCompletedArray(filteredCompletedArray);
+    // setErrorArray(filteredErrorArray);
     switch (activeTab) {
       case 1:
         setFilteredJobs(queuesData);
         setText("Analyzing data in queue yet");
         break;
       case 2:
-        setFilteredJobs(filteredCompletedArray);
+        setFilteredJobs(completedAnalyzed);
         setText("Completed data yet");
         break;
-      case 3:
-        setFilteredJobs(filteredErrorArray);
-        setText("failed data");
-        break;
+      // case 3:
+      //   setFilteredJobs(filteredErrorArray);
+      //   setText("failed data");
+      //   break;
       default:
         setFilteredJobs(completedAnalyzed);
     }
@@ -173,10 +180,11 @@ const History = () => {
 
   return (
     <div>
+      <div><LoadingPage loading={isLoading}/></div>
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 pt-20 pr-8 pl-8">
         {renderTab(1, "On Analyzing")}
-        {renderTab(2, "Analyzed success")}
-        {renderTab(3, "Analyze Failed")}
+        {renderTab(2, "Analyzed Data")}
+        {/* {renderTab(3, "Analyze Failed")} */}
       </ul>
       <div className="flex justify-end mx-16 mt-8">
         <div className="">

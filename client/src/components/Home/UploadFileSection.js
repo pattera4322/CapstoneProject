@@ -139,7 +139,7 @@ const SelectData = ({ sendfileData }) => {
       .catch((error) => {
         setShowLoadingPage(false);
         if (error.response && error.response.status === 404) {
-          showErrorAlert("Not have this file in storage","");
+          showErrorAlert("Not have this file in storage", "");
         } else {
           console.error("Error deleting file:", error);
         }
@@ -170,7 +170,19 @@ const SelectData = ({ sendfileData }) => {
               }}
               className={activeTab === value ? "text-gray-900" : ""}
             >
-              {label}
+              <span
+                className={
+                  fileName && fileName[value] ? "bg-red-100 p-1 px-3 rounded-full" : "bg-green-100 p-1 px-3 rounded-full"
+                }
+              >
+               SLOT {value}
+              </span>
+
+              {fileName && fileName[value] ? (
+                <div>{label}</div>
+              ) : (
+                <div className="text-gray-500">EMPTY</div>
+              )}
             </Tab>
           ))}
         </TabsHeader>

@@ -9,6 +9,7 @@ const showErrorAlertWithRefresh = (error) => {
     title: `${error} Error`,
     text: "Something went wrong! Please refresh the page",
     confirmButtonText: "Refresh",
+    allowOutsideClick: false,
   }).then((result) => {
     if (result.isConfirmed) {
       handleRefresh();
@@ -28,6 +29,7 @@ const showExpiredTokenAlert = () => {
     title: "Your session has expired.",
     text: "Please log in again to continue use our website",
     confirmButtonText: "Login again",
+    allowOutsideClick: false,
   }).then((result) => {
     if (result.isConfirmed) {
       handleConfirmButton();
@@ -37,19 +39,19 @@ const showExpiredTokenAlert = () => {
 
 const showSuccessAlert = async (title) => {
   await Swal.fire({
-    icon:'success',
+    icon: "success",
     title: `${title}`,
     showConfirmButton: false,
     timer: 1500,
   });
 };
 
-const showErrorAlert = async (title,text) => {
+const showErrorAlert = async (title, text) => {
   await Swal.fire({
     icon: "error",
     title: `${title}`,
-    text:`${text}`,
-    showConfirmButton: false
+    text: `${text}`,
+    showConfirmButton: false,
   });
 };
 
@@ -57,5 +59,5 @@ export {
   showErrorAlert,
   showExpiredTokenAlert,
   showSuccessAlert,
-  showErrorAlertWithRefresh
+  showErrorAlertWithRefresh,
 };

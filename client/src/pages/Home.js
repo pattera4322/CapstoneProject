@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "../index.css";
 import StepperSection from "../components/Home/Stepper";
 import DetailSection from "../components/Home/DetailSection";
-import Button3D from "../components/Button3D";
+import Button3D from "../components/Button/Button3D";
 
 function HomePage() {
   const StepSection = useRef(null);
@@ -29,8 +29,8 @@ function HomePage() {
           <p>complex tasks and optimizing workflows with our</p>
           <p>predictive stocking data.</p>
         </div>
-        <div className="grid grid-cols-2 gap-2 pr-8 pt-8 sm:pt-10 pb-10 bg-no-repeat bg-bottom bg-auto">
-          <span >
+        <div className="pr-8 pt-8 sm:pt-10 pb-10 bg-no-repeat bg-bottom bg-auto">
+          <span className="pr-4 py-4">
             <Button3D
               onClick={toggleInstruction}
               children={"Read Instructions"}
@@ -55,7 +55,7 @@ function HomePage() {
           />
         </div>
       ) : null}
-      
+
       {toggleIn ? (
         <div
           className={`pl-0 pr-24 pt-24 opacity-100 transition-opacity duration-1000`}

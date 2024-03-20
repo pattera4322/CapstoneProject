@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Line, toBase64Image } from "react-chartjs-2";
 import InfoPopup from "../../components/Home/InfoPopup";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../Button/Button";
 import { saveAs } from "file-saver";
 // import ChartjsPluginScrollBar from 'chartjs-plugin-scroll-bar';
 
