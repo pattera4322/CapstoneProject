@@ -204,17 +204,17 @@ const Chart = ({
   const infoChart = `The prediction fit ${getR2score} % to data and estimate error of predicetion data is ${getMSEscore} `;
 
   return (
-    <div className="h-full overflow-hidden">
-      <div className="text-left pl-5">
-        <label className="pb-2 font-bold">
-          {predictedColumn === "quantity"
-            ? "Inventory Forecast"
-            : "Retail Sales Forecast"}
-        </label>
-        <InfoPopup infoText={infoChart} />
-      </div>
+      <div className="h-full overflow-auto">
+        <div className="text-left pl-5">
+          <label className="pb-2 font-bold">
+            {predictedColumn === "quantity"
+              ? "Inventory Forecast"
+              : "Retail Sales Forecast"}
+          </label>
+          <InfoPopup infoText={infoChart} />
+        </div>
 
-      {/* <div className="text-right">
+        {/* <div className="text-right">
         <ButtonComponent
           onClick={handleDownload}
           children={
@@ -232,30 +232,31 @@ const Chart = ({
         />
       </div> */}
 
-      <div className="flex-grow flex flex-col items-center justify-center h-[95%] scroll-auto">
-        {/* <Line data={chartData} options={options} /> */}
-        {togglePredicted === true ? (
-          <Line
-            ref={chartRef}
-            data={chartData}
-            options={options}
-            className=""
-          />
-        ) : chartData.datasets && chartData.datasets.length >= 2 ? (
-          <Line
-            ref={chartRef}
-            data={{
-              labels: chartData.labels,
-              datasets: [chartData.datasets[0]], // Only using the first dataset (Actual Data)
-            }}
-            options={options}
-            className=""
-          />
-        ) : (
-          <Line data={chartData} options={options} className="" />
-        )}
+        <div className="flex-grow flex flex-col items-center justify-center h-[95%] w-[250%]">
+          {/* <div className="chart-container" style={{ overflowX: "auto", width: "150%",height: "100%", padding: "0 20px" }}> */}
+          {/* <Line data={chartData} options={options} /> */}
+          {togglePredicted === true ? (
+            <Line
+              ref={chartRef}
+              data={chartData}
+              options={options}
+              className=""
+            />
+          ) : chartData.datasets && chartData.datasets.length >= 2 ? (
+            <Line
+              ref={chartRef}
+              data={{
+                labels: chartData.labels,
+                datasets: [chartData.datasets[0]], // Only using the first dataset (Actual Data)
+              }}
+              options={options}
+              className=""
+            />
+          ) : (
+            <Line data={chartData} options={options} className="" />
+          )}
 
-        {/* <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+          {/* <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
           <li>
             <Button className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
               1 Year
@@ -272,8 +273,8 @@ const Chart = ({
             </Button>
           </li>
         </ul> */}
+        </div>
       </div>
-    </div>
   );
 };
 
