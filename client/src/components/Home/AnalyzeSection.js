@@ -3,7 +3,7 @@ import { analyzeData } from "../../api/analyzeApi";
 import { postUserInsight } from "../../api/userInsightApi.js";
 import { useNavigate } from "react-router-dom";
 import Popup from "../Popup";
-import Button3D from "../Button3D.js";
+import Button3D from "../Button/Button3D.js";
 
 const Analyzing = ({ fileId }) => {
   const navigate = useNavigate();

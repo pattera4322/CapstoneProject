@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Input, Radio, Typography } from "@material-tailwind/react";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../Button/Button";
 
 
 const DownloadTemplate = () => {

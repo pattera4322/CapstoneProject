@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Line, toBase64Image } from "react-chartjs-2";
 import InfoPopup from "../../components/Home/InfoPopup";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../Button/Button";
 import { saveAs } from "file-saver";
 // import ChartjsPluginScrollBar from 'chartjs-plugin-scroll-bar';
 
@@ -13,10 +13,12 @@ const Chart = ({
   togglePredicted,
   getR2score,
   getMSEscore,
+  onBase64ImageGenerated
 }) => {
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
+  const [image, setImage] = useState(null)
   const chartRef = useRef(null);
   // Line.register(ChartjsPluginScrollBar);
 
@@ -93,6 +95,17 @@ const Chart = ({
     setPredictedArray(actualDataMergePredicted);
     setActualArray(arrayActual);
     setFormattedDates(mergedDateArray);
+
+    if(image === null){
+      const base64Image = chartRef.current.toBase64Image();
+      onBase64ImageGenerated(base64Image)
+      setImage(base64Image)
+      console.log("base64 in chart", base64Image)
+    }else{
+      onBase64ImageGenerated(image)
+      console.log("base64 in chart exist", image)
+    }
+    
   }, [predictedData, predictedColumn]);
 
   const chartData = {
@@ -178,28 +191,29 @@ const Chart = ({
     return uniqueDates;
   }
 
-  const generateCSVData = (data) => {
-    let csvContent = `Date,${predictedColumn}PredictedValue\n`;
-    console.log("seees", data);
-    data.labels.forEach((label, index) => {
-      const predicted = data.datasets[1].data[index];
-      if (predicted !== "undefined") {
-        csvContent += `"${label}",${predicted}\n`;
-      }
-    });
+  // const generateCSVData = (data) => {
+  //   let csvContent = `Date,${predictedColumn}PredictedValue\n`;
+  //   console.log("seees", data);
+  //   data.labels.forEach((label, index) => {
+  //     const predicted = data.datasets[1].data[index];
+  //     if (predicted !== "undefined") {
+  //       csvContent += `"${label}",${predicted}\n`;
+  //     }
+  //   });
 
-    return csvContent;
-  };
+  //   return csvContent;
+  // };
 
-  const handleDownload = () => {
-    const base64Image = chartRef.current.toBase64Image();
-    saveAs(base64Image, `${predictedColumn}ForecastGraph.png`);
+  // const handleDownload = () => {
+  //   const base64Image = chartRef.current.toBase64Image();
+  //   console.log("base64",base64Image)
+  //   saveAs(base64Image, `${predictedColumn}ForecastGraph.png`);
 
-    // Download graph data
-    const csvData = generateCSVData(chartData);
-    const blob = new Blob([csvData], { type: "text/csv" });
-    saveAs(blob, `${predictedColumn}_graph_data.csv`);
-  };
+  //   // Download graph data
+  //   const csvData = generateCSVData(chartData);
+  //   const blob = new Blob([csvData], { type: "text/csv" });
+  //   saveAs(blob, `${predictedColumn}_graph_data.csv`);
+  // };
 
   const infoChart = `The prediction fit ${getR2score} % to data and estimate error of predicetion data is ${getMSEscore} `;
 

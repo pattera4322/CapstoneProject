@@ -1,7 +1,8 @@
 import React from "react";
 import ProgressBar from "../ProgressBar";
 import { useNavigate } from "react-router-dom";
-import ButtonComponent from "../Button";
+import ButtonComponent from "../Button/Button";
+import DeleteButton from "../Button/DeleteButton";
 
 const JobComponent = ({ job, progressData, index, userIdFromLocal }) => {
   const navigate = useNavigate();
@@ -18,13 +19,21 @@ const JobComponent = ({ job, progressData, index, userIdFromLocal }) => {
     }
   };
 
+  const handleCancelQueue = () => {};
+
   return (
     <div
       key={index}
       className={`transition ease-in-out hover:-translate-y-1 hover:scale-10 mx-16 my-8 px-8 py-8 rounded-md text-left shadow-[0px_10px_1px_rgba(221,221,221,1),0_10px_20px_rgba(204,204,204,1)]`}
     >
+      {isJobWaiting && <div className="">
+        <DeleteButton onClick={handleCancelQueue} children={"Cancel"} />
+      </div>}
+
       {isJobProgress || isJobWaiting ? <div>IN QUEUE: {index + 1}</div> : null}
-      <div>FILE ID: {isJobProgress || isJobWaiting ? job.fileid : job.id}</div>
+
+      <div>SLOT ID: {isJobProgress || isJobWaiting ? job.fileid : job.id}</div>
+      
       {isJobCompleted || isJobFailed ? (
         <div>FILE NAME: {job.fileName || "Not found file name"}</div>
       ) : null}

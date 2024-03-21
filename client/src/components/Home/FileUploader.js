@@ -7,6 +7,7 @@ import ProgressBar from "../ProgressBar.js";
 import Popup from "../Popup.js";
 import { showErrorAlert } from "../../utils/SwalAlert.js";
 import { updateUserData, postUserData } from "../../api/userDataApi";
+import DeleteButton from "../Button/DeleteButton.js";
 
 const FileUpload = ({
   index,
@@ -264,15 +265,7 @@ const FileUpload = ({
                   Preview data
                   {isHasFile ? (
                     <div className="ml-auto">
-                      <button onClick={handleButtonClick}>
-                        <img
-                          src={
-                            process.env.PUBLIC_URL + "/assets/deleteIcon.svg"
-                          }
-                          className="h-8 mr-2 sm:mr-4"
-                          alt="deleteIcon"
-                        />
-                      </button>
+                      <DeleteButton onClick={handleButtonClick} children={"Delete"}/>
                     </div>
                   ) : (
                     <div></div>
@@ -280,12 +273,12 @@ const FileUpload = ({
                 </span>
               </div>
               <div className="w-full overflow-auto">
-                <table className="w-full text-m text-left text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-left text-white uppercase bg-[#0068D2]">
+                <table className="w-full text-m text-left text-gray-500 dark:text-gray-400 bg-white">
+                  <thead className="text-xs text-left text-white uppercase bg-[#0068D2] shadow-lg rounded-lg">
                     <tr>
                       {data[0] &&
                         Object.keys(data[0]).map((header, index) => (
-                          <th className="pr-12" key={index}>
+                          <th className="pl-2 pr-12 py-2 " key={index}>
                             {header}
                           </th>
                         ))}
@@ -295,7 +288,7 @@ const FileUpload = ({
                     {data.map((row, rowIndex) => (
                       <tr key={rowIndex}>
                         {Object.values(row).map((cell, cellIndex) => (
-                          <td key={cellIndex}>
+                          <td className="pl-2 border-y-2 border-gray-200 py-2" key={cellIndex}>
                             {cell instanceof Date
                               ? cell.toLocaleDateString()
                               : formatDateString(cell)}

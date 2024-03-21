@@ -6,10 +6,10 @@ const Button3D = ({ onClick = () => {}, children }) => {
   };
 
   return (
-    <button class="pushable" onClick={handleButtonClick}>
-      <span class="shadow"></span>
-      <span class="edge"></span>
-      <span class="front">{children}</span>
+    <button className="pushable" onClick={handleButtonClick}>
+      <span className="shadow"></span>
+      <span className="edge"></span>
+      <span className="front">{children}</span>
     </button>
   );
 };

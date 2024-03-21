@@ -1,0 +1,94 @@
+.bin-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: rgb(87, 89, 97);
+  cursor: pointer;
+  /* border: 2px solid rgb(255, 201, 201); */
+  transition-duration: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.bin-bottom {
+  width: 15px;
+  z-index: 2;
+}
+.bin-top {
+  width: 17px;
+  transform-origin: right;
+  transition-duration: 0.3s;
+  z-index: 2;
+}
+
+.bin-button:hover .bin-top {
+  transform: rotate(45deg);
+}
+
+.sign {
+  transition-duration: 0.3s;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.bin-button:hover .sign {
+  width: 70%;
+  transition-duration: 0.3s;
+  padding-left: 2px;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+}
+
+.bin-button:hover {
+  background-color: rgb(251, 70, 70);
+  width: 130px;
+  border-radius: 50px;
+  transition-duration: 0.3s;
+}
+.bin-button:active {
+  transform: scale(0.9);
+}
+.garbage {
+  position: absolute;
+  width: 14px;
+  height: auto;
+  z-index: 1;
+  opacity: 0;
+  transition: all 0.3s;
+}
+.bin-button:hover .garbage {
+  animation: throw 0.4s linear;
+}
+
+.bin-button:hover .text {
+  opacity: 1;
+  width: 70%;
+  transition-duration: 0.3s;
+  padding-right: 10px;
+}
+
+@keyframes throw {
+  from {
+    transform: translate(-400%, -700%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0%, 0%);
+    opacity: 1;
+  }
+}
+
+.text {
+  position: absolute;
+  right: 0%;
+  width: 0%;
+  opacity: 0;
+  color: white;
+  transition-duration: 0.3s;
+}

@@ -4,7 +4,7 @@ import { useLocation, NavLink } from "react-router-dom";
 import RelatedNews from "../components/Dashboard/RelatedNews";
 import Goal from "../components/Dashboard/Goal";
 import ProductPieChart from "../components/Dashboard/ProductPieChart";
-import ButtonComponent from "../components/Button";
+import ButtonComponent from "../components/Button/Button";
 import NumberOfProducts from "../components/Dashboard/NumberOfProducts";
 import Analyzed from "../components/Dashboard/Analyzed";
 import DropdownFilter from "../components/Dashboard/Filter";
@@ -13,6 +13,7 @@ import { getUserHistory } from "../api/userHistoryApi";
 import { getNews } from '../api/newsApi';
 import ReAnalyzed from "../components/Dashboard/ReAnalyzed";
 import { saveAs } from "file-saver";
+import { toBase64Image } from "react-chartjs-2";
 
 import html2canvas from "html2canvas";
 import {
@@ -48,6 +49,7 @@ const Dashboard = ({}) => {
   const [togglePredicted, setTogglePredicted] = useState(true);
   const [keywords, setKeywords] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [baseImage, setBaseImage] = useState();
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -147,22 +149,22 @@ const Dashboard = ({}) => {
     setFilteredActualQuantityData(filteredActualQuantityData);
   };
 
-  const handleScreenshot = () => {
-    const rootElement = document.getElementById("root");
-    if (rootElement) {
-      html2canvas(rootElement).then((canvas) => {
-        const imageData = canvas.toDataURL("image/png");
+  // const handleScreenshot = () => {
+  //   const rootElement = document.getElementById("root");
+  //   if (rootElement) {
+  //     html2canvas(rootElement).then((canvas) => {
+  //       const imageData = canvas.toDataURL("image/png");
 
-        const downloadLink = document.createElement("a");
-        downloadLink.href = imageData;
-        downloadLink.download = "screenshot.png";
+  //       const downloadLink = document.createElement("a");
+  //       downloadLink.href = imageData;
+  //       downloadLink.download = "screenshot.png";
 
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-      });
-    }
-  };
+  //       document.body.appendChild(downloadLink);
+  //       downloadLink.click();
+  //       document.body.removeChild(downloadLink);
+  //     });
+  //   }
+  // };
 
   const handleReAnalyzed = () => {
     setShowPopup(true); 
@@ -188,28 +190,53 @@ const Dashboard = ({}) => {
     }
   }
 
-  const generateCSVData = (data) => {
-    let csvContent = `Date,${activeTab === 1? "sales": "quantity"}PredictedValue\n`;
-    console.log("seees", data);
-    data.labels.forEach((label, index) => {
-      const predicted = data.datasets[1].data[index];
-      if (predicted !== "undefined") {
-        csvContent += `"${label}",${predicted}\n`;
-      }
+  const generateCSVData = (actualData,predictedData) => {
+    const renamedActualData = actualData.map(item => ({
+      date: item.date._seconds,
+      product: item.productName,
+      totalSales: item.totalSales
+    }));
+
+    const renamedAnalyzedSalesData = predictedData.map(item => ({
+      date: item.date._seconds,
+      product: item.Product,
+      totalSales: item.Predicted_totalSales
+    }));
+    const combinedData = renamedActualData.concat(renamedAnalyzedSalesData);
+    let csvContent = `date,product,${activeTab === 1? "totalSales": "quantity"}\n`;
+    combinedData.forEach(item => {
+        csvContent += `${ new Date(item.date)},${item.product},${item.totalSales}\n`;
     });
 
     return csvContent;
   };
 
+  const handleBase64ImageGenerated = (imageData) => {
+    // html2canvas(imageData)
+    //   .then((canvas) => {
+    //     // Convert the canvas to a data URL
+    //     const imageDataUrl = canvas.toDataURL('image/png');
+    //     setBaseImage(imageDataUrl)
+
+    //     // Optionally, you can save the data URL to state or perform further actions
+    //     console.log('Image data URL:', imageDataUrl);
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error capturing chart:', error);
+    //   });
+    setBaseImage(imageData);
+    console.log(`Base64 in Dashboard`,baseImage)
+  };
+
   const handleDownload = () => {
-    // const base64Image = chartRef.current.toBase64Image();
-    // saveAs(base64Image, `${activeTab === 1? "sales": "quantity"}ForecastGraph.png`);
+    saveAs(baseImage, `${activeTab === 1? "sales": "quantity"}ForecastGraph.png`);
 
     // Download graph data
-    const chartData = activeTab === 1? [...actualSalesData, ...analyzedSalesData]:[...actualQuantityData, ...analyzedQuantityData]
-    const csvData = generateCSVData(chartData);
+    // const allData = activeTab === 1? [...actualSalesData, ...analyzedSalesData]:[...actualQuantityData, ...analyzedQuantityData]
+    const csvData = generateCSVData(activeTab === 1?actualSalesData:actualQuantityData,activeTab === 1?analyzedSalesData:analyzedQuantityData);
     const blob = new Blob([csvData], { type: "text/csv" });
-    saveAs(blob, `${activeTab === 1? "sales": "quantity"}_graph_data.csv`);
+    saveAs(blob, `${activeTab === 1? "sales": "quantity"}_forecast_data.csv`);
+    console.log(`Download`)
   };
 
   return (
@@ -300,6 +327,7 @@ const Dashboard = ({}) => {
                   togglePredicted={togglePredicted}
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
+                  onBase64ImageGenerated={(imageData) => setBaseImage(imageData)}
                 />
               )}
             </div>
@@ -361,7 +389,7 @@ const Dashboard = ({}) => {
           <div className="flex mt-4 ml-auto">
             <div>
               <ButtonComponent
-                onClick={handleScreenshot}
+                onClick={handleDownload}
                 children={
                   <div>
                     <svg
@@ -410,6 +438,7 @@ const Dashboard = ({}) => {
                   togglePredicted={togglePredicted}
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
+                  onBase64ImageGenerated={handleBase64ImageGenerated}
                 />
               )}
             </div>
