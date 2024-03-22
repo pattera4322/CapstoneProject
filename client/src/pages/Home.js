@@ -46,14 +46,24 @@ function HomePage() {
       {/* <div className={` grid grid-cols-subgrid gap-4 h-33  ${toggleIn ? "col-span-2 transition-transform -translate-x-10 duration-1000" : 'col-span-3 transition-transform translate-x-0 duration-1000'}`}> */}
       {!toggleIn ? (
         <div
-          className={`grid grid-cols-subgrid h-33 col-span-1 transition-transform translate-x-0 duration-1000`}
-        >
-          <img
-            src={process.env.PUBLIC_URL + "/assets/SmartStockHomeBG.svg"}
-            alt="SmartStock Home Image"
-            className="mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
-          />
-        </div>
+        className={`grid grid-cols-subgrid h-33 col-span-1 transition-transform translate-x-0 duration-1000 relative`}
+      >
+        <img
+          src={process.env.PUBLIC_URL + "/assets/SmartStockHomeBG.svg"}
+          alt="SmartStock Home Image"
+          className="inset-0 mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
+        />
+        <img
+          src={process.env.PUBLIC_URL + "/assets/Icon2.svg"}
+          alt="Icon1"
+          className="absolute mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl -mt-16 animate-floating"
+        />
+        <img
+          src={process.env.PUBLIC_URL + "/assets/Icon1.svg"}
+          alt="Icon1"
+          className="absolute mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl -mt-16 animate-floating-2"
+        />
+      </div>
       ) : null}
 
       {toggleIn ? (
