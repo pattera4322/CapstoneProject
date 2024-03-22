@@ -50,7 +50,7 @@ const History = () => {
           }
           console.log(error);
         });
-        
+
       setIsLoading(true);
       getUserHistories()
         .then((res) => {
@@ -161,11 +161,10 @@ const History = () => {
       <li className="mr-6" key={tabNumber}>
         <button
           onClick={() => onTabClick(tabNumber)}
-          className={`relative inline-block p-2 ${
-            activeTab === tabNumber
+          className={`relative inline-block p-2 ${activeTab === tabNumber
               ? "text-white bg-[#0068D2] rounded-t-lg"
               : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-          }`}
+            }`}
         >
           {badge && (
             <span className="absolute top-0 right-0 mt-0 mr-0">
@@ -180,7 +179,7 @@ const History = () => {
 
   return (
     <div>
-      <div><LoadingPage loading={isLoading}/></div>
+      <div><LoadingPage loading={isLoading} /></div>
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 pt-20 pr-8 pl-8">
         {renderTab(1, "On Analyzing")}
         {renderTab(2, "Analyzed Data")}
@@ -189,24 +188,31 @@ const History = () => {
       <div className="flex justify-end mx-16 mt-8">
         <div className="">
           <NavLink to="/">
-            <ButtonComponent onClick={() => {}} children={"Analyze More"} />
+            <ButtonComponent onClick={() => { }} children={"Analyze More"} />
           </NavLink>
         </div>
       </div>
-      {filteredJobs.length > 0 ? (
-        <div>
-          {filteredJobs.map((job, index) => (
-            <JobComponent
-              index={index}
-              job={job}
-              progressData={progressData}
-              userIdFromLocal={userId.uid}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="m-32 text-gray-500">Do not have {text}</div>
-      )}
+      <div className={`grid grid-cols-2 gap-4 content-center`}>
+        {filteredJobs.length > 0 ? (
+          <div>
+            {filteredJobs.map((job, index) => (
+              <JobComponent
+                index={index}
+                job={job}
+                progressData={progressData}
+                userIdFromLocal={userId.uid}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="m-32 text-gray-500">Do not have {text}</div>
+        )}
+        <img
+          src={process.env.PUBLIC_URL + "/assets/SmartStockHistoryBG.svg"}
+          alt="SmartStock Home Image"
+          className="inset-0 mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
+        />
+      </div>
     </div>
   );
 };

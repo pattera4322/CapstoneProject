@@ -35,7 +35,7 @@ const JobComponent = ({ job, progressData, index, userIdFromLocal }) => {
       <div>SLOT ID: {isJobProgress || isJobWaiting ? job.fileid : job.id}</div>
       
       {isJobCompleted || isJobFailed ? (
-        <div>FILE NAME: {job.fileName || "Not found file name"}</div>
+        <div style={{ wordWrap: 'break-word' }}>FILE NAME: {job.fileName || "Not found file name"}</div>
       ) : null}
 
       {job.errorMessage && <div>{job.errorMessage}</div>}
