@@ -11,7 +11,7 @@ const TogglePrediction = ({ label, defaultChecked, onToggle }) => {
   };
 
   return (
-    <div class="checkbox-wrapper-35">
+    <div className="checkbox-wrapper-35">
       <input
         value="private"
         name="switch"
@@ -22,13 +22,13 @@ const TogglePrediction = ({ label, defaultChecked, onToggle }) => {
         onChange={handleToggle}
       />
       <label for="switch">
-        <span class="switch-x-text">Prediction is </span>
-        <span class="switch-x-toggletext">
-          <span class="switch-x-unchecked">
-            <span class="switch-x-hiddenlabel">Unchecked: </span>Off
+        <span className="switch-x-text">Prediction is </span>
+        <span className="switch-x-toggletext">
+          <span className="switch-x-unchecked">
+            <span className="switch-x-hiddenlabel">Unchecked: </span>Off
           </span>
-          <span class="switch-x-checked">
-            <span class="switch-x-hiddenlabel">Checked: </span>On
+          <span className="switch-x-checked">
+            <span className="switch-x-hiddenlabel">Checked: </span>On
           </span>
         </span>
       </label>

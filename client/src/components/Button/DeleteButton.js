@@ -54,7 +54,7 @@ const DeleteButton = ({ onClick = () => {}, children }) => {
           ></path>
         </svg>
         </div>
-      <div class="text">{children}</div>
+      <div className="text">{children}</div>
     </button>
   );
 };
