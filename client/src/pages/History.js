@@ -162,8 +162,8 @@ const History = () => {
         <button
           onClick={() => onTabClick(tabNumber)}
           className={`relative inline-block p-2 ${activeTab === tabNumber
-              ? "text-white bg-[#0068D2] rounded-t-lg"
-              : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+            ? "text-white bg-[#0068D2] rounded-t-lg"
+            : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
             }`}
         >
           {badge && (
@@ -207,11 +207,20 @@ const History = () => {
         ) : (
           <div className="m-32 text-gray-500">Do not have {text}</div>
         )}
-        <img
-          src={process.env.PUBLIC_URL + "/assets/SmartStockHistoryBG.svg"}
-          alt="SmartStock Home Image"
-          className="inset-0 mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
-        />
+        <div
+          className={`grid grid-cols-subgrid h-33 col-span-1 transition-transform translate-x-0 duration-1000 relative`}
+        >
+          <img
+            src={process.env.PUBLIC_URL + "/assets/SmartStockHistoryBG.svg"}
+            alt="SmartStock Home Image"
+            className="inset-0 mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
+          />
+          <img
+            src={process.env.PUBLIC_URL + "/assets/SmartStockHistoryArmBG.svg"}
+            alt="SmartStock Home Image"
+            className="absolute top-1/3 mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl -mt-16 animate-rotate-clockwise"
+          />
+        </div>
       </div>
     </div>
   );

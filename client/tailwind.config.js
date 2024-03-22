@@ -19,6 +19,7 @@ module.exports = withMT({
       animation: {
         'floating': 'floating 8s infinite',
         'floating-2': 'floating-2 7s infinite',
+        'rotate-clockwise': 'rotate-clockwise 5s infinite',
       },
       keyframes: {
         'floating': {
@@ -28,6 +29,10 @@ module.exports = withMT({
         'floating-2': {
           '0%, 100%': { transform: 'translateY(-5%)' },
           '50%': { transform: 'translateY(5%)' },
+        },
+        'rotate-clockwise': {
+          '0%, 100%': { transform: 'rotate(10deg)' },
+          '50%': { transform: 'rotate(15deg)' },
         },
       },
     }
