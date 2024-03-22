@@ -198,8 +198,8 @@ def profiling():
         # Outlier detection (example using Z-score method)
     z_score = (actual_df_copy['totalSales'] - actual_df_copy['totalSales'].mean()) / actual_df_copy['totalSales'].std()
     outliers = actual_df_copy[abs(z_score) > 3]
-    if outliers.empty:
-        actual_df_copy.drop(outliers.index, inplace=True)
+    # if outliers.empty:
+    #     actual_df_copy.drop(outliers.index, inplace=True)
     # print("Detected outliers:", outliers) # Empty DataFrame means the data has no outlier
 profiling()
 print(f'30')
