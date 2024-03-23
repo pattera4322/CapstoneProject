@@ -3,6 +3,14 @@ import csv
 import pandas as pd
 import time
 
+import datetime
+
+current_time = datetime.datetime.now()
+print("Current time:", current_time)
+formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
+print("Formatted time:", formatted_time)
+
+
 # print('Hello user , '+ sys.argv[1])
 # print('This is file '+ sys.argv[2])
 

@@ -9,18 +9,18 @@ const analyze = async (requestQueue) => {
     return false;
   }
 
-  const { userid, fileid, state } = requestQueue[0];
+  const { userid, historyid, state } = requestQueue[0];
   requestQueue[0].state = "running";
   await enqueueData(requestQueue);
 
   const pythonScript = "./predictmodel/createModelPredictionNewVer.py";
-  const pythonArgs = [userid, fileid];
+  const pythonArgs = [userid, historyid];
   //const pythonScript = "./predictmodel/test2.py";
 
   const pythonProcess = spawn("python", [pythonScript, ...pythonArgs]);
   socketJobProgress.emit("progress", {
     userid: userid,
-    fileid: fileid,
+    historyid: historyid,
     progress: 5,
   });
 
@@ -38,7 +38,7 @@ const analyze = async (requestQueue) => {
 
       socketJobProgress.emit("progress", {
         userid: userid,
-        fileid: fileid,
+        historyid: historyid,
         progress: parseInt(data.toString()),
       });
 
@@ -68,7 +68,7 @@ const analyze = async (requestQueue) => {
       const data = {
         errorMessage: `${lastLine}`,
       };
-      saveHistoryData(data, userid, fileid);
+      saveHistoryData(data, userid, historyid);
     }
     if (dataReceived) {
       requestQueue.shift();
@@ -76,7 +76,7 @@ const analyze = async (requestQueue) => {
 
       socketJobProgress.emit("progress", {
         userid: userid,
-        fileid: fileid,
+        historyid: historyid,
         progress: 101,
       });
       analyze(requestQueue);

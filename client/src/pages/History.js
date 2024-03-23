@@ -8,6 +8,7 @@ import Badge from "../components/Badge";
 import { useProgress } from "../context/ProgressContext";
 import { getUserHistories } from "../api/userHistoryApi";
 import LoadingPage from "../components/LoadingPage";
+import { getUserInsight } from "../api/userInsightApi";
 
 const History = () => {
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const History = () => {
   const [completedAnalyzed, setCompletedAnalyzed] = useState([]);
   const [queuesData, setQueuesData] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
+  const [insightData, setInsightData] = useState([]);
   // const [completedArray, setCompletedArray] = useState([]);
   // const [errorArray, setErrorArray] = useState([]);
 
@@ -30,6 +32,7 @@ const History = () => {
   const userId = JSON.parse(localStorage.getItem("user"));
   const progressInLocal = JSON.parse(localStorage.getItem("progress"));
   const location = useLocation();
+  const historyId = location.state || {};
   socketJobProgress.connect();
 
   useEffect(() => {
@@ -51,10 +54,23 @@ const History = () => {
           console.log(error);
         });
 
+
       setIsLoading(true);
       getUserHistories()
         .then((res) => {
           setCompletedAnalyzed(res.data);
+          console.log(res.data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.log(error);
+        });
+
+      setIsLoading(true);
+      getUserInsight()
+        .then((res) => {
+          setInsightData(res.data);
           console.log(res.data);
           setIsStart(true);
           setIsLoading(false);
@@ -179,7 +195,9 @@ const History = () => {
 
   return (
     <div>
-      <div><LoadingPage loading={isLoading} /></div>
+      <div>
+        <LoadingPage loading={isLoading} />
+      </div>
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 pt-20 pr-8 pl-8">
         {renderTab(1, "On Analyzing")}
         {renderTab(2, "Analyzed Data")}
@@ -193,14 +211,14 @@ const History = () => {
         </div>
       </div>
       <div className={`grid grid-cols-2 gap-4 content-center`}>
-        {filteredJobs.length > 0 ? (
+        {filteredJobs.length > 0 && isStart ? (
           <div>
             {filteredJobs.map((job, index) => (
               <JobComponent
                 index={index}
                 job={job}
                 progressData={progressData}
-                userIdFromLocal={userId.uid}
+                insightData={insightData}
               />
             ))}
           </div>

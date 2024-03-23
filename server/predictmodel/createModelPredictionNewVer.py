@@ -55,6 +55,7 @@ if not firebase_admin._apps:
 
 # file_path_in_storage = f'{user}/{actual_file_name}/{actual_file_name}' ######### file name in folder 5.csv need to changing 5 
 file_path_in_storage = f'{user}/{actual_file_name}'
+# file_path_in_storage = f'{user}/1'
 
 # local_filename = 'downloaded-file.txt'
 
@@ -502,7 +503,8 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
 #   print(f'{model_name} uploaded to {blob.public_url}') 
   print(f'90')
   flush()
-
+  
+import datetime
 data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
@@ -512,6 +514,7 @@ data_to_save = {
     'evalTotalSales': evaluation_results_total_sales,
     'evalQuantity': evaluation_results_quantity,
     # 'best_params_models': best_params_all_products
+    'analyzedSuccessTime':datetime.datetime.now(),
 }
 models_file_name = f'models_by_product_of_{actual_file_name}'
 joblib.dump(models_by_product, f"{models_file_name}.pkl")

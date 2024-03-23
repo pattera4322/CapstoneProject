@@ -3,6 +3,7 @@ import { Line, toBase64Image } from "react-chartjs-2";
 import InfoPopup from "../../components/Home/InfoPopup";
 import ButtonComponent from "../Button/Button";
 import { saveAs } from "file-saver";
+import { formatDateInChart } from "../../utils/FormatDateTime";
 // import ChartjsPluginScrollBar from 'chartjs-plugin-scroll-bar';
 
 const Chart = ({
@@ -13,12 +14,10 @@ const Chart = ({
   togglePredicted,
   getR2score,
   getMSEscore,
-  onBase64ImageGenerated
 }) => {
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
-  const [image, setImage] = useState(null)
   const chartRef = useRef(null);
   // Line.register(ChartjsPluginScrollBar);
 
@@ -95,16 +94,6 @@ const Chart = ({
     setPredictedArray(actualDataMergePredicted);
     setActualArray(arrayActual);
     setFormattedDates(mergedDateArray);
-
-    if(image === null){
-      const base64Image = chartRef.current.toBase64Image();
-      onBase64ImageGenerated(base64Image)
-      setImage(base64Image)
-      console.log("base64 in chart", base64Image)
-    }else{
-      onBase64ImageGenerated(image)
-      console.log("base64 in chart exist", image)
-    }
     
   }, [predictedData, predictedColumn]);
 
@@ -131,34 +120,7 @@ const Chart = ({
 
   function formatDateArray(dataArray) {
     return dataArray.map((entry) => {
-      const timestamp = entry.date;
-      const milliseconds = timestamp * 1000;
-      const date = new Date(milliseconds);
-
-      // const formattedDateTime = `${date.getFullYear()}-${(date.getMonth() + 1)
-      //   .toString()
-      //   .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
-      const months = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
-
-      const formattedDateTime = `${date
-        .getDate()
-        .toString()
-        .padStart(2, "0")} ${months[date.getMonth()]} ${date.getFullYear()}`;
-
-      return formattedDateTime;
+      return formatDateInChart(entry.date)
     });
   }
 
@@ -191,29 +153,29 @@ const Chart = ({
     return uniqueDates;
   }
 
-  // const generateCSVData = (data) => {
-  //   let csvContent = `Date,${predictedColumn}PredictedValue\n`;
-  //   console.log("seees", data);
-  //   data.labels.forEach((label, index) => {
-  //     const predicted = data.datasets[1].data[index];
-  //     if (predicted !== "undefined") {
-  //       csvContent += `"${label}",${predicted}\n`;
-  //     }
-  //   });
+  const generateCSVData = (data) => {
+    let csvContent = `Date,${predictedColumn}PredictedValue\n`;
+    console.log("seees", data);
+    data.labels.forEach((label, index) => {
+      const predicted = data.datasets[1].data[index];
+      if (predicted !== "undefined") {
+        csvContent += `"${label}",${predicted}\n`;
+      }
+    });
 
-  //   return csvContent;
-  // };
+    return csvContent;
+  };
 
-  // const handleDownload = () => {
-  //   const base64Image = chartRef.current.toBase64Image();
-  //   console.log("base64",base64Image)
-  //   saveAs(base64Image, `${predictedColumn}ForecastGraph.png`);
+  const handleDownload = () => {
+    const base64Image = chartRef.current.toBase64Image();
+    console.log("base64",base64Image)
+    saveAs(base64Image, `${predictedColumn}ForecastGraph.png`);
 
-  //   // Download graph data
-  //   const csvData = generateCSVData(chartData);
-  //   const blob = new Blob([csvData], { type: "text/csv" });
-  //   saveAs(blob, `${predictedColumn}_graph_data.csv`);
-  // };
+    // Download graph data
+    const csvData = generateCSVData(chartData);
+    const blob = new Blob([csvData], { type: "text/csv" });
+    saveAs(blob, `${predictedColumn}_graph_data.csv`);
+  };
 
   const infoChart = `The prediction fit ${getR2score} % to data and estimate error of predicetion data is ${getMSEscore} `;
 
@@ -227,24 +189,6 @@ const Chart = ({
           </label>
           <InfoPopup infoText={infoChart} />
         </div>
-
-        {/* <div className="text-right">
-        <ButtonComponent
-          onClick={handleDownload}
-          children={
-            <div>
-              <svg
-                className="fill-current w-4 h-4 mr-2 inline"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
-              </svg>
-              Download
-            </div>
-          }
-        />
-      </div> */}
 
         <div className="flex-grow flex flex-col items-center justify-center h-[95%] w-[250%]">
           {/* <div className="chart-container" style={{ overflowX: "auto", width: "150%",height: "100%", padding: "0 20px" }}> */}

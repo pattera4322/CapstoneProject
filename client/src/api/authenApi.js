@@ -1,6 +1,9 @@
 import axios from "axios";
 import Swal from "sweetalert2";
-import { showSuccessAlert,showErrorAlertWithRefresh } from "../utils/SwalAlert.js";
+import {
+  showSuccessAlert,
+  showErrorAlertWithRefresh,
+} from "../utils/SwalAlert.js";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,6 +20,7 @@ export const useAuthenticate = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const signUp = async (email, password) => {
     setError("");
     try {
@@ -25,7 +29,7 @@ export const useAuthenticate = () => {
         email: email,
         password: password,
       });
-      setLoading(false)
+      setLoading(false);
       Swal.fire({
         icon: "success",
         title: "Register successful!",
@@ -39,7 +43,7 @@ export const useAuthenticate = () => {
       console.log("success create user: ", response);
       return response;
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       console.log("error sign up: ", error);
       if (error.response) {
         setError(error.response.data.ResponseMessage);
@@ -101,8 +105,8 @@ export const useAuthenticate = () => {
             const errorMessage = error.message;
             if (errorCode === "auth/invalid-credential") {
               setError("Incorrect username or password");
-            }else if (errorCode === 'auth/network-request-failed'){
-              showErrorAlertWithRefresh("Internet Connection")
+            } else if (errorCode === "auth/network-request-failed") {
+              showErrorAlertWithRefresh("Internet Connection");
             }
             console.log("Login failed with: ", errorCode, errorMessage);
           });

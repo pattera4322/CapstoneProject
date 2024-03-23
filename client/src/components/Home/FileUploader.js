@@ -6,7 +6,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 import ProgressBar from "../ProgressBar.js";
 import Popup from "../Popup.js";
 import { showErrorAlert } from "../../utils/SwalAlert.js";
-import { updateUserData, postUserData } from "../../api/userDataApi";
+import { updateUserData } from "../../api/userDataApi";
 import DeleteButton from "../Button/DeleteButton.js";
 
 const FileUpload = ({
@@ -88,8 +88,8 @@ const FileUpload = ({
 
       const formData = new FormData();
       formData.append("file", file);
-
-      await postFile(index, formData, (progressEvent) => {
+      var limit = localStorage.getItem("analyzeLimit");
+      await postFile(++limit, formData, (progressEvent) => {
         const progressPercentage = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
         );
@@ -115,15 +115,13 @@ const FileUpload = ({
     };
     setUserData(updatedUserData);
 
-    // TODO: change to update in future POST when user was create smth
-    //await updateUserData({fileName: updatedUserData});
-    await postUserData({ fileName: updatedUserData })
+    await updateUserData({ fileName: updatedUserData })
       .then(() => {
         localStorage.setItem("fileName", JSON.stringify(updatedUserData));
       })
       .catch((error) => {
         if (error.response) {
-          showErrorAlert("Something went wrong!",`${error.response}`);
+          showErrorAlert("Something went wrong!", `${error.response}`);
         }
       });
   };
@@ -262,10 +260,13 @@ const FileUpload = ({
             <div>
               <div className="py-8">
                 <span style={{ display: "flex", alignItems: "center" }}>
-                  Preview data
+                  <span className="font-semibold">Preview data</span>
                   {isHasFile ? (
                     <div className="ml-auto">
-                      <DeleteButton onClick={handleButtonClick} children={"Delete"}/>
+                      <DeleteButton
+                        onClick={handleButtonClick}
+                        children={"Delete"}
+                      />
                     </div>
                   ) : (
                     <div></div>
@@ -288,7 +289,10 @@ const FileUpload = ({
                     {data.map((row, rowIndex) => (
                       <tr key={rowIndex}>
                         {Object.values(row).map((cell, cellIndex) => (
-                          <td className="pl-2 border-y-2 border-gray-200 py-2" key={cellIndex}>
+                          <td
+                            className="pl-2 border-y-2 border-gray-200 py-2"
+                            key={cellIndex}
+                          >
                             {cell instanceof Date
                               ? cell.toLocaleDateString()
                               : formatDateString(cell)}

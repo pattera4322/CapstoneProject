@@ -78,8 +78,8 @@ const Dashboard = ({}) => {
       })
       .catch((error) => {
         console.log("Error: ", error);
-        if (error.response.status === 404) {
-          console.log("Not found history data");
+        if (error.response && error.response.status === 404) {
+          console.log(error.response.data.ResponseMessage);
         }
       });
   }, []);
@@ -211,32 +211,8 @@ const Dashboard = ({}) => {
     return csvContent;
   };
 
-  const handleBase64ImageGenerated = (imageData) => {
-    // html2canvas(imageData)
-    //   .then((canvas) => {
-    //     // Convert the canvas to a data URL
-    //     const imageDataUrl = canvas.toDataURL('image/png');
-    //     setBaseImage(imageDataUrl)
-
-    //     // Optionally, you can save the data URL to state or perform further actions
-    //     console.log('Image data URL:', imageDataUrl);
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error capturing chart:', error);
-    //   });
-    setBaseImage(imageData);
-    console.log(`Base64 in Dashboard`,baseImage)
-  };
-
   const handleDownload = () => {
-    saveAs(baseImage, `${activeTab === 1? "sales": "quantity"}ForecastGraph.png`);
-
-    // Download graph data
-    // const allData = activeTab === 1? [...actualSalesData, ...analyzedSalesData]:[...actualQuantityData, ...analyzedQuantityData]
-    const csvData = generateCSVData(activeTab === 1?actualSalesData:actualQuantityData,activeTab === 1?analyzedSalesData:analyzedQuantityData);
-    const blob = new Blob([csvData], { type: "text/csv" });
-    saveAs(blob, `${activeTab === 1? "sales": "quantity"}_forecast_data.csv`);
-    console.log(`Download`)
+ 
   };
 
   return (
@@ -327,7 +303,6 @@ const Dashboard = ({}) => {
                   togglePredicted={togglePredicted}
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
-                  onBase64ImageGenerated={(imageData) => setBaseImage(imageData)}
                 />
               )}
             </div>
@@ -438,7 +413,6 @@ const Dashboard = ({}) => {
                   togglePredicted={togglePredicted}
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
-                  onBase64ImageGenerated={handleBase64ImageGenerated}
                 />
               )}
             </div>

@@ -3,10 +3,14 @@ import "../index.css";
 import StepperSection from "../components/Home/Stepper";
 import DetailSection from "../components/Home/DetailSection";
 import Button3D from "../components/Button/Button3D";
+import { postUserData, getUserData } from "../api/userDataApi";
+import { showErrorAlert } from "../utils/SwalAlert";
+import LoadingPage from "../components/LoadingPage";
 
 function HomePage() {
   const StepSection = useRef(null);
   const [toggleIn, setToggleIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const scrolldown = () => {
     StepSection.current?.scrollIntoView({ behavior: "smooth" });
@@ -15,8 +19,51 @@ function HomePage() {
     setToggleIn(!toggleIn);
   };
 
+  useEffect(() => {
+    setIsLoading(true);
+    postUserData({ fileName: {}, analyzeLimit: 0 })
+      .then(() => {
+        setIsLoading(false);
+        localStorage.setItem("fileName", JSON.stringify({}));
+        localStorage.setItem("analyzeLimit", JSON.stringify(0));
+      })
+      .catch((error) => {
+        if (error.response) {
+          if (error.response.status === 409) {
+            setIsLoading(true);
+            getUserData()
+              .then((res) => {
+                if (res.data) {
+                  localStorage.setItem(
+                    "fileName",
+                    JSON.stringify(res.data.fileName)
+                  );
+                  localStorage.setItem(
+                    "analyzeLimit",
+                    JSON.stringify(res.data.analyzeLimit)
+                  );
+                }
+                setIsLoading(false);
+              })
+              .catch((error) => {
+                setIsLoading(false);
+                if (error.response) {
+                  showErrorAlert("Something went wrong!", `${error.response}`);
+                }
+              });
+              
+          } else {
+            setIsLoading(false);
+            showErrorAlert("Something went wrong!", `${error.response}`);
+          }
+        }
+      });
+      setIsLoading(false);
+  }, []);
+
   return (
     <div className="pt-32 grid grid-cols-2 gap-4 content-center">
+      <LoadingPage loading={isLoading} />
       {/*<------------------------------ Section 1 Introduce web application ------------------------------> */}
       {/* <div className="mt-10 text-center px-4 sm:px-8 col-span-3"> */}
       <div className="mt-10 text-left px-4 sm:px-8 col-span-1 ml-20">
@@ -42,15 +89,14 @@ function HomePage() {
           </span>
         </div>
       </div>
-      {/* <div className="mt-24 mb-24 h-56 grid grid-cols-3 gap-4 content-center "> */}
-      {/* <div className={` grid grid-cols-subgrid gap-4 h-33  ${toggleIn ? "col-span-2 transition-transform -translate-x-10 duration-1000" : 'col-span-3 transition-transform translate-x-0 duration-1000'}`}> */}
+
       {!toggleIn ? (
         <div
         className={`grid grid-cols-subgrid h-33 col-span-1 transition-transform translate-x-0 duration-1000 relative`}
       >
         <img
           src={process.env.PUBLIC_URL + "/assets/SmartStockHomeBG.svg"}
-          alt="SmartStock Home Image"
+          alt="SmartStock Home"
           className="inset-0 mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
         />
         <img

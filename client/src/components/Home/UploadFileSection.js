@@ -18,36 +18,22 @@ const SelectData = ({ sendfileData }) => {
     JSON.parse(localStorage.getItem("files")) || {}
   );
   const [fileName, setFileName] = useState(
-    JSON.parse(localStorage.getItem("fileName"))
+    JSON.parse(localStorage.getItem("fileName")) 
   );
+
+  var limitFromLocal = localStorage.getItem("analyzeLimit");
+  const limit = ++limitFromLocal;
 
   const [activeTab, setActiveTab] = useState(1);
   const data = [
     {
-      label: fileName && fileName[1] ? fileName[1] : "EMPTY",
+      label: fileName && fileName[limit] ? fileName[limit] : "EMPTY",
       value: 1,
-    },
-    {
-      label: fileName && fileName[2] ? fileName[2] : "EMPTY",
-      value: 2,
-    },
-    {
-      label: fileName && fileName[3] ? fileName[3] : "EMPTY",
-      value: 3,
-    },
-    {
-      label: fileName && fileName[4] ? fileName[4] : "EMPTY",
-      value: 4,
-    },
-    {
-      label: fileName && fileName[5] ? fileName[5] : "EMPTY",
-      value: 5,
-    },
+    }
   ];
   useEffect(() => {
     getUserData()
       .then((res) => {
-        console.log(fileName);
         if (fileName === undefined || fileName === null) {
           if (res.data.userData.fileName === undefined) {
             localStorage.setItem("fileName", JSON.stringify({}));
@@ -68,19 +54,19 @@ const SelectData = ({ sendfileData }) => {
 
   useEffect(() => {
     setLoading(true);
-    if (filesInLocal[activeTab] !== undefined) {
+    if (filesInLocal[limit] !== undefined) {
       setLoading(false);
       // Get preview file from local...
-      const data = filesInLocal[activeTab];
+      const data = filesInLocal[limit];
       setIsHasFile(true);
-      sendfileData(data, activeTab);
+      sendfileData(data, limit);
       setFileData(data);
     } else {
-      getFile(activeTab)
+      getFile(limit)
         .then((data) => {
           setLoading(false);
           if (data) {
-            sendfileData(data, activeTab);
+            sendfileData(data, limit);
             setIsHasFile(true);
             convertFileXLSX(data);
           }
@@ -93,7 +79,7 @@ const SelectData = ({ sendfileData }) => {
           }
           setIsHasFile(false);
           setFileData([]);
-          sendfileData(null, activeTab);
+          sendfileData(null, limit);
           setLoading(false);
         });
     }
@@ -114,7 +100,7 @@ const SelectData = ({ sendfileData }) => {
 
     const fileToLocalStorage = {
       ...fileHistory,
-      [activeTab]: fileContent,
+      [limit]: fileContent,
     };
     localStorage.setItem("files", JSON.stringify(fileToLocalStorage));
     setFilesInLocal(fileToLocalStorage);
@@ -122,10 +108,10 @@ const SelectData = ({ sendfileData }) => {
 
   const removeSelectedFile = async () => {
     setShowLoadingPage(true);
-    await deleteFile(activeTab)
+    await deleteFile(limit)
       .then(async () => {
-        delete filesInLocal[activeTab];
-        delete fileName[activeTab];
+        delete filesInLocal[limit];
+        delete fileName[limit];
         localStorage.setItem("files", JSON.stringify(filesInLocal));
         localStorage.setItem("fileName", JSON.stringify(fileName));
         setFileData([]);
@@ -170,13 +156,6 @@ const SelectData = ({ sendfileData }) => {
               }}
               className={activeTab === value ? "text-gray-900" : ""}
             >
-              <span
-                className={
-                  fileName && fileName[value] ? "bg-red-100 p-1 px-3 rounded-full" : "bg-green-100 p-1 px-3 rounded-full"
-                }
-              >
-               SLOT {value}
-              </span>
 
               {fileName && fileName[value] ? (
                 <div>{label}</div>
@@ -189,7 +168,7 @@ const SelectData = ({ sendfileData }) => {
         <TabsBody>
           <LoadingPage loading={showloadingPage} />
           <FileUpload
-            index={activeTab}
+            index={limit}
             content={fileData}
             isFileUploaded={isHasFile}
             loading={loading}

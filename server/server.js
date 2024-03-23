@@ -4,16 +4,16 @@ const { upload } = require("./config/firebaseConfig");
 const { analyze } = require("./handler/analyzeHandler");
 const { signUpUser, authenticateJWT } = require("./handler/authenHandler");
 const { enqueueData, getQueues } = require("./handler/queueHandler");
+const { saveData, updateData, getData, getAnalyzeLimit } = require("./handler/userDataHandler");
 const {
-  saveData,
-  updateData,
-  getData,
-  getHistoryData,
+  getHistoryDataById,
   getAllHistoryData,
-} = require("./handler/userDataHandler");
+  checkHistoryDataReachLimit,
+} = require("./handler/userHistoryHandler");
 const {
   createInsightData,
   updateInsightData,
+  getInsightData,
 } = require("./handler/userInsightHandler");
 const { socketJobProgress } = require("./config/socketServerConfig");
 
@@ -51,36 +51,51 @@ app.get("/api/file/:userid/:fileid", authenticateJWT, (req, res) => {
 // -------------------------------------------Analyze------------------------------------------------
 let isRunning = false;
 const requestQueue = [];
-app.post("/api/analyze/:userid/:fileid", authenticateJWT, async (req, res) => {
-  const { userid, fileid } = req.params;
-  const state = "wait";
-  requestQueue.push({ userid, fileid, state });
-  await enqueueData(requestQueue)
-    .then(() => {
-      res.status(200).json({
-        ResponseCode: 200,
-        ResponseMessage: "Send data to analyze in queue successfully.",
+app.post("/api/analyze/:userid", authenticateJWT, async (req, res) => {
+  const { userid } = req.params;
+  try {
+    //check that user reach the limit analyze time to 5
+    const analyzeLimitCount = await getAnalyzeLimit(userid);
+
+    if (analyzeLimitCount === 6) {
+      return res.status(402).json({
+        ResponseCode: 402,
+        ResponseMessage: "Analysis limit reached.",
       });
-      console.log(requestQueue);
-      if (requestQueue.length === 1) {
-        isRunning = false;
-      }
-      console.log(isRunning);
-      if (isRunning) {
-        return;
-      }
-      socketJobProgress.emit("authenticate", {
-        userId: userid,
-        isFromClient: false,
-      });
-      isRunning = analyze(requestQueue);
-    })
-    .catch((error) => {
-      res.status(500).json({
-        ResponseCode: 500,
-        ResponseMessage: "Internal server error.",
-      });
+    }
+
+    const state = "wait";
+    requestQueue.push({ userid, historyid:analyzeLimitCount, state });
+    await enqueueData(requestQueue);
+
+    res.status(200).json({
+      data: { historyid:analyzeLimitCount },
     });
+
+    console.log(requestQueue);
+
+    if (requestQueue.length === 1) {
+      isRunning = false;
+    }
+    console.log(isRunning);
+
+    if (isRunning) {
+      return;
+    }
+
+    socketJobProgress.emit("authenticate", {
+      userId: userid,
+      isFromClient: false,
+    });
+
+    isRunning = analyze(requestQueue);
+  } catch (error) {
+    console.log("Analyze error: ", error);
+    return res.status(500).json({
+      ResponseCode: 500,
+      ResponseMessage: "Internal server error.",
+    });
+  }
 });
 
 app.delete("/api/file/:userid/:fileid", authenticateJWT, (req, res) => {
@@ -114,15 +129,15 @@ app.get("/api/userData/:userid", authenticateJWT, (req, res) => {
 });
 
 // -------------------------------------------User History Data------------------------------------------------
-app.get("/api/userHistory/:userid/:fileid", authenticateJWT, (req, res) => {
-  getHistoryData(req, res);
+app.get("/api/userHistory/:userid/:historyid", authenticateJWT, (req, res) => {
+  getHistoryDataById(req, res);
 });
 
 app.get("/api/userHistory/:userid", authenticateJWT, (req, res) => {
   getAllHistoryData(req, res);
 });
 
-// -------------------------------------------User History Data------------------------------------------------
+// -------------------------------------------User Insight Data------------------------------------------------
 
 app.post("/api/userInsight/:userid/:fileid", authenticateJWT, (req, res) => {
   createInsightData(req, res);
@@ -130,4 +145,8 @@ app.post("/api/userInsight/:userid/:fileid", authenticateJWT, (req, res) => {
 
 app.put("/api/userInsight/:userid/:fileid", authenticateJWT, (req, res) => {
   updateInsightData(req, res);
+});
+
+app.get("/api/userInsight/:userid",authenticateJWT, (req, res) => {
+  getInsightData(req, res);
 });

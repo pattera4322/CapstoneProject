@@ -6,6 +6,8 @@ import AnalyzeSection from "./AnalyzeSection";
 import Popup from "../Popup.js";
 import DownloadTemplate from "./DownloadTemplate";
 import { useNavigate } from "react-router-dom";
+import { updateUserData } from "../../api/userDataApi.js";
+import { showErrorAlert } from "../../utils/SwalAlert.js";
 
 const StepperSection = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -44,16 +46,31 @@ const StepperSection = () => {
     setShowPopup(true);
   };
 
-  const handleContinueToNextStep = () => {
+  const handleContinueToNextStep = async () => {
     setShowPopup(false);
     setShowAskPopup(false);
+    if (activeStep === 2) {
+      var limit = localStorage.getItem("analyzeLimit");
+      await updateUserData({ analyzeLimit: ++limit })
+        .then((res) => {
+          console.log(res);
+          if (res.ResponseCode === 200) {
+            localStorage.setItem("analyzeLimit", JSON.stringify(limit));
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            showErrorAlert("Something went wrong!", `${error.response}`);
+          }
+        });
+    }
     handleNavigation("next");
   };
 
   const handleSubmitAskingSection = async (formData) => {
     if (formData.salesGoal === 0) {
-      setShowPopup(true); 
-      return; 
+      setShowPopup(true);
+      return;
     }
     handleNavigation("next");
   };
@@ -68,7 +85,7 @@ const StepperSection = () => {
 
   const handleGoLogin = () => {
     navigate("/login");
-  }
+  };
 
   return (
     <div className="w-full py-4 px-8 mt-7">
@@ -80,7 +97,8 @@ const StepperSection = () => {
         activeLineClassName="bg-[#0068D2]"
       >
         {steps.map((label, index) => (
-          <Step key={index}
+          <Step
+            key={index}
             className="!bg-[#80B3E9] text-white/90"
             activeClassName="ring-0 !bg-[#0068D2] text-white"
             completedClassName="!bg-[#0068D2] text-white"
@@ -124,9 +142,7 @@ const StepperSection = () => {
           </div>
         )}
 
-        {isLastStep ? (
-          null
-        ) : (
+        {isLastStep ? null : (
           <div className="flex">
             <Button
               onClick={() => {

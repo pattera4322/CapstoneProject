@@ -21,15 +21,15 @@ const Popup = ({
         </div>
 
         <div className="flex justify-end mt-4">
-          <Button
+          {onClose && <Button
             id="close-modal"
             type="button"
             className="mr-2 bg-gray-300 text-black"
             onClick={onClose}
           >
             Cancel
-          </Button>
-          <Button onClick={onContinue} className="bg-[#0068D2]">{continueText}</Button>
+          </Button>}
+          {onContinue && <Button onClick={onContinue} className="bg-[#0068D2]">{continueText}</Button> }
         </div>
       </div>
     </div>

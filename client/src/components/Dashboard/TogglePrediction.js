@@ -17,11 +17,11 @@ const TogglePrediction = ({ label, defaultChecked, onToggle }) => {
         name="switch"
         id="switch"
         type="checkbox"
-        class="switch"
+        className="switch"
         checked={isChecked}
         onChange={handleToggle}
       />
-      <label for="switch">
+      <label htmlFor="switch">
         <span className="switch-x-text">Prediction is </span>
         <span className="switch-x-toggletext">
           <span className="switch-x-unchecked">

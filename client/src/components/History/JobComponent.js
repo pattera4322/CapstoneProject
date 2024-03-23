@@ -1,21 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import ProgressBar from "../ProgressBar";
 import { useNavigate } from "react-router-dom";
 import ButtonComponent from "../Button/Button";
 import DeleteButton from "../Button/DeleteButton";
+import { formatDateTimeStamp } from "../../utils/FormatDateTime";
 
-const JobComponent = ({ job, progressData, index, userIdFromLocal }) => {
+const JobComponent = ({ job, progressData, index, insightData }) => {
   const navigate = useNavigate();
-  const isJobFailed = job.errorMessage !== undefined;
-  const isJobCompleted = job.actualQuantityValues !== undefined;
-  const isJobProgress =
-    !isJobFailed && !isJobCompleted && job.state === "running";
-  const isJobWaiting = !isJobFailed && !isJobCompleted && job.state === "wait";
+  const isJobFailed = job.state === "fail";
+  const isJobCompleted = job.state === "success";
+  const isJobProgress = job.state === "running";
+  const isJobWaiting = job.state === "wait";
+  const jobId = job.historyid;
+  const [showDetails, setShowDetails] = useState(false);
+
+  const handleToggleDetails = () => {
+    // Toggle showDetails state for this job
+    setShowDetails(!showDetails);
+  };
 
   const OnCompletedJobClick = () => {
-    console.log(JSON.stringify(job.data));
-    if (job.actualQuantityValues) {
-      navigate("/Dashboard", { replace: true, state: job.id });
+    console.log(JSON.stringify(job));
+    if (isJobCompleted) {
+      navigate("/Dashboard", { replace: true, state: jobId });
     }
   };
 
@@ -26,17 +33,42 @@ const JobComponent = ({ job, progressData, index, userIdFromLocal }) => {
       key={index}
       className={`transition ease-in-out hover:-translate-y-1 hover:scale-10 mx-16 my-8 px-8 py-8 rounded-md text-left shadow-[0px_10px_1px_rgba(221,221,221,1),0_10px_20px_rgba(204,204,204,1)]`}
     >
-      {isJobWaiting && <div className="">
-        <DeleteButton onClick={handleCancelQueue} children={"Cancel"} />
-      </div>}
+      {isJobWaiting && (
+        <div className="">
+          <DeleteButton onClick={handleCancelQueue} children={"Cancel"} />
+        </div>
+      )}
 
       {isJobProgress || isJobWaiting ? <div>IN QUEUE: {index + 1}</div> : null}
 
-      <div>SLOT ID: {isJobProgress || isJobWaiting ? job.fileid : job.id}</div>
-      
+      <div>SLOT ID: {jobId}</div>
+
       {isJobCompleted || isJobFailed ? (
-        <div style={{ wordWrap: 'break-word' }}>FILE NAME: {job.fileName || "Not found file name"}</div>
+        <div>
+          STATE: {job.state} on <span className="px-2 rounded-full bg-cyan-100">{formatDateTimeStamp(job.analyzedTime)}</span>
+        </div>
       ) : null}
+      <div>
+        FILE NAME: {insightData[jobId - 1].fileName || "Not found file name"}
+      </div>
+      {showDetails && (
+        <div>
+          <div>Sales Goal: {insightData[jobId - 1].salesGoal}</div>
+          <div>
+            Cost of storage per unit per year:{" "}
+            {insightData[jobId - 1].costPerProductStorage}
+          </div>
+          <div>Cost per order: {insightData[jobId - 1].costPerOrder}</div>
+          <div>Lead time: {insightData[jobId - 1].leadTime}</div>
+        </div>
+      )}
+
+      <button
+        onClick={handleToggleDetails}
+        className="mt-4 text-blue-500 focus:outline-none"
+      >
+        {showDetails ? "Hide" : "Details"}
+      </button>
 
       {job.errorMessage && <div>{job.errorMessage}</div>}
       <div>
