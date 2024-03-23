@@ -100,7 +100,7 @@ const getAllHistoryData = async (req, res) => {
 const saveHistoryData = async (data, userid, historyId) => {
   try {
     const userRef = firestore.collection("users").doc(userid);
-    const historyRef = userRef.collection("history").doc(historyId);
+    const historyRef = userRef.collection("history").doc(historyId.toString());
     await historyRef.set(data);
   } catch (error) {
     console.log("Error save history data:", error);

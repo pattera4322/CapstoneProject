@@ -41,11 +41,24 @@ const JobComponent = ({ job, progressData, index, insightData }) => {
 
       {isJobProgress || isJobWaiting ? <div>IN QUEUE: {index + 1}</div> : null}
 
-      <div>SLOT ID: {jobId}</div>
+      <div><span className="font-semibold">SLOT ID:</span> {jobId}</div>
 
       {isJobCompleted || isJobFailed ? (
         <div>
-          STATE: {job.state} on <span className="px-2 rounded-full bg-cyan-100">{formatDateTimeStamp(job.analyzedTime)}</span>
+          <span className="font-semibold">STATE:</span>{" "}
+          <span
+            className={
+              isJobCompleted
+                ? "px-2 rounded-full bg-lime-100"
+                : "px-2 rounded-full bg-red-100"
+            }
+          >
+            {job.state}
+          </span>{" "}
+          on{" "}
+          <span className="px-2 rounded-full bg-cyan-100">
+            {formatDateTimeStamp(job.analyzedTime)}
+          </span>
         </div>
       ) : null}
       <div>

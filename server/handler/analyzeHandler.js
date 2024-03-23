@@ -1,7 +1,7 @@
 const { spawn } = require("child_process");
 const { socketJobProgress } = require("../config/socketServerConfig");
 const { enqueueData } = require("../handler/queueHandler");
-const { saveHistoryData } = require("../handler/userDataHandler");
+const { saveHistoryData } = require("../handler/userHistoryHandler");
 const { data } = require("@tensorflow/tfjs");
 
 const analyze = async (requestQueue) => {
@@ -66,6 +66,7 @@ const analyze = async (requestQueue) => {
         `Python script exited with code ${code}. Error output: ${lastLine}`
       );
       const data = {
+        analyzedSuccessTime: new Date(),
         errorMessage: `${lastLine}`,
       };
       saveHistoryData(data, userid, historyid);

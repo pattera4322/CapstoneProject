@@ -3,12 +3,13 @@ import csv
 import pandas as pd
 import time
 
-import datetime
+from datetime import datetime, timezone
+current_time = datetime.now(timezone.utc)
 
-current_time = datetime.datetime.now()
-print("Current time:", current_time)
-formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
-print("Formatted time:", formatted_time)
+# Convert to string in UTC format
+utc_string = current_time.strftime("%Y-%m-%d %H:%M:%S UTC")
+
+print(current_time)
 
 
 # print('Hello user , '+ sys.argv[1])

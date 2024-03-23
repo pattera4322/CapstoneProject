@@ -504,7 +504,8 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
   print(f'90')
   flush()
   
-import datetime
+from datetime import datetime, timezone
+current_time = datetime.now(timezone.utc)
 data_to_save = {
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
@@ -514,7 +515,7 @@ data_to_save = {
     'evalTotalSales': evaluation_results_total_sales,
     'evalQuantity': evaluation_results_quantity,
     # 'best_params_models': best_params_all_products
-    'analyzedSuccessTime':datetime.datetime.now(),
+    'analyzedSuccessTime':current_time,
 }
 models_file_name = f'models_by_product_of_{actual_file_name}'
 joblib.dump(models_by_product, f"{models_file_name}.pkl")
