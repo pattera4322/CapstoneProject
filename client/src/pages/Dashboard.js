@@ -191,28 +191,61 @@ const Dashboard = ({}) => {
   }
 
   const generateCSVData = (actualData,predictedData) => {
-    const renamedActualData = actualData.map(item => ({
-      date: item.date._seconds,
-      product: item.productName,
-      totalSales: item.totalSales
-    }));
+    const renamedActualData = actualData.map(item => {
+      if (!item) return null; // Check if item exists
 
-    const renamedAnalyzedSalesData = predictedData.map(item => ({
-      date: item.date._seconds,
-      product: item.Product,
-      totalSales: item.Predicted_totalSales
-    }));
-    const combinedData = renamedActualData.concat(renamedAnalyzedSalesData);
+      const date = new Date(item.date._seconds * 1000);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed, so we add 1
+      const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
+    
+      return {
+        date: `${day}-${month}-${year}`,
+        product: item.productName,
+        [activeTab === 1 ? 'totalSales' : 'quantity']: activeTab === 1 ? item.totalSales :item.quantity
+      };
+    });
+
+    const renamedAnalyzedData = predictedData.map(item => {
+      if (!item) return null; // Check if item exists
+
+      const date = new Date(item.date._seconds * 1000);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed, so we add 1
+      const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
+    
+      return {
+        date: `${day}-${month}-${year}`,
+        product: item.productName,
+        [activeTab === 1 ? 'totalSales' : 'quantity']: activeTab === 1 ? item.Predicted_totalSales :item.Predicted_quantity
+      };
+    });
+    const combinedData = renamedActualData.concat(renamedAnalyzedData);
     let csvContent = `date,product,${activeTab === 1? "totalSales": "quantity"}\n`;
     combinedData.forEach(item => {
-        csvContent += `${ new Date(item.date)},${item.product},${item.totalSales}\n`;
+        csvContent += `${item.date},${item.product},${activeTab === 1 ? item.totalSales : item.quantity}\n`;
     });
 
     return csvContent;
   };
 
   const handleDownload = () => {
- 
+    // Download graph data
+    const csvData = generateCSVData(activeTab === 1? actualSalesData : actualQuantityData,activeTab === 1? analyzedSalesData: analyzedQuantityData);
+    const blob = new Blob([csvData], { type: "text/csv" });
+    saveAs(blob, `${activeTab === 1? "totalSales": "quantity"}_data_file_${fileId}.csv`);
+    
+    console.log(activeTab === 1? "totalSales": "quantity")
+    console.log("baseImageee", baseImage)
+    if (!baseImage) return;
+
+    saveAs(baseImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph_file_${fileId}.png`);
+    // if (baseImage && baseImage != "data:,"){
+    //   // console.log("baseImageee", baseImage)
+    //   saveAs(baseImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph.png`)
+    // }else {
+    //   console.log("Sorry, Unable to save chart")
+    // }
   };
 
   return (
@@ -303,6 +336,11 @@ const Dashboard = ({}) => {
                   togglePredicted={togglePredicted}
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
+                  getChartImage={(base64Image) => {
+                    setBaseImage(base64Image) 
+                    // console.log("getChart", base64Image)
+                    // console.log("base64 in DB", baseImage)
+                  }}
                 />
               )}
             </div>
@@ -413,6 +451,11 @@ const Dashboard = ({}) => {
                   togglePredicted={togglePredicted}
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
+                  getChartImage={(base64Image) => {
+                    setBaseImage(base64Image) 
+                    // console.log("getChart", base64Image)
+                    // console.log("base64 in DB", baseImage)
+                  }}
                 />
               )}
             </div>

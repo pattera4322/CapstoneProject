@@ -4,7 +4,7 @@ import InfoPopup from "../../components/Home/InfoPopup";
 import ButtonComponent from "../Button/Button";
 import { saveAs } from "file-saver";
 import { formatDateInChart } from "../../utils/FormatDateTime";
-// import ChartjsPluginScrollBar from 'chartjs-plugin-scroll-bar';
+import { Button } from "@material-tailwind/react";
 
 const Chart = ({
   predictedName,
@@ -14,12 +14,13 @@ const Chart = ({
   togglePredicted,
   getR2score,
   getMSEscore,
+  getChartImage
 }) => {
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
+  const [image, setImage] = useState("")
   const chartRef = useRef(null);
-  // Line.register(ChartjsPluginScrollBar);
 
   const options = {
     maintainAspectRatio: false,
@@ -40,9 +41,6 @@ const Chart = ({
         },
       },
     },
-    // plugins: {
-    //   scrollBar: {enable: true, scrollType: 'Horizontal'},
-    // },
   };
 
   useEffect(() => {
@@ -94,7 +92,14 @@ const Chart = ({
     setPredictedArray(actualDataMergePredicted);
     setActualArray(arrayActual);
     setFormattedDates(mergedDateArray);
-    
+
+    // if (chartRef.current && getChartImage && (image === null || image != "data:,")) {
+    //   const base64Image = chartRef.current.toBase64Image();
+    //   setImage(base64Image)
+    //   getChartImage(base64Image);
+    //   // console.log(base64Image)
+    //   // console.log("Image",image)
+    // }
   }, [predictedData, predictedColumn]);
 
   const chartData = {
@@ -117,6 +122,16 @@ const Chart = ({
       },
     ],
   };
+
+  useEffect(() => {
+    if (chartRef.current && getChartImage && (image === null || image != "data:,")) {
+      const base64Image = chartRef.current.toBase64Image();
+      setImage(base64Image)
+      getChartImage(base64Image);
+      // console.log(base64Image)
+      // console.log("Image",image)
+    }
+  }, [chartData,getChartImage])
 
   function formatDateArray(dataArray) {
     return dataArray.map((entry) => {
@@ -153,34 +168,42 @@ const Chart = ({
     return uniqueDates;
   }
 
-  const generateCSVData = (data) => {
-    let csvContent = `Date,${predictedColumn}PredictedValue\n`;
-    console.log("seees", data);
-    data.labels.forEach((label, index) => {
-      const predicted = data.datasets[1].data[index];
-      if (predicted !== "undefined") {
-        csvContent += `"${label}",${predicted}\n`;
-      }
-    });
+  // useEffect(() => {
+  //   if (chartRef.current) {
+  //     const base64Image = chartRef.current.toBase64Image();
+  //     console.log(getChartImage)
+  //     getChartImage(base64Image);
+  //   }
+  // }, [predictedData, getChartImage]);
 
-    return csvContent;
-  };
+  // const generateCSVData = (data) => {
+  //   let csvContent = `Date,${predictedColumn}PredictedValue\n`;
+  //   console.log("seees", data);
+  //   data.labels.forEach((label, index) => {
+  //     const predicted = data.datasets[1].data[index];
+  //     if (predicted !== "undefined") {
+  //       csvContent += `"${label}",${predicted}\n`;
+  //     }
+  //   });
 
-  const handleDownload = () => {
-    const base64Image = chartRef.current.toBase64Image();
-    console.log("base64",base64Image)
-    saveAs(base64Image, `${predictedColumn}ForecastGraph.png`);
+  //   return csvContent;
+  // };
 
-    // Download graph data
-    const csvData = generateCSVData(chartData);
-    const blob = new Blob([csvData], { type: "text/csv" });
-    saveAs(blob, `${predictedColumn}_graph_data.csv`);
-  };
+  // const handleDownload = () => {
+  //   const base64Image = chartRef.current.toBase64Image();
+  //   console.log("base64",base64Image)
+  //   saveAs(base64Image, `${predictedColumn}ForecastGraph.png`);
 
-  const infoChart = `The prediction fit ${getR2score} % to data and estimate error of predicetion data is ${getMSEscore} `;
+  //   // Download graph data
+  //   const csvData = generateCSVData(chartData);
+  //   const blob = new Blob([csvData], { type: "text/csv" });
+  //   saveAs(blob, `${predictedColumn}_graph_data.csv`);
+  // };
+
+  const infoChart = `The prediction fit ${getR2score} % to data (Evaluated by R2 score) and estimate error of predicetion data is ${getMSEscore} (Evaluated by MSE score)`;
 
   return (
-      <div className="h-full overflow-auto">
+      <div className="h-full" >
         <div className="text-left pl-5">
           <label className="pb-2 font-bold">
             {predictedColumn === "quantity"
@@ -190,48 +213,51 @@ const Chart = ({
           <InfoPopup infoText={infoChart} />
         </div>
 
-        <div className="flex-grow flex flex-col items-center justify-center h-[95%] w-[250%]">
-          {/* <div className="chart-container" style={{ overflowX: "auto", width: "150%",height: "100%", padding: "0 20px" }}> */}
-          {/* <Line data={chartData} options={options} /> */}
-          {togglePredicted === true ? (
-            <Line
-              ref={chartRef}
-              data={chartData}
-              options={options}
-              className=""
-            />
-          ) : chartData.datasets && chartData.datasets.length >= 2 ? (
-            <Line
-              ref={chartRef}
-              data={{
-                labels: chartData.labels,
-                datasets: [chartData.datasets[0]], // Only using the first dataset (Actual Data)
-              }}
-              options={options}
-              className=""
-            />
-          ) : (
-            <Line data={chartData} options={options} className="" />
-          )}
-
-          {/* <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
-          <li>
-            <Button className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
-              1 Year
-            </Button>
-          </li>
-          <li>
-            <Button className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
-              2 Months
-            </Button>
-          </li>
-          <li>
-            <Button className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
-              3 Months
-            </Button>
-          </li>
-        </ul> */}
+        <div className="h-[80%] overflow-auto" >
+          <div className="flex-grow flex flex-col items-center justify-center h-full w-[250%]">
+            {/* <div className="chart-container" style={{ overflowX: "auto", width: "150%",height: "100%", padding: "0 20px" }}> */}
+            {/* <Line data={chartData} options={options} /> */}
+            {togglePredicted === true ? (
+              <Line
+                ref={chartRef}
+                data={chartData}
+                options={options}
+                className=""
+              />
+            ) : chartData.datasets && chartData.datasets.length >= 2 ? (
+              <Line
+                ref={chartRef}
+                data={{
+                  labels: chartData.labels,
+                  datasets: [chartData.datasets[0]], // Only using the first dataset (Actual Data)
+                }}
+                options={options}
+                className=""
+              />
+            ) : (
+              <Line ref={chartRef} data={chartData} options={options} className="" />
+            )}
+          </div>
         </div>
+        <div className="mt-4 mb-4">
+          <ul className="flex flex-wrap gap-x-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+            <li>
+              <ButtonComponent className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
+                1 Year
+              </ButtonComponent>
+            </li>
+            <li>
+              <ButtonComponent className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
+                2 Months
+              </ButtonComponent>
+            </li>
+            <li>
+              <ButtonComponent className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
+                3 Months
+              </ButtonComponent>
+            </li>
+          </ul>
+        </div>        
       </div>
   );
 };

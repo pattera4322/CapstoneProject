@@ -84,7 +84,7 @@ function HomePage() {
             />
           </span>
 
-          <span>
+          <span className="lg:pt-10">
             <Button3D onClick={scrolldown} children={"Let’s get started"} />
           </span>
         </div>

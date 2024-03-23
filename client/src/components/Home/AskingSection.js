@@ -25,8 +25,7 @@ const Asking = ({ onSubmit }) => {
   }, [formData]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    // console.log(value);
+    let { name, value } = e.target;
     if (name === "riskLevel") {
       const arrayValues = value.split(",").map((e) => parseFloat(e));
       setFormData({
@@ -72,7 +71,6 @@ const Asking = ({ onSubmit }) => {
   //handle if user type more than 366 days
 const leadTimeValidation = (e) => {
   let newValue = parseInt(e.target.value, 10);
-
   if (!isNaN(newValue)) {
     if (newValue >= 1 && newValue <= 366) {
       setFormData({ ...formData, leadTime: newValue });
