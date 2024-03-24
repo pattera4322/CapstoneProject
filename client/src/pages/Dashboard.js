@@ -194,8 +194,7 @@ const Dashboard = ({}) => {
 
   const generateCSVData = (predictedData, name) => {
     let csvContent = `Date, ${name}PredictedValue\n`;
-    console.log("seees", predictedData);
-
+    
     const aggregatedData = {};
     predictedData.forEach((data) => {
       const date = formatDateDDMMMYYYY(data.date);
