@@ -44,6 +44,12 @@ const Chart = ({
         },
       },
     },
+    plugins: {
+      legend: {
+        position: 'top',
+        align: 'end',
+      },
+    },
   };
 
   useEffect(() => {
