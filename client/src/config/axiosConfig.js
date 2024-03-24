@@ -25,7 +25,7 @@ api.interceptors.response.use(
         showErrorAlertWithRefresh("Internal Server");
       }
       if (error.response.status === 502) {
-        showErrorAlertWithRefresh("Bad gatewayr");
+        showErrorAlertWithRefresh("Bad gateway");
       }
     }
     return Promise.reject(error);

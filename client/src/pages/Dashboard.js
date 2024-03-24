@@ -50,10 +50,9 @@ const Dashboard = ({}) => {
   const [togglePredicted, setTogglePredicted] = useState(true);
   const [keywords, setKeywords] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [baseSalesImage, setBaseSalesImage] = useState();
-  const [baseQuantityImage, setBaseQuantityImage] = useState();
+  const [baseImage, setBaseImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
-
+  
   useEffect(() => {
     setIsLoading(true);
     getUserHistory(fileId)
@@ -154,8 +153,7 @@ const Dashboard = ({}) => {
     setFilteredAnalyzedQuantityData(filteredAnalyzedQuantityData);
     setFilteredActualSalesData(filteredActualSalesData);
     setFilteredActualQuantityData(filteredActualQuantityData);
-    setBaseQuantityImage(null)
-    setBaseSalesImage(null)
+
   };
 
   const handleReAnalyzed = () => {
@@ -197,7 +195,7 @@ const Dashboard = ({}) => {
 
   const generateCSVData = (predictedData, name) => {
     let csvContent = `Date, ${name}PredictedValue\n`;
-    
+
     const aggregatedData = {};
     predictedData.forEach((data) => {
       const date = formatDateDDMMMYYYY(data.date);
@@ -216,75 +214,21 @@ const Dashboard = ({}) => {
     return csvContent;
   };
 
-  // const generateCSVData = (actualData, predictedData) => {
-  //   const renamedActualData = actualData.map((item) => {
-  //     if (!item) return null; // Check if item exists
-
-  //     const date = new Date(item.date._seconds * 1000);
-  //     const day = date.getDate().toString().padStart(2, "0");
-  //     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-indexed, so we add 1
-  //     const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
-
-  //     return {
-  //       date: `${day}-${month}-${year}`,
-  //       product: item.productName,
-  //       [activeTab === 1 ? "totalSales" : "quantity"]:
-  //         activeTab === 1 ? item.totalSales : item.quantity,
-  //     };
-  //   });
-
-  //   const renamedAnalyzedData = predictedData.map((item) => {
-  //     if (!item) return null; // Check if item exists
-
-  //     const date = new Date(item.date._seconds * 1000);
-  //     const day = date.getDate().toString().padStart(2, "0");
-  //     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-indexed, so we add 1
-  //     const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
-
-  //     return {
-  //       date: `${day}-${month}-${year}`,
-  //       product: item.productName,
-  //       [activeTab === 1 ? "totalSales" : "quantity"]:
-  //         activeTab === 1 ? item.Predicted_totalSales : item.Predicted_quantity,
-  //     };
-  //   });
-  //   const combinedData = renamedActualData.concat(renamedAnalyzedData);
-  //   let csvContent = `date,product,${
-  //     activeTab === 1 ? "totalSales" : "quantity"
-  //   }\n`;
-  //   combinedData.forEach((item) => {
-  //     csvContent += `${item.date},${item.product},${
-  //       activeTab === 1 ? item.totalSales : item.quantity
-  //     }\n`;
-  //   });
-
-  //   return csvContent;
-  // };
-
   const handleDownload = () => {
-    // Download graph data
-    // const csvData = generateCSVData(
-    //   activeTab === 1 ? actualSalesData : actualQuantityData,
-    //   activeTab === 1 ? analyzedSalesData : analyzedQuantityData
-    // );
     const csvData = generateCSVData(
       activeTab === 1 ? analyzedSalesData : analyzedQuantityData,
       activeTab === 1 ? "totalSales" : "quantity"
     );
     const blob = new Blob([csvData], { type: "text/csv" });
-    saveAs(blob, `${activeTab === 1? "totalSales": "quantity"}_data_file_${fileId}.csv`);
-    
-    console.log(activeTab === 1? "totalSales": "quantity")
-    console.log("baseImageee", activeTab === 1 ? baseSalesImage : baseQuantityImage)
-    if (!baseSalesImage && !baseQuantityImage) return console.log("Sorry, Unable to save chart");
+    saveAs(
+      blob,
+      `${activeTab === 1 ? "totalSales" : "quantity"}_data_file_${fileId}.csv`
+    );
 
-    saveAs( activeTab === 1 ? baseSalesImage : baseQuantityImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph_file_${fileId}.png`);
-    // if (baseImage && baseImage != "data:,"){
-    //   // console.log("baseImageee", baseImage)
-    //   saveAs(baseImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph.png`)
-    // }else {
-    //   console.log("Sorry, Unable to save chart")
-    // }
+    saveAs(
+      baseImage,
+      `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph.png`
+    );
   };
 
   return (
@@ -377,9 +321,7 @@ const Dashboard = ({}) => {
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
                   getChartImage={(base64Image) => {
-                    setBaseSalesImage(base64Image) 
-                    // console.log("getChart", base64Image)
-                    // console.log("base64 in DB", baseImage)
+                    setBaseImage(base64Image);
                   }}
                 />
               )}
@@ -492,9 +434,7 @@ const Dashboard = ({}) => {
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
                   getChartImage={(base64Image) => {
-                    setBaseQuantityImage(base64Image) 
-                    // console.log("getChart", base64Image)
-                    // console.log("base64 in DB", baseImage)
+                    setBaseImage(base64Image);
                   }}
                 />
               )}

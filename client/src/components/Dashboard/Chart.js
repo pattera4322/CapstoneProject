@@ -3,6 +3,8 @@ import { Line } from "react-chartjs-2";
 import InfoPopup from "../../components/Home/InfoPopup";
 import ButtonComponent from "../Button/Button";
 import { formatDateInChart } from "../../utils/FormatDateTime";
+import { saveAs } from "file-saver";
+import { progress } from "@material-tailwind/react";
 
 const Chart = ({
   predictedName,
@@ -17,15 +19,14 @@ const Chart = ({
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
-  // const [image, setImage] = useState("")
-  // const [imageSales, setImageSales] = useState("")
-  // const [imageQuantity, setImageQuantity] = useState("")
   const chartRef = useRef(null);
 
-  var imageSales = ""
-  var imageQuantity =""
-
   const options = {
+    animation: {
+      onComplete: function (e) {
+        chartToBase64();
+      },
+    },
     maintainAspectRatio: false,
     responsive: true,
     scales: {
@@ -52,57 +53,6 @@ const Chart = ({
     },
   };
 
-  useEffect(() => {
-    const arrayMergedPredictData = sumValueByDate(
-      predictedData,
-      false,
-      predictedColumn
-    );
-    const arrayMergedActualData = sumValueByDate(
-      actualData,
-      true,
-      predictedColumn
-    );
-
-    const latestDate = new Date(
-      arrayMergedActualData[arrayMergedActualData.length - 1].date * 1000
-    );
-
-    const threeMonthsAgo = new Date(latestDate);
-    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-
-    const filteredActualData3Months = arrayMergedActualData.filter((entry) => {
-      const entryDate = new Date(entry.date * 1000);
-      // return entryDate >= threeMonthsAgo;
-      return entryDate;
-    });
-
-    const arrayPredicted = arrayMergedPredictData.map((entry) =>
-      predictedColumn === "quantity" ? entry.quantity : entry.totalSales
-    );
-    const arrayActual = filteredActualData3Months.map((entry) =>
-      predictedColumn === "quantity" ? entry.quantity : entry.totalSales
-    );
-
-    const predictedDataFormatted = formatDateArray(
-      arrayMergedPredictData,
-      false
-    );
-    const ActualDataFormatted = formatDateArray(
-      filteredActualData3Months,
-      true
-    );
-
-    const mergedDateArray = ActualDataFormatted.concat(predictedDataFormatted);
-
-    const array = Array(arrayActual.length).fill("undefined");
-    const actualDataMergePredicted = array.concat(arrayPredicted);
-
-    setPredictedArray(actualDataMergePredicted);
-    setActualArray(arrayActual);
-    setFormattedDates(mergedDateArray);
-  }, [predictedData, predictedColumn]);
-
   const chartData = {
     labels: formattedDates,
     datasets: [
@@ -125,18 +75,57 @@ const Chart = ({
   };
 
   useEffect(() => {
-    if (chartRef.current && getChartImage && 
-      ((imageSales === null || imageSales != "data:,") || (imageQuantity === null || imageQuantity != "data:,")) 
-      // && ((getBaseImage === null || getBaseImage != "data:," || getBaseImage != (predictedColumn === "sales"? imageSales : imageQuantity)))
-      ) {
+    const arrayMergedPredictData = sumValueByDate(
+      predictedData,
+      false,
+      predictedColumn
+    );
+    const arrayMergedActualData = sumValueByDate(
+      actualData,
+      true,
+      predictedColumn
+    );
+
+    const filteredActualDataMonths = handleFilterMonth(
+      12,
+      arrayMergedActualData
+    );
+
+    const arrayPredicted = arrayMergedPredictData.map((entry) =>
+      predictedColumn === "quantity" ? entry.quantity : entry.totalSales
+    );
+    const arrayActual = filteredActualDataMonths.map((entry) =>
+      predictedColumn === "quantity" ? entry.quantity : entry.totalSales
+    );
+
+    const predictedDataFormatted = formatDateArray(
+      arrayMergedPredictData,
+      false
+    );
+    const ActualDataFormatted = formatDateArray(
+      filteredActualDataMonths,
+      true
+    );
+
+    const mergedDateArray = ActualDataFormatted.concat(predictedDataFormatted);
+
+    const array = Array(arrayActual.length).fill("undefined");
+    const actualDataMergePredicted = array.concat(arrayPredicted);
+
+    setPredictedArray(actualDataMergePredicted);
+    setActualArray(arrayActual);
+    setFormattedDates(mergedDateArray);
+  }, [predictedData, predictedColumn]);
+
+  const chartToBase64 = () => {
+    if (chartRef.current) {
       const base64Image = chartRef.current.toBase64Image();
-      // predictedColumn === "sales"? setImageSales(base64Image) : setImageQuantity(base64Image)
-      predictedColumn === "sales"? imageSales = base64Image : imageQuantity = base64Image
-      getChartImage(base64Image);
-      // console.log(base64Image)
-      // console.log("Image",image)
+
+      if (base64Image !== "data:,") {
+        getChartImage(base64Image);
+      }
     }
-  }, [predictedColumn,actualData,predictedData,chartData,getChartImage])
+  };
 
   function formatDateArray(dataArray) {
     return dataArray.map((entry) => {
@@ -172,6 +161,19 @@ const Chart = ({
 
     return uniqueDates;
   }
+
+  const handleFilterMonth = (month, array) => {
+    const latestDate = new Date(array[array.length - 1].date * 1000);
+
+    const latestMonthsAgo = new Date(latestDate);
+    latestMonthsAgo.setMonth(latestMonthsAgo.getMonth() - month);
+
+    const filteredActualDataMonths = array.filter((entry) => {
+      const entryDate = new Date(entry.date * 1000);
+      return entryDate >= latestMonthsAgo;
+    });
+    return filteredActualDataMonths;
+  };
 
   const infoChart = `The prediction fit ${getR2score} % to data (Evaluated by R2 score) and estimate error of predicetion data is ${getMSEscore} (Evaluated by MSE score)`;
 
@@ -220,9 +222,11 @@ const Chart = ({
       <div className="mt-4 mb-4">
         <ul className="flex flex-wrap gap-x-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400">
           <li>
-            <ButtonComponent className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
-              1 Year
-            </ButtonComponent>
+            <ButtonComponent
+              className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5"
+              onClick={() => {}}
+              children={"1 YEAR"}
+            />
           </li>
           <li>
             <ButtonComponent className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
