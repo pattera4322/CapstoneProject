@@ -10,9 +10,11 @@ import Analyzed from "../components/Dashboard/Analyzed";
 import DropdownFilter from "../components/Dashboard/Filter";
 import TogglePrediction from "../components/Dashboard/TogglePrediction";
 import { getUserHistory } from "../api/userHistoryApi";
-import { getNews } from '../api/newsApi';
+import { getNews } from "../api/newsApi";
 import ReAnalyzed from "../components/Dashboard/ReAnalyzed";
+import LoadingPage from "../components/LoadingPage";
 import { saveAs } from "file-saver";
+import { formatDateDDMMMYYYY } from "../utils/FormatDateTime";
 import { toBase64Image } from "react-chartjs-2";
 
 import html2canvas from "html2canvas";
@@ -30,7 +32,6 @@ const Dashboard = ({}) => {
   const location = useLocation();
 
   const fileId = location.state || {};
-  console.log("fileId", fileId);
 
   const [analyzedData, setAnalyzedData] = useState();
   const [analyzedSalesData, setAnalyzedSalesData] = useState();
@@ -51,8 +52,10 @@ const Dashboard = ({}) => {
   const [showPopup, setShowPopup] = useState(false);
   const [baseSalesImage, setBaseSalesImage] = useState();
   const [baseQuantityImage, setBaseQuantityImage] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     getUserHistory(fileId)
       .then((res) => {
         // console.log("analyzed data", res.data);
@@ -75,9 +78,11 @@ const Dashboard = ({}) => {
 
         setProducts(products);
         setKeywords(products);
-        console.log(res.data)
+        setIsLoading(false);
+        console.log(res.data);
       })
       .catch((error) => {
+        setIsLoading(false);
         console.log("Error: ", error);
         if (error.response && error.response.status === 404) {
           console.log(error.response.data.ResponseMessage);
@@ -86,26 +91,27 @@ const Dashboard = ({}) => {
   }, []);
 
   const [news, setNews] = useState([]);
-  const [newsError, setNewsError] = useState('');
+  const [newsError, setNewsError] = useState("");
 
   useEffect(() => {
-    if (news.length === 0) { // Only fetch news if it hasn't been fetched yet
-        getNews(keywords)
-            .then((res) => {
-                if (res.length > 0) {
-                    setNews(res);
-                }
-            })
-            .catch((error) => {
-                if (error.response && error.response.status === 403) {
-                    setNewsError(error.response.data.errors[0]);
-                } else {
-                    setNewsError(error.response.data.errors[0]);
-                    console.log(newsError);
-                }
-            });
-      }
-    }, [keywords]);
+    if (news.length === 0) {
+      // Only fetch news if it hasn't been fetched yet
+      getNews(keywords)
+        .then((res) => {
+          if (res.length > 0) {
+            setNews(res);
+          }
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 403) {
+            setNewsError(error.response.data.errors[0]);
+          } else {
+            setNewsError(error.response.data.errors[0]);
+            console.log(newsError);
+          }
+        });
+    }
+  }, [keywords]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -152,97 +158,127 @@ const Dashboard = ({}) => {
     setBaseSalesImage(null)
   };
 
-  // const handleScreenshot = () => {
-  //   const rootElement = document.getElementById("root");
-  //   if (rootElement) {
-  //     html2canvas(rootElement).then((canvas) => {
-  //       const imageData = canvas.toDataURL("image/png");
-
-  //       const downloadLink = document.createElement("a");
-  //       downloadLink.href = imageData;
-  //       downloadLink.download = "screenshot.png";
-
-  //       document.body.appendChild(downloadLink);
-  //       downloadLink.click();
-  //       document.body.removeChild(downloadLink);
-  //     });
-  //   }
-  // };
-
   const handleReAnalyzed = () => {
-    setShowPopup(true); 
-  }
+    setShowPopup(true);
+  };
 
   const getR2score = () => {
     if (selectedProduct == "") {
-      const products = activeTab==1? Object.values(analyzedData.historyData.history.evalTotalSales) : Object.values(analyzedData.historyData.history.evalQuantity);
+      const products =
+        activeTab == 1
+          ? Object.values(analyzedData.historyData.history.evalTotalSales)
+          : Object.values(analyzedData.historyData.history.evalQuantity);
       const totalR2 = products.reduce((acc, product) => acc + product.R2, 0);
-      return (totalR2 / products.length)*100 || 0;
+      return (totalR2 / products.length) * 100 || 0;
     } else {
-      return activeTab==1? (analyzedData.historyData.history.evalTotalSales[selectedProduct].R2)*100 : (analyzedData.historyData.history.evalQuantity[selectedProduct].R2)*100
+      return activeTab == 1
+        ? analyzedData.historyData.history.evalTotalSales[selectedProduct].R2 *
+            100
+        : analyzedData.historyData.history.evalQuantity[selectedProduct].R2 *
+            100;
     }
-  }
+  };
   const getMSEscore = () => {
     if (selectedProduct == "") {
-      const products = activeTab==1? Object.values(analyzedData.historyData.history.evalTotalSales) : Object.values(analyzedData.historyData.history.evalQuantity);
+      const products =
+        activeTab == 1
+          ? Object.values(analyzedData.historyData.history.evalTotalSales)
+          : Object.values(analyzedData.historyData.history.evalQuantity);
       const totalMSE = products.reduce((acc, product) => acc + product.MSE, 0);
-      console.log(totalMSE,products.length)
       return (totalMSE / products.length).toFixed(2) || 0;
     } else {
-      return activeTab==1? (analyzedData.historyData.history.evalTotalSales[selectedProduct].MSE)*100 : (analyzedData.historyData.history.evalQuantity[selectedProduct].MSE)*100
+      return activeTab == 1
+        ? analyzedData.historyData.history.evalTotalSales[selectedProduct].MSE *
+            100
+        : analyzedData.historyData.history.evalQuantity[selectedProduct].MSE *
+            100;
     }
-  }
+  };
 
-  const generateCSVData = (actualData,predictedData) => {
-    const renamedActualData = actualData.map(item => {
-      if (!item) return null; // Check if item exists
-
-      const date = new Date(item.date._seconds * 1000);
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed, so we add 1
-      const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
+  const generateCSVData = (predictedData, name) => {
+    let csvContent = `Date, ${name}PredictedValue\n`;
     
-      return {
-        date: `${day}-${month}-${year}`,
-        product: item.productName,
-        [activeTab === 1 ? 'totalSales' : 'quantity']: activeTab === 1 ? item.totalSales :item.quantity
-      };
+    const aggregatedData = {};
+    predictedData.forEach((data) => {
+      const date = formatDateDDMMMYYYY(data.date);
+      const predicted =
+        activeTab === 1 ? data.Predicted_totalSales : data.Predicted_quantity;
+      if (!aggregatedData[date]) {
+        aggregatedData[date] = 0;
+      }
+      aggregatedData[date] += predicted;
     });
 
-    const renamedAnalyzedData = predictedData.map(item => {
-      if (!item) return null; // Check if item exists
-
-      const date = new Date(item.date._seconds * 1000);
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed, so we add 1
-      const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
-    
-      return {
-        date: `${day}-${month}-${year}`,
-        product: item.productName,
-        [activeTab === 1 ? 'totalSales' : 'quantity']: activeTab === 1 ? item.Predicted_totalSales :item.Predicted_quantity
-      };
-    });
-    const combinedData = renamedActualData.concat(renamedAnalyzedData);
-    let csvContent = `date,product,${activeTab === 1? "totalSales": "quantity"}\n`;
-    combinedData.forEach(item => {
-        csvContent += `${item.date},${item.product},${activeTab === 1 ? item.totalSales : item.quantity}\n`;
+    Object.entries(aggregatedData).forEach(([date, predicted]) => {
+      csvContent += `${date}, ${predicted}\n`;
     });
 
     return csvContent;
   };
 
+  // const generateCSVData = (actualData, predictedData) => {
+  //   const renamedActualData = actualData.map((item) => {
+  //     if (!item) return null; // Check if item exists
+
+  //     const date = new Date(item.date._seconds * 1000);
+  //     const day = date.getDate().toString().padStart(2, "0");
+  //     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-indexed, so we add 1
+  //     const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
+
+  //     return {
+  //       date: `${day}-${month}-${year}`,
+  //       product: item.productName,
+  //       [activeTab === 1 ? "totalSales" : "quantity"]:
+  //         activeTab === 1 ? item.totalSales : item.quantity,
+  //     };
+  //   });
+
+  //   const renamedAnalyzedData = predictedData.map((item) => {
+  //     if (!item) return null; // Check if item exists
+
+  //     const date = new Date(item.date._seconds * 1000);
+  //     const day = date.getDate().toString().padStart(2, "0");
+  //     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-indexed, so we add 1
+  //     const year = date.getFullYear().toString().slice(-2); // Get last two digits of the year
+
+  //     return {
+  //       date: `${day}-${month}-${year}`,
+  //       product: item.productName,
+  //       [activeTab === 1 ? "totalSales" : "quantity"]:
+  //         activeTab === 1 ? item.Predicted_totalSales : item.Predicted_quantity,
+  //     };
+  //   });
+  //   const combinedData = renamedActualData.concat(renamedAnalyzedData);
+  //   let csvContent = `date,product,${
+  //     activeTab === 1 ? "totalSales" : "quantity"
+  //   }\n`;
+  //   combinedData.forEach((item) => {
+  //     csvContent += `${item.date},${item.product},${
+  //       activeTab === 1 ? item.totalSales : item.quantity
+  //     }\n`;
+  //   });
+
+  //   return csvContent;
+  // };
+
   const handleDownload = () => {
     // Download graph data
-    const csvData = generateCSVData(activeTab === 1? actualSalesData : actualQuantityData,activeTab === 1? analyzedSalesData: analyzedQuantityData);
+    // const csvData = generateCSVData(
+    //   activeTab === 1 ? actualSalesData : actualQuantityData,
+    //   activeTab === 1 ? analyzedSalesData : analyzedQuantityData
+    // );
+    const csvData = generateCSVData(
+      activeTab === 1 ? analyzedSalesData : analyzedQuantityData,
+      activeTab === 1 ? "totalSales" : "quantity"
+    );
     const blob = new Blob([csvData], { type: "text/csv" });
     saveAs(blob, `${activeTab === 1? "totalSales": "quantity"}_data_file_${fileId}.csv`);
     
     console.log(activeTab === 1? "totalSales": "quantity")
-    console.log("baseImageee", activeTab === 1 ? baseSalesImage : baseQuantityImage)
-    if (!baseSalesImage && !baseQuantityImage) return console.log("Sorry, Unable to save chart");
+    console.log("baseImageee", baseImage)
+    if (!baseImage) return;
 
-    saveAs(activeTab === 1 ? baseSalesImage : baseQuantityImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph_file_${fileId}.png`);
+    saveAs(baseImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph_file_${fileId}.png`);
     // if (baseImage && baseImage != "data:,"){
     //   // console.log("baseImageee", baseImage)
     //   saveAs(baseImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph.png`)
@@ -253,6 +289,7 @@ const Dashboard = ({}) => {
 
   return (
     <div>
+      <LoadingPage isLoading={isLoading} />
       <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 pt-20 pr-8 pl-8">
         <li className="mr-2">
           <button
@@ -305,16 +342,16 @@ const Dashboard = ({}) => {
 
       {showPopup && (
         <ReAnalyzed
-        handleClose={() => {
-          setShowPopup(false) 
-          setAnalyzedData(prevState => ({
-          ...prevState,
-          userData: JSON.parse(localStorage.getItem('askingItems'))
-          }))
-          console.log(analyzedData.userData)
-        }}
-        userData={analyzedData.userData}
-        fileId={analyzedData.historyData.fileId}
+          handleClose={() => {
+            setShowPopup(false);
+            setAnalyzedData((prevState) => ({
+              ...prevState,
+              userData: JSON.parse(localStorage.getItem("askingItems")),
+            }));
+            console.log(analyzedData.userData);
+          }}
+          userData={analyzedData.userData}
+          fileId={analyzedData.historyData.fileId}
         />
       )}
 
@@ -340,7 +377,7 @@ const Dashboard = ({}) => {
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
                   getChartImage={(base64Image) => {
-                    setBaseSalesImage(base64Image) 
+                    setBaseImage(base64Image) 
                     // console.log("getChart", base64Image)
                     // console.log("base64 in DB", baseImage)
                   }}
@@ -349,10 +386,10 @@ const Dashboard = ({}) => {
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1 lg:h-[90%]">
               {analyzedSalesData && (
-                <RelatedNews 
-                keywords={keywords}
-                news={news}
-                error={newsError}
+                <RelatedNews
+                  keywords={keywords}
+                  news={news}
+                  error={newsError}
                 />
               )}
             </div>
@@ -455,7 +492,7 @@ const Dashboard = ({}) => {
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
                   getChartImage={(base64Image) => {
-                    setBaseQuantityImage(base64Image) 
+                    setBaseImage(base64Image) 
                     // console.log("getChart", base64Image)
                     // console.log("base64 in DB", baseImage)
                   }}
@@ -464,10 +501,10 @@ const Dashboard = ({}) => {
             </div>
             <div className="box-content p-4 shadow-md flex-1 h-[90%]">
               {analyzedSalesData && (
-                <RelatedNews 
-                keywords={keywords}
-                news={news}
-                error={newsError}
+                <RelatedNews
+                  keywords={keywords}
+                  news={news}
+                  error={newsError}
                 />
               )}
             </div>
