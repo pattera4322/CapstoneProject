@@ -533,7 +533,7 @@ const Dashboard = ({}) => {
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
-              <div className="text-base text-left p-4 h-40">
+              <div className="text-base text-left p-4 h-40 overflow-x-auto">
                 {analyzedData && (
                   <ProductPieChart
                     predictedName={"Predicted Quantity"}
