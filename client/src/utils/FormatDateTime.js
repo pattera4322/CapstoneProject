@@ -9,6 +9,15 @@ const formatDateTimeStamp = (dateTime) => {
   return formattedDateTime;
 };
 
+const formatDateDDMMMYYYY= (dateTime) => {
+  const milliseconds =
+    dateTime._seconds * 1000 + Math.round(dateTime._nanoseconds / 1000000);
+
+  const formattedDateTime = moment(milliseconds).format("DD MMM YYYY");
+
+  return formattedDateTime;
+};
+
 const formatDateInChart = (dateTime) => {
     const milliseconds = dateTime * 1000;
   
@@ -18,4 +27,4 @@ const formatDateInChart = (dateTime) => {
   };
   
 
-export { formatDateTimeStamp,formatDateInChart };
+export { formatDateTimeStamp,formatDateDDMMMYYYY,formatDateInChart };
