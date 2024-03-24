@@ -12,8 +12,6 @@ const Login = () => {
     }else{
       await logIn(formData.email,formData.password);
     }
-    
-    console.log("Logging in with:", formData);
   };
 
   return (

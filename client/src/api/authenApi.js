@@ -59,8 +59,9 @@ export const useAuthenticate = () => {
       setLoading(true);
       if (!email) {
         const provider = new GoogleAuthProvider();
+        
         const result = await signInWithPopup(auth, provider);
-
+        setLoading(false);
         const credential = GoogleAuthProvider.credentialFromResult(result);
         // const token = credential.idToken;
         const token = await auth.currentUser.getIdToken();
