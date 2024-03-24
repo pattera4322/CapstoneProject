@@ -3,8 +3,7 @@ import { Line } from "react-chartjs-2";
 import InfoPopup from "../../components/Home/InfoPopup";
 import ButtonComponent from "../Button/Button";
 import { formatDateInChart } from "../../utils/FormatDateTime";
-import { saveAs } from "file-saver";
-import { progress } from "@material-tailwind/react";
+import FilterMonth from "./FilterMonth.js";
 
 const Chart = ({
   predictedName,
@@ -19,14 +18,18 @@ const Chart = ({
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
+  const [filterMonths, setFilterMonths] = useState(0);
+  const [maxMonths, setMaxMonths] = useState(0);
   const chartRef = useRef(null);
 
   const options = {
-    animation: {
-      onComplete: function (e) {
-        chartToBase64();
-      },
-    },
+    // animation: {
+    //   onComplete: function (e) {
+    //     // console.log(e);
+    //     chartToBase64();
+    //   },
+    // },
+    animation:false,
     maintainAspectRatio: false,
     responsive: true,
     scales: {
@@ -47,8 +50,8 @@ const Chart = ({
     },
     plugins: {
       legend: {
-        position: 'top',
-        align: 'end',
+        position: "top",
+        align: "end",
       },
     },
   };
@@ -75,6 +78,17 @@ const Chart = ({
   };
 
   useEffect(() => {
+    const arrayMergedActualData = sumValueByDate(
+      actualData,
+      true,
+      predictedColumn
+    );
+    const monthCount = getUniqueMonthsCount(arrayMergedActualData);
+    setMaxMonths(monthCount);
+    setFilterMonths(monthCount);
+  }, [predictedColumn]);
+
+  useEffect(() => {
     const arrayMergedPredictData = sumValueByDate(
       predictedData,
       false,
@@ -87,7 +101,7 @@ const Chart = ({
     );
 
     const filteredActualDataMonths = handleFilterMonth(
-      12,
+      filterMonths,
       arrayMergedActualData
     );
 
@@ -98,14 +112,8 @@ const Chart = ({
       predictedColumn === "quantity" ? entry.quantity : entry.totalSales
     );
 
-    const predictedDataFormatted = formatDateArray(
-      arrayMergedPredictData,
-      false
-    );
-    const ActualDataFormatted = formatDateArray(
-      filteredActualDataMonths,
-      true
-    );
+    const predictedDataFormatted = formatDateArray(arrayMergedPredictData);
+    const ActualDataFormatted = formatDateArray(filteredActualDataMonths);
 
     const mergedDateArray = ActualDataFormatted.concat(predictedDataFormatted);
 
@@ -115,7 +123,12 @@ const Chart = ({
     setPredictedArray(actualDataMergePredicted);
     setActualArray(arrayActual);
     setFormattedDates(mergedDateArray);
-  }, [predictedData, predictedColumn]);
+  }, [predictedData, predictedColumn, filterMonths]);
+
+  useEffect(() => {
+    console.log("mint")
+    chartToBase64();
+  },[actualArray,predictedArray])
 
   const chartToBase64 = () => {
     if (chartRef.current) {
@@ -175,6 +188,21 @@ const Chart = ({
     return filteredActualDataMonths;
   };
 
+  const getUniqueMonthsCount = (array) => {
+    const uniqueMonths = new Set();
+    array.forEach((dateData) => {
+      const date = new Date(dateData.date * 1000);
+      const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`;
+      uniqueMonths.add(monthYear);
+    });
+
+    return uniqueMonths.size;
+  };
+
+  const handleRangeChange = (months) => {
+    setFilterMonths(months);
+  };
+
   const infoChart = `The prediction fit ${getR2score} % to data (Evaluated by R2 score) and estimate error of predicetion data is ${getMSEscore} (Evaluated by MSE score)`;
 
   return (
@@ -188,7 +216,7 @@ const Chart = ({
         <InfoPopup infoText={infoChart} />
       </div>
 
-      <div className="h-[80%] overflow-auto" style={{ direction: 'rtl' }}>
+      <div className="h-[80%] overflow-auto" style={{ direction: "rtl" }}>
         <div className="flex-grow flex flex-col items-center justify-center h-full w-[250%]">
           {/* <div className="chart-container" style={{ overflowX: "auto", width: "150%",height: "100%", padding: "0 20px" }}> */}
           {/* <Line data={chartData} options={options} /> */}
@@ -199,7 +227,7 @@ const Chart = ({
               options={options}
               className=""
             />
-          ) : chartData.datasets && chartData.datasets.length >= 2 ? (
+          ) : (
             <Line
               ref={chartRef}
               data={{
@@ -209,36 +237,11 @@ const Chart = ({
               options={options}
               className=""
             />
-          ) : (
-            <Line
-              ref={chartRef}
-              data={chartData}
-              options={options}
-              className=""
-            />
           )}
         </div>
       </div>
       <div className="mt-4 mb-4">
-        <ul className="flex flex-wrap gap-x-2 text-sm font-medium text-center text-gray-500 dark:text-gray-400">
-          <li>
-            <ButtonComponent
-              className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5"
-              onClick={() => {}}
-              children={"1 YEAR"}
-            />
-          </li>
-          <li>
-            <ButtonComponent className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
-              2 Months
-            </ButtonComponent>
-          </li>
-          <li>
-            <ButtonComponent className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5">
-              3 Months
-            </ButtonComponent>
-          </li>
-        </ul>
+        <FilterMonth months={maxMonths} onRangeChange={handleRangeChange} />
       </div>
     </div>
   );
