@@ -26,10 +26,10 @@ module.exports = withMT({
           '0%, 100%': { transform: 'translateY(5%)' },
           '50%': { transform: 'translateY(-5%)' },
         },
-        // 'floating-2': {
-        //   '0%, 100%': { transform: 'translateY(-5%)' },
-        //   '50%': { transform: 'translateY(5%)' },
-        // },
+        'floating-2': {
+          '0%, 100%': { transform: 'translateY(-5%)' },
+          '50%': { transform: 'translateY(5%)' },
+        },
 
       },
     }
