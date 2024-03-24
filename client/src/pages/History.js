@@ -233,11 +233,6 @@ const History = () => {
             alt="SmartStock Home Image"
             className="inset-0 mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
           />
-          <img
-            src={process.env.PUBLIC_URL + "/assets/SmartStockHistoryArmBG.svg"}
-            alt="SmartStock Home Image"
-            className="absolute top-1/3 mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl -mt-16 animate-rotate-clockwise"
-          />
         </div>
       </div>
     </div>

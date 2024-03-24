@@ -61,7 +61,7 @@ const JobComponent = ({ job, progressData, index, insightData }) => {
           </span>
         </div>
       ) : null}
-      <div>
+      <div style={{ wordWrap: 'break-word' }}>
         FILE NAME: {insightData[jobId - 1].fileName || "Not found file name"}
       </div>
       {showDetails && (
