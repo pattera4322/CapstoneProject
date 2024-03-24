@@ -180,7 +180,7 @@ const Chart = ({
         <InfoPopup infoText={infoChart} />
       </div>
 
-      <div className="h-[80%] overflow-auto">
+      <div className="h-[80%] overflow-auto" style={{ direction: 'rtl' }}>
         <div className="flex-grow flex flex-col items-center justify-center h-full w-[250%]">
           {/* <div className="chart-container" style={{ overflowX: "auto", width: "150%",height: "100%", padding: "0 20px" }}> */}
           {/* <Line data={chartData} options={options} /> */}
