@@ -54,7 +54,7 @@ function HomePage() {
               
           } else {
             setIsLoading(false);
-            showErrorAlert("Something went wrong!", `${error.response}`);
+            console.log(error)
           }
         }
       });
