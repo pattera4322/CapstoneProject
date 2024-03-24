@@ -14,13 +14,17 @@ const Chart = ({
   togglePredicted,
   getR2score,
   getMSEscore,
-  getChartImage
+  getChartImage,
 }) => {
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
   const [formattedDates, setFormattedDates] = useState([]);
-  const [image, setImage] = useState("")
+  // const [imageSales, setImageSales] = useState("")
+  // const [imageQuantity, setImageQuantity] = useState("")
   const chartRef = useRef(null);
+
+  var imageSales = ""
+  var imageQuantity =""
 
   const options = {
     maintainAspectRatio: false,
@@ -92,14 +96,6 @@ const Chart = ({
     setPredictedArray(actualDataMergePredicted);
     setActualArray(arrayActual);
     setFormattedDates(mergedDateArray);
-
-    // if (chartRef.current && getChartImage && (image === null || image != "data:,")) {
-    //   const base64Image = chartRef.current.toBase64Image();
-    //   setImage(base64Image)
-    //   getChartImage(base64Image);
-    //   // console.log(base64Image)
-    //   // console.log("Image",image)
-    // }
   }, [predictedData, predictedColumn]);
 
   const chartData = {
@@ -124,14 +120,18 @@ const Chart = ({
   };
 
   useEffect(() => {
-    if (chartRef.current && getChartImage && (image === null || image != "data:,")) {
+    if (chartRef.current && getChartImage && 
+      ((imageSales === null || imageSales != "data:,") || (imageQuantity === null || imageQuantity != "data:,")) 
+      // && ((getBaseImage === null || getBaseImage != "data:," || getBaseImage != (predictedColumn === "sales"? imageSales : imageQuantity)))
+      ) {
       const base64Image = chartRef.current.toBase64Image();
-      setImage(base64Image)
+      // predictedColumn === "sales"? setImageSales(base64Image) : setImageQuantity(base64Image)
+      predictedColumn === "sales"? imageSales = base64Image : imageQuantity = base64Image
       getChartImage(base64Image);
       // console.log(base64Image)
       // console.log("Image",image)
     }
-  }, [chartData,getChartImage])
+  }, [predictedColumn,actualData,predictedData,chartData,getChartImage])
 
   function formatDateArray(dataArray) {
     return dataArray.map((entry) => {

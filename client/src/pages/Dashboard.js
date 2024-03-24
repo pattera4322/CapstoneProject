@@ -49,7 +49,8 @@ const Dashboard = ({}) => {
   const [togglePredicted, setTogglePredicted] = useState(true);
   const [keywords, setKeywords] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [baseImage, setBaseImage] = useState();
+  const [baseSalesImage, setBaseSalesImage] = useState();
+  const [baseQuantityImage, setBaseQuantityImage] = useState();
 
   useEffect(() => {
     getUserHistory(fileId)
@@ -147,6 +148,8 @@ const Dashboard = ({}) => {
     setFilteredAnalyzedQuantityData(filteredAnalyzedQuantityData);
     setFilteredActualSalesData(filteredActualSalesData);
     setFilteredActualQuantityData(filteredActualQuantityData);
+    setBaseQuantityImage(null)
+    setBaseSalesImage(null)
   };
 
   // const handleScreenshot = () => {
@@ -236,10 +239,10 @@ const Dashboard = ({}) => {
     saveAs(blob, `${activeTab === 1? "totalSales": "quantity"}_data_file_${fileId}.csv`);
     
     console.log(activeTab === 1? "totalSales": "quantity")
-    console.log("baseImageee", baseImage)
-    if (!baseImage) return;
+    console.log("baseImageee", activeTab === 1 ? baseSalesImage : baseQuantityImage)
+    if (!baseSalesImage && !baseQuantityImage) return console.log("Sorry, Unable to save chart");
 
-    saveAs(baseImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph_file_${fileId}.png`);
+    saveAs(activeTab === 1 ? baseSalesImage : baseQuantityImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph_file_${fileId}.png`);
     // if (baseImage && baseImage != "data:,"){
     //   // console.log("baseImageee", baseImage)
     //   saveAs(baseImage, `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph.png`)
@@ -337,7 +340,7 @@ const Dashboard = ({}) => {
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
                   getChartImage={(base64Image) => {
-                    setBaseImage(base64Image) 
+                    setBaseSalesImage(base64Image) 
                     // console.log("getChart", base64Image)
                     // console.log("base64 in DB", baseImage)
                   }}
@@ -452,7 +455,7 @@ const Dashboard = ({}) => {
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
                   getChartImage={(base64Image) => {
-                    setBaseImage(base64Image) 
+                    setBaseQuantityImage(base64Image) 
                     // console.log("getChart", base64Image)
                     // console.log("base64 in DB", baseImage)
                   }}
