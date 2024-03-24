@@ -126,7 +126,6 @@ const Chart = ({
   }, [predictedData, predictedColumn, filterMonths]);
 
   useEffect(() => {
-    console.log("mint")
     chartToBase64();
   },[actualArray,predictedArray])
 
