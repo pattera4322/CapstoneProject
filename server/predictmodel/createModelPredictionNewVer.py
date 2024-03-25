@@ -502,9 +502,11 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name, json_
   upload_blob1 = bucket.blob(f"{user}/{model_name}.pkl")
   upload_blob1.upload_from_filename(f"./{model_name}.pkl")
   
-  upload_blob2 = bucket.blob(f"{user}/{json_name}.json")
   with open(f"./{json_name}.json", 'w') as json_file:
    json.dump(data_to_json, json_file)
+  upload_blob2 = bucket.blob(f"{user}/{json_name}.json")
+#   with open(f"./{json_name}.json", 'w') as json_file:
+#    json.dump(data_to_json, json_file)
   upload_blob2.upload_from_filename(f"./{json_name}.json")
   
 #   print(f'{model_name} uploaded to {blob.public_url}') 

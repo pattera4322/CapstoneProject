@@ -4,12 +4,12 @@ import pandas as pd
 import time
 
 from datetime import datetime, timezone
-current_time = datetime.now(timezone.utc)
+# current_time = datetime.now(timezone.utc)
 
-# Convert to string in UTC format
-utc_string = current_time.strftime("%Y-%m-%d %H:%M:%S UTC")
+# # Convert to string in UTC format
+# utc_string = current_time.strftime("%Y-%m-%d %H:%M:%S UTC")
 
-print(current_time)
+# print(current_time)
 
 
 # print('Hello user , '+ sys.argv[1])
