@@ -482,11 +482,11 @@ transformed_predictions_data(predictions_by_product, transformed_predictions, "D
 print(f'80')
 flush()
 ### **STEP 9 : Export predicted data**
-transformed_predictions['quantity_forecast']['date'] = pd.to_datetime(transformed_predictions['quantity_forecast']['date'])
-transformed_predictions['sale_forecast']['date'] = pd.to_datetime(transformed_predictions['sale_forecast']['date'])
-actual_df_copy['date'] = pd.to_datetime(actual_df_copy['date'])
+transformed_predictions['quantity_forecast']['date'] = (transformed_predictions['quantity_forecast']['date']).dt.strftime("%d-%m-%Y")
+transformed_predictions['sale_forecast']['date'] = (transformed_predictions['sale_forecast']['date']).dt.strftime("%d-%m-%Y")
+actual_df_copy['date'] = actual_df_copy['date'].dt.strftime("%d-%m-%Y")
 
-def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
+def upload_prediction_value(user_id,data_id,data_to_be_history,model_name, json_name):
   # Upload predicted data to firestore database
   db = firestore.client()
   if data_id:
@@ -498,19 +498,31 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name):
 
   # Upload models to storageprint
   bucket = storage.bucket()
-  upload_blob = bucket.blob(f"{user}/{model_name}.pkl")
-  upload_blob.upload_from_filename(f"./{model_name}.pkl")
+  upload_blob1 = bucket.blob(f"{user}/{model_name}.pkl")
+  upload_blob1.upload_from_filename(f"./{model_name}.pkl")
+  
+  upload_blob2 = bucket.blob(f"{user_id}/{json_name}.json")
+  with open(json_name, 'w') as json_file:
+   json.dump(data_to_be_history, json_file)
+   upload_blob2.upload_from_filename(f"./{json_name}.json")
+  
 #   print(f'{model_name} uploaded to {blob.public_url}') 
   print(f'90')
   flush()
   
 from datetime import datetime, timezone
 current_time = datetime.now(timezone.utc)
-data_to_save = {
+data_to_json ={
     'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
     'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
     'actualSalesValues' : actual_df_copy[['date','productName','totalSales']].to_dict(orient='records'),
     'actualQuantityValues' : actual_df_copy[['date','productName','quantity']].to_dict(orient='records'),
+}
+data_to_save = {
+    # 'predictedSalesValues': transformed_predictions['sale_forecast'].to_dict(orient='records'),
+    # 'predictedQuantityValues': transformed_predictions['quantity_forecast'].to_dict(orient='records'),
+    # 'actualSalesValues' : actual_df_copy[['date','productName','totalSales']].to_dict(orient='records'),
+    # 'actualQuantityValues' : actual_df_copy[['date','productName','quantity']].to_dict(orient='records'),
     # # Evaluate result
     'evalTotalSales': evaluation_results_total_sales,
     'evalQuantity': evaluation_results_quantity,
@@ -518,8 +530,10 @@ data_to_save = {
     'analyzedSuccessTime':current_time,
 }
 models_file_name = f'models_by_product_of_{actual_file_name}'
+json_file_name = f'predicted_of_{actual_file_name}'
 joblib.dump(models_by_product, f"{models_file_name}.pkl")
+# json.dumps(data_to_json)
 
-upload_prediction_value(f'users/{user}/history',actual_file_name,data_to_save, models_file_name)
+upload_prediction_value(f'users/{user}/history',actual_file_name,data_to_save, models_file_name, json_file_name)
 print(f'100')
 flush()
