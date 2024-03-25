@@ -482,9 +482,10 @@ transformed_predictions_data(predictions_by_product, transformed_predictions, "D
 print(f'80')
 flush()
 ### **STEP 9 : Export predicted data**
-transformed_predictions['quantity_forecast']['date'] = pd.to_datetime(transformed_predictions['quantity_forecast']['date']).dt.strftime('%d-%m-%Y')
-transformed_predictions['sale_forecast']['date'] = pd.to_datetime(transformed_predictions['sale_forecast']['date']).dt.strftime('%d-%m-%Y')
-actual_df_copy['date'] = pd.to_datetime(actual_df_copy['date']).dt.strftime('%d-%m-%Y')
+transformed_predictions['quantity_forecast']['date'] = transformed_predictions['quantity_forecast']['date'].dt.strftime('%d-%m-%Y')
+transformed_predictions['sale_forecast']['date'] = transformed_predictions['sale_forecast']['date'].dt.strftime('%d-%m-%Y')
+actual_df_copy['date'] = actual_df_copy['date'].dt.strftime('%d-%m-%Y')
+
 
 def upload_prediction_value(user_id,data_id,data_to_be_history,model_name, json_name, data_to_json):
   # Upload predicted data to firestore database
@@ -501,7 +502,7 @@ def upload_prediction_value(user_id,data_id,data_to_be_history,model_name, json_
   upload_blob1 = bucket.blob(f"{user}/{model_name}.pkl")
   upload_blob1.upload_from_filename(f"./{model_name}.pkl")
   
-  upload_blob2 = bucket.blob(f"{user_id}/{json_name}.json")
+  upload_blob2 = bucket.blob(f"{user}/{json_name}.json")
   with open(f"./{json_name}.json", 'w') as json_file:
    json.dump(data_to_json, json_file)
   upload_blob2.upload_from_filename(f"./{json_name}.json")
