@@ -14,7 +14,7 @@ const FilterMonth = ({ months, onRangeChange }) => {
 
   return (
     <div>
-      <label htmlFor="numberRange">Filter Actual Months: </label>
+      <label htmlFor="numberRange">Filter Actual data Months: </label>
       <input
         type="range"
         id="numberRange"

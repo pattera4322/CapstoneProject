@@ -29,6 +29,8 @@ const Goal = ({ predictedName, predictedData, userData, actualData, togglePredic
         borderWidth: 2,
         borderRadius: Number.MAX_VALUE,
         borderSkipped: false,
+        borderWidth: 2,
+        maxBarThickness: 100,
       }
     ],
   };
@@ -45,7 +47,8 @@ const Goal = ({ predictedName, predictedData, userData, actualData, togglePredic
     scales: {
       x: {
         beginAtZero: true,
-        max: 100,
+        max: (togglePredicted ? actualAndPredeictedPercent : actualPercent) >= 100 ? (togglePredicted ? actualAndPredeictedPercent : actualPercent) : 100,
+        // max: 100,
         display: false,
         stacked: true,
       },
@@ -88,6 +91,7 @@ const Goal = ({ predictedName, predictedData, userData, actualData, togglePredic
         fontWeight: "bold",
         padding: "4px",
         zIndex: 1,
+        color: "black"
       }}
     >
       {percentage}
@@ -104,7 +108,7 @@ const Goal = ({ predictedName, predictedData, userData, actualData, togglePredic
         <InfoPopup infoText={infoGoal} />
       </div>
       <div style={{ position: "relative", height: "80px" }}>
-        <Bar data={data} options={options} />
+        <Bar data={data} options={options}/>
         <div style={overlayStyle}>{percentage}</div>
         <PercentageOverlay percentage={percentage} />
       </div>
