@@ -19,6 +19,7 @@ module.exports = withMT({
       animation: {
         'floating': 'floating 8s infinite',
         'floating-2': 'floating-2 7s infinite',
+        typing: "typing 2s steps(20) infinite alternate, blink .7s infinite",
         // 'rotate-clockwise': 'rotate-clockwise 5s infinite',
       },
       keyframes: {
@@ -29,6 +30,23 @@ module.exports = withMT({
         'floating-2': {
           '0%, 100%': { transform: 'translateY(-5%)' },
           '50%': { transform: 'translateY(5%)' },
+        },
+        typing: {
+          "0%": {
+            width: "0%",
+            visibility: "hidden"
+          },
+          "100%": {
+            width: "100%"
+          }  
+        },
+        blink: {
+          "50%": {
+            borderColor: "transparent"
+          },
+          "100%": {
+            borderColor: "white"
+          }  
         },
 
       },
