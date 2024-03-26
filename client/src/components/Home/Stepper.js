@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Stepper, Step, Button, Typography } from "@material-tailwind/react";
 import UploadFileSection from "./UploadFileSection";
 import AskingSection from "./AskingSection";
@@ -6,10 +6,7 @@ import AnalyzeSection from "./AnalyzeSection";
 import Popup from "../Popup.js";
 import DownloadTemplate from "./DownloadTemplate";
 import { useNavigate } from "react-router-dom";
-import { updateUserData } from "../../api/userDataApi.js";
-import { showErrorAlert } from "../../utils/SwalAlert.js";
-
-const StepperSection = () => {
+const StepperSection = ({limit}) => {
   const [activeStep, setActiveStep] = useState(0);
   const [isLastStep, setIsLastStep] = useState(false);
   const [isFirstStep, setIsFirstStep] = useState(false);
@@ -17,7 +14,9 @@ const StepperSection = () => {
   const [fileId, setFileId] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [showAskPopup, setShowAskPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+
   const steps = [
     "Question",
     "Download Template",
@@ -25,16 +24,19 @@ const StepperSection = () => {
     "Analyzing Data",
   ];
 
+  useEffect(()=>{
+    if(limit == 5){
+      setActiveStep(3);
+    }
+    
+  },[])
+
   const handleNavigation = (direction) => {
     const nextStep = direction === "next" ? activeStep + 1 : activeStep - 1;
     setShowPopup(false);
     setActiveStep(nextStep);
     setIsLastStep(nextStep === steps.length - 1);
     setIsFirstStep(nextStep === 0);
-  };
-
-  const handleSubmit = (formData) => {
-    console.log("Form data submitted:", formData);
   };
 
   const receiveFileData = (data, fileId) => {
@@ -49,21 +51,6 @@ const StepperSection = () => {
   const handleContinueToNextStep = async () => {
     setShowPopup(false);
     setShowAskPopup(false);
-    if (activeStep === 2) {
-      var limit = localStorage.getItem("analyzeLimit");
-      await updateUserData({ analyzeLimit: ++limit })
-        .then((res) => {
-          console.log(res);
-          if (res.ResponseCode === 200) {
-            localStorage.setItem("analyzeLimit", JSON.stringify(limit));
-          }
-        })
-        .catch((error) => {
-          if (error.response) {
-            showErrorAlert("Something went wrong!", `${error.response}`);
-          }
-        });
-    }
     handleNavigation("next");
   };
 

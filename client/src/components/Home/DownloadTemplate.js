@@ -32,7 +32,7 @@ const DownloadTemplate = () => {
           <div>
             <ButtonComponent
               onClick={() => {
-                window.location.href = process.env.PUBLIC_URL + "/assets/template.xlsx";
+                window.location.href = imageUrls["template.xlsx"]
               }}
               children={
                 <div>

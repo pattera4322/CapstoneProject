@@ -13,6 +13,7 @@ function HomePage() {
   const StepSection = useRef(null);
   const [toggleIn, setToggleIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [limit, setLimit] = useState(null);
 
   const scrolldown = () => {
     StepSection.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,6 +45,7 @@ function HomePage() {
                     "analyzeLimit",
                     JSON.stringify(res.data.analyzeLimit)
                   );
+                  setLimit(res.data.analyzeLimit)
                 }
                 setIsLoading(false);
               })
@@ -128,7 +130,7 @@ function HomePage() {
         className="importSection pr-4 pl-4 sm:pr-20 sm:pl-20 grid grid-cols-subgrid gap-4 col-span-3"
         ref={StepSection}
       >
-        <StepperSection />
+        {limit && <StepperSection limit={limit} />}
       </div>
     </div>
   );

@@ -6,6 +6,9 @@ import Popup from "../Popup";
 import Button3D from "../Button/Button3D.js";
 import { socketJobProgress } from "../../config/socketClient.js";
 import { ImageUrlsContext } from "../../context/ImageUrlsContext.js";
+import AnalyzeLimitSection from "../AnalyzeLimitSection.js";
+import { updateUserData } from "../../api/userDataApi.js";
+import { showErrorAlert } from "../../utils/SwalAlert.js";
 
 const AnalyzeSection = ({ fileId }) => {
   const imageUrls = useContext(ImageUrlsContext);
@@ -13,12 +16,13 @@ const AnalyzeSection = ({ fileId }) => {
   const [askingItem, setAskingItem] = useState(
     JSON.parse(localStorage.getItem("askingItems")) || {}
   );
-  const fileName = JSON.parse(localStorage.getItem("fileName")) || {}
+  const fileName = JSON.parse(localStorage.getItem("fileName")) || {};
 
   const [error, setError] = useState(null);
   const [historyId, setHistoryId] = useState(null);
   const [loading, setIsLoading] = useState(false);
   const [errorLimitReach, setErrorLimitReach] = useState(null);
+  const limit = localStorage.getItem("analyzeLimit");
 
   const [insightData, setInsightData] = useState({
     fileName: fileName[fileId],
@@ -32,25 +36,44 @@ const AnalyzeSection = ({ fileId }) => {
   // function delay(ms) {
   //   return new Promise((resolve) => setTimeout(resolve, ms));
   // }
-  console.log(fileId)
+  console.log(fileId);
 
   useEffect(() => {
-    setIsLoading(true);
-    analyzeData()
-      .then(async (res) => {
-        setIsLoading(false);
-        setHistoryId(res.data.historyid);
-        postUserInsight(insightData, res.data.historyid).then(async () => {
-          socketJobProgress.connect();
+    var limit = localStorage.getItem("analyzeLimit");
+    if (limit < 5) {
+      setIsLoading(true);
+      updateUserData({ analyzeLimit: ++limit })
+        .then((res) => {
+          console.log(res);
+          if (res.ResponseCode === 200) {
+            //localStorage.setItem("analyzeLimit", JSON.stringify(limit));
+            setIsLoading(true);
+            analyzeData()
+              .then(async (res) => {
+                setIsLoading(false);
+                setHistoryId(res.data.historyid);
+                postUserInsight(insightData, res.data.historyid).then(
+                  async () => {
+                    socketJobProgress.connect();
+                  }
+                );
+              })
+              .catch((error) => {
+                setIsLoading(false);
+                if (error.response && error.response.status === 402) {
+                  setErrorLimitReach(error.response.data.ResponseMessage);
+                }
+                console.log(error);
+              });
+          }
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          if (error.response) {
+            showErrorAlert("Something went wrong!", `${error.response}`);
+          }
         });
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        if (error.response && error.response.status === 402) {
-          setErrorLimitReach(error.response.data.ResponseMessage);
-        }
-        console.log(error);
-      });
+    }
   }, []);
 
   return (
@@ -66,27 +89,8 @@ const AnalyzeSection = ({ fileId }) => {
         </div>
       ) : (
         <div>
-          {errorLimitReach ? (
-            <div className="flex justify-center items-center">
-              <img
-                src={imageUrls["limitReachMan.png"]}
-                alt="limitReachMan"
-                width={200}
-              />
-
-              <div>
-                <p className="text-3xl font-medium ">{errorLimitReach}</p>
-                <p className="text-xl pt-2 ">
-                  You reaches a limit to analyze data. Try again later.
-                </p>
-                <div className="pt-5">
-                  <Button3D
-                    onClick={() => {}}
-                    children={<span>UPGRADE TO PREMIUM</span>}
-                  />
-                </div>
-              </div>
-            </div>
+          {errorLimitReach || limit == 5 ? (
+            <AnalyzeLimitSection />
           ) : (
             <div>
               <div>

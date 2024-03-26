@@ -57,7 +57,7 @@ app.post("/api/analyze/:userid", authenticateJWT, async (req, res) => {
     //check that user reach the limit analyze time to 5
     const analyzeLimitCount = await getAnalyzeLimit(userid);
 
-    if (analyzeLimitCount >= 6) {
+    if (analyzeLimitCount > 5) {
       return res.status(402).json({
         ResponseCode: 402,
         ResponseMessage: "Analysis limit reached.",
