@@ -36,13 +36,13 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
 
   const salesAnalyze = (actualData, predictedData) => {
     const renamedActualData = actualData.map(item => ({
-      date: item.date._seconds,
+      date: new Date(item.date),
       product: item.productName,
       totalSales: item.totalSales
     }));
 
     const renamedAnalyzedSalesData = predictedData.map(item => ({
-      date: item.date._seconds,
+      date: new Date(item.date),
       product: item.Product,
       totalSales: item.Predicted_totalSales
     }));
@@ -107,8 +107,9 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
 
   predictedName === "Predicted Quantity" ? inventoryROP(actualData, predictedData) : salesAnalyze(actualData, predictedData)
   const infoAnalyze = "This visualization illustrates the percentage of changes in trends and movement between the previous and current month's prediction data.";
-  const infoROP = `This estimated Reorder point indicates the minimum stock level at which new goods should be ordered to avoid a stockout, calculated using an estimate of lead time and demand rate by (lead Time * Demand Rate) + safety Stock.`;
-  const infoEOQ = `This estimated economic order quantity is used to reduce inventory costs while maintaining product availability through balanced inventory levels. It is calculated based on an estimate of holding cost, ordering cost, and demand rate by square root of (2 * Demand Rate * ordering cost) / (holding cost / summary of quantity).`;
+  const infoROP = `
+  The estimated Reorder Point signifies the minimum stock level for ordering new goods to prevent stockouts. It's calculated as the product of lead time and demand rate, plus safety stock.`;
+  const infoEOQ = `The estimated economic order quantity optimizes inventory costs while ensuring product availability. It's calculated from holding cost, ordering cost, and demand rate using the square root of (2 * Demand Rate * ordering cost) divided by (holding cost per unit)`;
 
   const getTextColor = (trend) => {
     if (trend === 'increase') {

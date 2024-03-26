@@ -375,7 +375,7 @@ const Dashboard = ({}) => {
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                {/* {analyzedData && analyzedQuantityData && actualQuantityData && (
+                {analyzedData && analyzedQuantityData && actualQuantityData && (
                   <Analyzed
                     predictedName={"Predicted Sales"}
                     predictedData={
@@ -391,7 +391,7 @@ const Dashboard = ({}) => {
                     }
                     togglePredicted={togglePredicted}
                   />
-                )} */}
+                )}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
@@ -489,7 +489,7 @@ const Dashboard = ({}) => {
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                {/* {analyzedData && analyzedQuantityData && actualQuantityData &&(
+                {analyzedData && analyzedQuantityData && actualQuantityData &&(
                   <Analyzed
                     predictedName={"Predicted Quantity"}
                     predictedData={
@@ -505,7 +505,7 @@ const Dashboard = ({}) => {
                     }
                     togglePredicted={togglePredicted}
                   />
-                )} */}
+                )}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
