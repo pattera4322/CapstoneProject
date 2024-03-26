@@ -36,21 +36,24 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
 
   const salesAnalyze = (actualData, predictedData) => {
     const renamedActualData = actualData.map(item => ({
-      date: new Date(item.date),
+      date: item.date,
       product: item.productName,
       totalSales: item.totalSales
     }));
 
     const renamedAnalyzedSalesData = predictedData.map(item => ({
-      date: new Date(item.date),
+      date: item.date,
       product: item.Product,
       totalSales: item.Predicted_totalSales
     }));
 
     const actualDataGroupedByMonth = renamedActualData.reduce((acc, curr) => {
-      const date = new Date(curr.date * 1000);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
+      // const date = new Date(curr.date * 1000);
+      // const year = date.getFullYear();
+      // const month = date.getMonth() + 1;
+      const dateParts = curr.date.split('-');
+      const year = dateParts[2];
+      const month = dateParts[1];
 
       const key = `${year}-${month}`;
       if (!acc[key]) {
@@ -61,9 +64,12 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
     }, {});
 
     const analyzedDataGroupedByMonth = renamedAnalyzedSalesData.reduce((acc, curr) => {
-      const date = new Date(curr.date * 1000);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
+      // const date = new Date(curr.date * 1000);
+      // const year = date.getFullYear();
+      // const month = date.getMonth() + 1;
+      const dateParts = curr.date.split('-');
+      const year = dateParts[2];
+      const month = dateParts[1];
 
       const key = `${year}-${month}`;
       if (!acc[key]) {
@@ -83,6 +89,8 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
     }
     const actualSalesByMonth = salesByMonth("actualSalesByMonth", actualDataGroupedByMonth)
     const analyzedSalesByMonth = salesByMonth("analyzedSalesByMonth", analyzedDataGroupedByMonth)
+    console.log("analyze wtf", analyzedDataGroupedByMonth)
+    console.log("analyze a rai wa", analyzedSalesByMonth)
 
     const calculatePercentageAndTrend = (currentMonth, lastMonth) => {
       if (lastMonth === 0) return { percent: 0, trend: 'unchanged' };
@@ -107,8 +115,7 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
 
   predictedName === "Predicted Quantity" ? inventoryROP(actualData, predictedData) : salesAnalyze(actualData, predictedData)
   const infoAnalyze = "This visualization illustrates the percentage of changes in trends and movement between the previous and current month's prediction data.";
-  const infoROP = `
-  The estimated Reorder Point signifies the minimum stock level for ordering new goods to prevent stockouts. It's calculated as the product of lead time and demand rate, plus safety stock.`;
+  const infoROP = `The estimated Reorder Point signifies the minimum stock level for ordering new goods to prevent stockouts. It's calculated as the product of lead time and demand rate, plus safety stock.`;
   const infoEOQ = `The estimated economic order quantity optimizes inventory costs while ensuring product availability. It's calculated from holding cost, ordering cost, and demand rate using the square root of (2 * Demand Rate * ordering cost) divided by (holding cost per unit)`;
 
   const getTextColor = (trend) => {
@@ -147,10 +154,10 @@ const Analyzed = ({ predictedName, predictedData, userData, actualData, togglePr
             <label className="pb-4 font-bold">Analyze Sales</label>
             <InfoPopup infoText={infoAnalyze}/>
           </div>
+          In case sales follow an anticipated trend, The sales volume may&nbsp;
           {analyzedSalesWithComparison && analyzedSalesWithComparison.map((item) => (
             item.Trend !== "unchanged" ? (
               <div key={item.Month}>
-                In case sales follow an anticipated trend, the sales volume may&nbsp;
                 <div style={{ color: getTextColor(item.Trend), display: 'inline-block' }}>
                   {item.Trend}
                 </ div>
