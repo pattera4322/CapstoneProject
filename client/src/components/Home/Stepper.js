@@ -25,7 +25,7 @@ const StepperSection = ({limit}) => {
   ];
 
   useEffect(()=>{
-    if(limit == 5){
+    if(limit >= 5){
       setActiveStep(3);
     }
     

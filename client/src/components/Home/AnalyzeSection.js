@@ -89,7 +89,7 @@ const AnalyzeSection = ({ fileId }) => {
         </div>
       ) : (
         <div>
-          {errorLimitReach || limit == 5 ? (
+          {errorLimitReach || limit >= 5 ? (
             <AnalyzeLimitSection />
           ) : (
             <div>
