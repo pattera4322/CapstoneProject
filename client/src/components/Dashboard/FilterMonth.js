@@ -47,7 +47,7 @@ const FilterMonth = ({ months, onRangeChange }) => {
         name="monthDropdown"
         value={selectedMonth}
         onChange={handleOnChange}
-        className="block w-32 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring"
+        className="block w-32 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring text-black text-sm text-gray-700 dark:text-gray-200"
       >
         {Array.from({ length: months / 3 }, (_, index) => (
           <option key={index} value={(index + 1) * 3}>
