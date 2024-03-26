@@ -5,7 +5,7 @@ import ButtonComponent from "../Button/Button";
 import { formatDateInChart } from "../../utils/FormatDateTime";
 import FilterMonth from "./FilterMonth.js";
 import { saveAs } from "file-saver";
-import { toBase64Image} from "react-chartjs-2";
+import { toBase64Image } from "react-chartjs-2";
 
 const Chart = ({
   predictedName,
@@ -207,7 +207,7 @@ const Chart = ({
 
   const handleDownload = () => {
     const base64Image = chartRef.current.toBase64Image();
-    console.log("base64",base64Image)
+    console.log("base64", base64Image)
     saveAs(base64Image, `${predictedColumn}_ForecastGraph_${fileId}.png`);
   };
 
@@ -217,25 +217,24 @@ const Chart = ({
     <div className="h-full">
       <div className="text-left pl-5 flex items-center justify-between">
         <div className="flex items-center">
-          <label className=" font-bold">
-            {predictedColumn === "quantity"
-              ? "Inventory Forecast"
-              : "Retail Sales Forecast"}
+          <label className="font-bold">
+            {predictedColumn === "quantity" ? "Inventory Forecast" : "Retail Sales Forecast"}
           </label>
           <InfoPopup infoText={infoChart} />
         </div>
-        <div className="">
+        <div className="flex items-center">
+          <p className="mr-2">Filter Actual:</p>
           <FilterMonth months={maxMonths} onRangeChange={handleRangeChange} />
+          <span className="ml-2" onClick={handleDownload}>
+            <svg
+              className="fill-current w-4 h-4 inline"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+            </svg>
+          </span>
         </div>
-        <span className="float-right" onClick={handleDownload}>
-          <svg
-            className="fill-current w-4 h-4 mr-2 inline"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-          >
-            <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
-          </svg>
-        </span>
       </div>
 
       <div className="h-[95%] overflow-auto" style={{ direction: "rtl" }}>
