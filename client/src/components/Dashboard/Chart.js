@@ -29,7 +29,7 @@ const Chart = ({
     //     chartToBase64();
     //   },
     // },
-    animation:false,
+    animation: false,
     maintainAspectRatio: false,
     responsive: true,
     scales: {
@@ -127,7 +127,7 @@ const Chart = ({
 
   useEffect(() => {
     chartToBase64();
-  },[actualArray,predictedArray])
+  }, [actualArray, predictedArray])
 
   const chartToBase64 = () => {
     if (chartRef.current) {
@@ -206,16 +206,21 @@ const Chart = ({
 
   return (
     <div className="h-full">
-      <div className="text-left pl-5">
-        <label className="pb-2 font-bold">
-          {predictedColumn === "quantity"
-            ? "Inventory Forecast"
-            : "Retail Sales Forecast"}
-        </label>
-        <InfoPopup infoText={infoChart} />
+      <div className="text-left pl-5 flex items-center justify-between">
+        <div className="flex items-center">
+          <label className=" font-bold">
+            {predictedColumn === "quantity"
+              ? "Inventory Forecast"
+              : "Retail Sales Forecast"}
+          </label>
+          <InfoPopup infoText={infoChart} />
+        </div>
+        <div className="">
+          <FilterMonth months={maxMonths} onRangeChange={handleRangeChange} />
+        </div>
       </div>
 
-      <div className="h-[80%] overflow-auto" style={{ direction: "rtl" }}>
+      <div className="h-[95%] overflow-auto" style={{ direction: "rtl" }}>
         <div className="flex-grow flex flex-col items-center justify-center h-full w-[250%]">
           {/* <div className="chart-container" style={{ overflowX: "auto", width: "150%",height: "100%", padding: "0 20px" }}> */}
           {/* <Line data={chartData} options={options} /> */}
@@ -239,9 +244,9 @@ const Chart = ({
           )}
         </div>
       </div>
-      <div className="mt-4 mb-4">
+      {/* <div className="mt-4 mb-4">
         <FilterMonth months={maxMonths} onRangeChange={handleRangeChange} />
-      </div>
+      </div> */}
     </div>
   );
 };

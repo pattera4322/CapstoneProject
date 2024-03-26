@@ -1,32 +1,60 @@
 import React, { useState, useEffect } from "react";
 
 const FilterMonth = ({ months, onRangeChange }) => {
-  const [rangeValue, setRangeValue] = useState(months);
+  // const [rangeValue, setRangeValue] = useState(months);
+
+  // useEffect(() => {
+  //   setRangeValue(months);
+  // }, [months]);
+
+  // const handleOnChange = (e) => {
+  //   setRangeValue(parseInt(e.target.value));
+  //   onRangeChange(parseInt(e.target.value));
+  // };
+
+  const [selectedMonth, setSelectedMonth] = useState(months);
 
   useEffect(() => {
-    setRangeValue(months);
+    setSelectedMonth(months);
   }, [months]);
 
   const handleOnChange = (e) => {
-    setRangeValue(parseInt(e.target.value));
-    onRangeChange(parseInt(e.target.value));
+    const selectedValue = parseInt(e.target.value);
+    setSelectedMonth(selectedValue);
+    onRangeChange(selectedValue);
   };
 
   return (
+    // <div>
+    //   <label htmlFor="numberRange">Filter Actual Months: </label>
+    //   <input
+    //     type="range"
+    //     id="numberRange"
+    //     name="numberRange"
+    //     value={rangeValue}
+    //     min={0}
+    //     max={months}
+    //     step={3}
+    //     onChange={handleOnChange}
+    //     class="block w-full text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring"
+    //   />
+    //   <span> {rangeValue} months</span>
+    //   <ul></ul>
+    // </div>
     <div>
-      <label htmlFor="numberRange">Filter Actual data Months: </label>
-      <input
-        type="range"
-        id="numberRange"
-        name="numberRange"
-        value={rangeValue}
-        min={0}
-        max={months}
-        step={3}
+      <select
+        id="monthDropdown"
+        name="monthDropdown"
+        value={selectedMonth}
         onChange={handleOnChange}
-      />
-      <span> {rangeValue} months</span>
-      <ul></ul>
+        className="block w-32 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring"
+      >
+        {Array.from({ length: months / 3 }, (_, index) => (
+          <option key={index} value={(index + 1) * 3}>
+            {(index + 1) * 3} months
+          </option>
+        ))}
+      </select>
     </div>
   );
 };

@@ -302,7 +302,7 @@ const Dashboard = ({}) => {
       <div className={`box-content p-4 ${activeTab === 1 ? "flex" : "hidden"}`}>
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
-            <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 shadow-md flex-2">
+            <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 pb-6 shadow-md flex-2">
               {analyzedSalesData && (
                 <Chart
                   predictedName={"Predicted Sales"}
@@ -326,7 +326,7 @@ const Dashboard = ({}) => {
                 />
               )}
             </div>
-            <div className="box-content w-80 p-4 shadow-md flex-1 lg:h-[90%]">
+            <div className="box-content w-80 p-4 pb-6 shadow-md flex-1 lg:h-[90%]">
               {analyzedSalesData && (
                 <RelatedNews
                   keywords={keywords}
@@ -415,7 +415,7 @@ const Dashboard = ({}) => {
       >
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
-            <div className="box-content w-80 w-9/12 h-[90%] p-4 shadow-md flex-2">
+            <div className="box-content w-80 w-9/12 h-[90%] p-4 pb-6 shadow-md flex-2">
               {analyzedQuantityData && (
                 <Chart
                   predictedName={"Predicted Quantity"}
@@ -439,7 +439,7 @@ const Dashboard = ({}) => {
                 />
               )}
             </div>
-            <div className="box-content p-4 shadow-md flex-1 h-[90%]">
+            <div className="box-content p-4 pb-6 shadow-md flex-1 h-[90%]">
               {analyzedSalesData && (
                 <RelatedNews
                   keywords={keywords}
