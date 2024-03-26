@@ -15,7 +15,6 @@ function App() {
     <div className="text-center">
       <NavBar/>
       <Routes>
-        //TODO:test on production
         <Route path="/" element={<HomePage />} />
         <Route path="/Dashboard" element={<Dashboard />} />
         <Route path="/Login" element={<Login />} />

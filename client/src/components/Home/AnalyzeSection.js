@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { analyzeData } from "../../api/analyzeApi";
 import { postUserInsight } from "../../api/userInsightApi.js";
 import { useNavigate } from "react-router-dom";
 import Popup from "../Popup";
 import Button3D from "../Button/Button3D.js";
 import { socketJobProgress } from "../../config/socketClient.js";
+import { ImageUrlsContext } from "../../context/ImageUrlsContext.js";
 
 const AnalyzeSection = ({ fileId }) => {
+  const imageUrls = useContext(ImageUrlsContext);
   const navigate = useNavigate();
   const [askingItem, setAskingItem] = useState(
     JSON.parse(localStorage.getItem("askingItems")) || {}
@@ -67,8 +69,8 @@ const AnalyzeSection = ({ fileId }) => {
           {errorLimitReach ? (
             <div className="flex justify-center items-center">
               <img
-                src={process.env.PUBLIC_URL + "/assets/limitReachMan.png"}
-                alt="manWithTrophy"
+                src={imageUrls["limitReachMan.png"]}
+                alt="limitReachMan"
                 width={200}
               />
 
@@ -108,7 +110,7 @@ const AnalyzeSection = ({ fileId }) => {
               <div className="">
                 <img
                   className=""
-                  src={process.env.PUBLIC_URL + "/assets/manWithTrophy.gif"}
+                  src={imageUrls["manWithTrophy.gif"]}
                   alt="manWithTrophy"
                   width={900}
                 />
