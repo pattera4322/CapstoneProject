@@ -209,7 +209,7 @@ const Chart = ({
           <InfoPopup infoText={infoChart} />
         </div>
         <div className="flex items-center">
-          <p className="mr-2">Filter Actual:</p>
+          <p className="mr-2 text-black text-sm text-gray-700 dark:text-gray-200">Filter Actual:</p>
           <FilterMonth months={maxMonths} onRangeChange={handleRangeChange} />
           <span className="ml-2" onClick={handleDownload}>
             <svg
