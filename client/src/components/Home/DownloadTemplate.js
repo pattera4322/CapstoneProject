@@ -16,7 +16,7 @@ const DownloadTemplate = () => {
           <img
             src={process.env.PUBLIC_URL + "/assets/SmartStockTemplate.svg"}
             alt="Smart Stock Template"
-            className="mx-auto w-72 max-w-xl sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
+            className="mx-auto w-64 max-w-xl sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
           />
         </div>
         <div>
