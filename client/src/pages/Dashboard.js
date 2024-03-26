@@ -25,6 +25,7 @@ import {
   BarElement,
 } from "chart.js";
 import { analyzeData } from "../api/analyzeApi";
+import { getFile } from "../api/fileApi";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement);
 
@@ -52,41 +53,75 @@ const Dashboard = ({}) => {
   const [showPopup, setShowPopup] = useState(false);
   // const [baseImage, setBaseImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  
+
   useEffect(() => {
     setIsLoading(true);
     getUserHistory(fileId)
-      .then((res) => {
-        // console.log("analyzed data", res.data);
-        setAnalyzedData(res.data);
-        setAnalyzedSalesData(res.data.historyData.history.predictedSalesValues);
-        setAnalyzedQuantityData(
-          res.data.historyData.history.predictedQuantityValues
-        );
-        setActualSalesData(res.data.historyData.history.actualSalesValues);
-        setActualQuantityData(
-          res.data.historyData.history.actualQuantityValues
-        );
-        const products = [
-          ...new Set(
-            res.data.historyData.history.actualSalesValues.map(
-              (item) => item.productName
-            )
-          ),
-        ];
+    .then((res) => {
+      // console.log("analyzed data", res.data);
+      setAnalyzedData(res.data);
+      // setAnalyzedSalesData(res.data.historyData.history.predictedSalesValues);
+      // setAnalyzedQuantityData(
+      //   res.data.historyData.history.predictedQuantityValues
+      // );
+      // setActualSalesData(res.data.historyData.history.actualSalesValues);
+      // setActualQuantityData(
+      //   res.data.historyData.history.actualQuantityValues
+      // );
+      // const products = [
+      //   ...new Set(
+      //     res.data.historyData.history.actualSalesValues.map(
+      //       (item) => item.productName
+      //     )
+      //   ),
+      // ];
 
-        setProducts(products);
-        setKeywords(products);
-        setIsLoading(false);
-        console.log(res.data);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.log("Error: ", error);
-        if (error.response && error.response.status === 404) {
-          console.log(error.response.data.ResponseMessage);
-        }
-      });
+      // setProducts(products);
+      // setKeywords(products);
+      setIsLoading(false);
+      console.log(res.data);
+    })
+    .catch((error) => {
+      setIsLoading(false);
+      console.log("Error: ", error);
+      if (error.response && error.response.status === 404) {
+        console.log(error.response.data.ResponseMessage);
+      }
+    });
+
+    getFile(`predicted_of_${fileId}.json`).then((res) => {
+      const decoder = new TextDecoder("utf-8");
+      const jsonString = decoder.decode(res);
+      const resData = JSON.parse(jsonString);
+      //setAnalyzedData(resData);
+      setAnalyzedSalesData(resData.predictedSalesValues);
+      setAnalyzedQuantityData(
+        resData.predictedQuantityValues
+      );
+      setActualSalesData(resData.actualSalesValues);
+      setActualQuantityData(
+        resData.actualQuantityValues
+      );
+      const products = [
+        ...new Set(
+          resData.actualSalesValues.map(
+            (item) => item.productName
+          )
+        ),
+      ];
+
+      setProducts(products);
+      setKeywords(products);
+      //setIsLoading(false);
+      console.log(JSON.parse(jsonString));
+    }).catch((error) => {
+      setIsLoading(false);
+      console.log("Error: ", error);
+      if (error.response && error.response.status === 404) {
+        console.log(error.response.data.ResponseMessage);
+      }
+    });
+  
   }, []);
 
   const [news, setNews] = useState([]);
@@ -153,7 +188,6 @@ const Dashboard = ({}) => {
     setFilteredAnalyzedQuantityData(filteredAnalyzedQuantityData);
     setFilteredActualSalesData(filteredActualSalesData);
     setFilteredActualQuantityData(filteredActualQuantityData);
-
   };
 
   const handleReAnalyzed = () => {
@@ -303,7 +337,7 @@ const Dashboard = ({}) => {
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 lg:w-9/12 lg:h-[90%] p-4 pb-6 shadow-md flex-2">
-              {analyzedSalesData && (
+              {analyzedData && analyzedQuantityData && actualQuantityData && (
                 <Chart
                   predictedName={"Predicted Sales"}
                   predictedData={
@@ -341,7 +375,7 @@ const Dashboard = ({}) => {
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                {actualSalesData && analyzedSalesData && (
+                {/* {analyzedData && analyzedQuantityData && actualQuantityData && (
                   <Analyzed
                     predictedName={"Predicted Sales"}
                     predictedData={
@@ -357,12 +391,12 @@ const Dashboard = ({}) => {
                     }
                     togglePredicted={togglePredicted}
                   />
-                )}
+                )} */}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                {actualSalesData && analyzedSalesData && (
+                {analyzedData && analyzedQuantityData && actualQuantityData && (
                   <Goal
                     predictedName={"Predicted Sales"}
                     predictedData={
@@ -417,7 +451,7 @@ const Dashboard = ({}) => {
         <div className="flex flex-col lg:w-full pl-4 pr-4">
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 w-9/12 h-[90%] p-4 pb-6 shadow-md flex-2">
-              {analyzedQuantityData && (
+              {analyzedData && analyzedQuantityData && actualQuantityData && (
                 <Chart
                   predictedName={"Predicted Quantity"}
                   predictedData={
@@ -455,7 +489,7 @@ const Dashboard = ({}) => {
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                {actualQuantityData && analyzedQuantityData && (
+                {/* {analyzedData && analyzedQuantityData && actualQuantityData &&(
                   <Analyzed
                     predictedName={"Predicted Quantity"}
                     predictedData={
@@ -471,12 +505,12 @@ const Dashboard = ({}) => {
                     }
                     togglePredicted={togglePredicted}
                   />
-                )}
+                )} */}
               </div>
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 h-40 overflow-x-auto">
-                {analyzedData && (
+                {analyzedData && analyzedQuantityData && actualQuantityData &&(
                   <ProductPieChart
                     predictedName={"Predicted Quantity"}
                     predictedData={
@@ -498,7 +532,7 @@ const Dashboard = ({}) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 <div>
-                  {analyzedData && (
+                  {analyzedData && analyzedQuantityData && actualQuantityData && (
                     <NumberOfProducts
                       predictedName={"Predicted Quantity"}
                       predictedData={

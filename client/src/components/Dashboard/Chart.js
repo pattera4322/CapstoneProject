@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Line } from "react-chartjs-2";
 import InfoPopup from "../../components/Home/InfoPopup";
 import ButtonComponent from "../Button/Button";
-import { formatDateInChart } from "../../utils/FormatDateTime";
+import { formatDateDDMMMYYYY, formatStringToDate } from "../../utils/FormatDateTime";
 import FilterMonth from "./FilterMonth.js";
 import { saveAs } from "file-saver";
 import { toBase64Image} from "react-chartjs-2";
@@ -32,7 +32,6 @@ const Chart = ({
     //     chartToBase64();
     //   },
     // },
-    animation: true,
     maintainAspectRatio: false,
     responsive: true,
     scales: {
@@ -128,35 +127,22 @@ const Chart = ({
     setFormattedDates(mergedDateArray);
   }, [predictedData, predictedColumn, filterMonths]);
 
-  // useEffect(() => {
-  //   chartToBase64();
-  // }, [actualArray, predictedArray])
-
-  // const chartToBase64 = () => {
-  //   if (chartRef.current) {
-  //     const base64Image = chartRef.current.toBase64Image();
-
-  //     if (base64Image !== "data:,") {
-  //       getChartImage(base64Image);
-  //     }
-  //   }
-  // };
 
   function formatDateArray(dataArray) {
     return dataArray.map((entry) => {
-      return formatDateInChart(entry.date);
+      return entry.date;
     });
   }
 
   function sumValueByDate(arr, checkActual, predictedColumn) {
     const valuesSums = {};
-
     arr.forEach((item) => {
       let values, date;
-      date = item.date;
+      date = formatDateDDMMMYYYY(item.date);
       if (checkActual) {
         values =
           predictedColumn === "quantity" ? item.quantity : item.totalSales;
+          
       } else {
         values =
           predictedColumn === "quantity"
@@ -164,12 +150,12 @@ const Chart = ({
             : item.Predicted_totalSales;
       }
 
-      const seconds = date._seconds;
+      const seconds = date;
       valuesSums[seconds] = (valuesSums[seconds] || 0) + values;
     });
 
     const uniqueDates = Object.keys(valuesSums).map((seconds) => ({
-      date: Number(seconds),
+      date: seconds,
       [predictedColumn === "quantity" ? "quantity" : "totalSales"]:
         valuesSums[seconds],
     }));
@@ -178,13 +164,13 @@ const Chart = ({
   }
 
   const handleFilterMonth = (month, array) => {
-    const latestDate = new Date(array[array.length - 1].date * 1000);
+    const latestDate = new Date(array[array.length - 1].date);
 
     const latestMonthsAgo = new Date(latestDate);
     latestMonthsAgo.setMonth(latestMonthsAgo.getMonth() - month);
 
     const filteredActualDataMonths = array.filter((entry) => {
-      const entryDate = new Date(entry.date * 1000);
+      const entryDate = new Date(entry.date);
       return entryDate >= latestMonthsAgo;
     });
     return filteredActualDataMonths;
@@ -193,8 +179,8 @@ const Chart = ({
   const getUniqueMonthsCount = (array) => {
     const uniqueMonths = new Set();
     array.forEach((dateData) => {
-      const date = new Date(dateData.date * 1000);
-      const monthYear = `${date.getMonth() + 1}-${date.getFullYear()}`;
+      const date = formatStringToDate(dateData.date);
+      let monthYear = date.format("YYYY-MM");
       uniqueMonths.add(monthYear);
     });
 
@@ -262,9 +248,6 @@ const Chart = ({
           )}
         </div>
       </div>
-      {/* <div className="mt-4 mb-4">
-        <FilterMonth months={maxMonths} onRangeChange={handleRangeChange} />
-      </div> */}
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ButtonComponent from "../Button/Button";
 import DeleteButton from "../Button/DeleteButton";
 import { formatDateTimeStamp } from "../../utils/FormatDateTime";
+import { getFile } from "../../api/fileApi";
 
 const JobComponent = ({ job, progressData, index, insightData }) => {
   const navigate = useNavigate();
@@ -23,6 +24,12 @@ const JobComponent = ({ job, progressData, index, insightData }) => {
     console.log(JSON.stringify(job));
     if (isJobCompleted) {
       navigate("/Dashboard", { replace: true, state: jobId });
+
+      // getFile(`predicted_of_${jobId}.json`).then((res) => {
+      //   let decoder = new TextDecoder("utf-8");
+      //   let jsonString = decoder.decode(res);
+      //   console.log(JSON.parse(jsonString));
+      // });
     }
   };
 
@@ -41,7 +48,9 @@ const JobComponent = ({ job, progressData, index, insightData }) => {
 
       {isJobProgress || isJobWaiting ? <div>IN QUEUE: {index + 1}</div> : null}
 
-      <div><span className="font-semibold">SLOT ID:</span> {jobId}</div>
+      <div>
+        <span className="font-semibold">SLOT ID:</span> {jobId}
+      </div>
 
       {isJobCompleted || isJobFailed ? (
         <div>
@@ -61,7 +70,7 @@ const JobComponent = ({ job, progressData, index, insightData }) => {
           </span>
         </div>
       ) : null}
-      <div style={{ wordWrap: 'break-word' }}>
+      <div style={{ wordWrap: "break-word" }}>
         FILE NAME: {insightData[jobId - 1].fileName || "Not found file name"}
       </div>
       {showDetails && (

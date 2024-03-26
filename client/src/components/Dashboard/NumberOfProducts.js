@@ -1,15 +1,16 @@
 import React from "react";
 import InfoPopup from "../../components/Home/InfoPopup";
+import { formatDateYYYYMMDD } from "../../utils/FormatDateTime";
 
 const NumberOfProducts = ({predictedName, predictedData, userData, actualData, togglePredicted, products}) => {
 
   const handleGroupedData = (dataName,data) => {
     const formattedData = data.map(item => {
-      const timestamp = dataName === 'actual' ? item.date : item.date;
-      const date = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
+      const date = dataName === 'actual' ? item.date : item.date;
+      //const date = new Date(timestamp._seconds * 1000 + timestamp._nanoseconds / 1000000);
   
       return {
-        date: date.toISOString().slice(0, 10), // Format date as "YYYY-MM-DD"
+        date: formatDateYYYYMMDD(date), // Format date as "YYYY-MM-DD"
         product: dataName === 'actual' ? item.productName : item.Product,
         total: dataName === 'actual' ? item.quantity : item.Predicted_quantity,
         data: dataName === 'actual' ? "actual" : "prediction"
