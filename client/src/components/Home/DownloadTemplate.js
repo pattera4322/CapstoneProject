@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Input, Radio, Typography } from "@material-tailwind/react";
+import React, { useContext } from "react";
 import ButtonComponent from "../Button/Button";
+import { ImageUrlsContext } from "../../context/ImageUrlsContext";
 
 
 const DownloadTemplate = () => {
-
+  const imageUrls = useContext(ImageUrlsContext);
   return (
     <div className="pt-10">
       <div className="text-xl font-bold text-black">
@@ -14,14 +14,14 @@ const DownloadTemplate = () => {
       <div className="pt-12 grid grid-cols-2 gap-4 content-center">
         <div className={`grid grid-cols-subgrid col-span-1 transition-transform translate-x-0 duration-1000`}>
           <img
-            src={process.env.PUBLIC_URL + "/assets/SmartStockTemplate.svg"}
+            src={imageUrls["SmartStockTemplate.svg"]}
             alt="Smart Stock Template"
             className="mx-auto w-64 max-w-xl sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
           />
         </div>
         <div>
           <img
-            src={process.env.PUBLIC_URL + "/assets/template.svg"}
+            src={imageUrls["template.svg"]}
             className="shadow-md w-full"
             alt="resetIcon"
           />

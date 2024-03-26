@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import "../index.css";
 import StepperSection from "../components/Home/Stepper";
 import DetailSection from "../components/Home/DetailSection";
@@ -6,8 +6,10 @@ import Button3D from "../components/Button/Button3D";
 import { postUserData, getUserData } from "../api/userDataApi";
 import { showErrorAlert } from "../utils/SwalAlert";
 import LoadingPage from "../components/LoadingPage";
+import { ImageUrlsContext } from "../context/ImageUrlsContext";
 
 function HomePage() {
+  const imageUrls = useContext(ImageUrlsContext);
   const StepSection = useRef(null);
   const [toggleIn, setToggleIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +65,7 @@ function HomePage() {
 
   return (
     <div className="pt-32 grid grid-cols-2 gap-4 content-center">
-      <LoadingPage loading={isLoading} />
+      <LoadingPage loading={isLoading || Object.keys(imageUrls).length === 0} />
       {/*<------------------------------ Section 1 Introduce web application ------------------------------> */}
       {/* <div className="mt-10 text-center px-4 sm:px-8 col-span-3"> */}
       <div className="mt-10 text-left px-4 sm:px-8 col-span-1 ml-20">
@@ -95,17 +97,17 @@ function HomePage() {
         className={`grid grid-cols-subgrid h-33 col-span-1 transition-transform translate-x-0 duration-1000 relative`}
       >
         <img
-          src={process.env.PUBLIC_URL + "/assets/SmartStockHomeBG.svg"}
+          src={imageUrls["SmartStockHomeBG.svg"]}
           alt="SmartStock Home"
           className="inset-0 mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl"
         />
         <img
-          src={process.env.PUBLIC_URL + "/assets/Icon2.svg"}
+          src={imageUrls["Icon2.svg"]}
           alt="Icon1"
           className="absolute mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl -mt-16 animate-floating"
         />
         <img
-          src={process.env.PUBLIC_URL + "/assets/Icon1.svg"}
+          src={imageUrls["Icon1.svg"]}
           alt="Icon1"
           className="absolute mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl -mt-16 animate-floating-2"
         />

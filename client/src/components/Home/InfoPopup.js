@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
+import { ImageUrlsContext } from "../../context/ImageUrlsContext.js";
 
 const InfoPopup = ({ infoText }) => {
+    const imageUrls = useContext(ImageUrlsContext);
     const [isPopupVisible, setPopupVisibility] = useState(false);
 
     const handleMouseEnter = () => {
@@ -15,7 +17,7 @@ const InfoPopup = ({ infoText }) => {
         <div className="relative inline-block" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
             <span className="text-blue-500 cursor-pointer">
                 <img
-                    src={process.env.PUBLIC_URL + "/assets/info.svg"}
+                    src={imageUrls["info.svg"]}
                     className="h-4 ml-2"
                     alt="resetIcon"
                 />
