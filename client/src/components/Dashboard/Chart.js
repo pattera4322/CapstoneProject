@@ -4,6 +4,8 @@ import InfoPopup from "../../components/Home/InfoPopup";
 import ButtonComponent from "../Button/Button";
 import { formatDateInChart } from "../../utils/FormatDateTime";
 import FilterMonth from "./FilterMonth.js";
+import { saveAs } from "file-saver";
+import { toBase64Image} from "react-chartjs-2";
 
 const Chart = ({
   predictedName,
@@ -13,7 +15,8 @@ const Chart = ({
   togglePredicted,
   getR2score,
   getMSEscore,
-  getChartImage,
+  fileId
+  // getChartImage,
 }) => {
   const [predictedArray, setPredictedArray] = useState([]);
   const [actualArray, setActualArray] = useState([]);
@@ -29,7 +32,7 @@ const Chart = ({
     //     chartToBase64();
     //   },
     // },
-    animation: false,
+    animation: true,
     maintainAspectRatio: false,
     responsive: true,
     scales: {
@@ -125,19 +128,19 @@ const Chart = ({
     setFormattedDates(mergedDateArray);
   }, [predictedData, predictedColumn, filterMonths]);
 
-  useEffect(() => {
-    chartToBase64();
-  }, [actualArray, predictedArray])
+  // useEffect(() => {
+  //   chartToBase64();
+  // }, [actualArray, predictedArray])
 
-  const chartToBase64 = () => {
-    if (chartRef.current) {
-      const base64Image = chartRef.current.toBase64Image();
+  // const chartToBase64 = () => {
+  //   if (chartRef.current) {
+  //     const base64Image = chartRef.current.toBase64Image();
 
-      if (base64Image !== "data:,") {
-        getChartImage(base64Image);
-      }
-    }
-  };
+  //     if (base64Image !== "data:,") {
+  //       getChartImage(base64Image);
+  //     }
+  //   }
+  // };
 
   function formatDateArray(dataArray) {
     return dataArray.map((entry) => {
@@ -202,6 +205,12 @@ const Chart = ({
     setFilterMonths(months);
   };
 
+  const handleDownload = () => {
+    const base64Image = chartRef.current.toBase64Image();
+    console.log("base64",base64Image)
+    saveAs(base64Image, `${predictedColumn}_ForecastGraph_${fileId}.png`);
+  };
+
   const infoChart = `The prediction fit ${getR2score} % to data (Evaluated by R2 score) and estimate error of predicetion data is ${getMSEscore} (Evaluated by MSE score)`;
 
   return (
@@ -218,6 +227,15 @@ const Chart = ({
         <div className="">
           <FilterMonth months={maxMonths} onRangeChange={handleRangeChange} />
         </div>
+        <span className="float-right" onClick={handleDownload}>
+          <svg
+            className="fill-current w-4 h-4 mr-2 inline"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+          >
+            <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
+          </svg>
+        </span>
       </div>
 
       <div className="h-[95%] overflow-auto" style={{ direction: "rtl" }}>

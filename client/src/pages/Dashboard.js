@@ -15,7 +15,7 @@ import ReAnalyzed from "../components/Dashboard/ReAnalyzed";
 import LoadingPage from "../components/LoadingPage";
 import { saveAs } from "file-saver";
 import { formatDateDDMMMYYYY } from "../utils/FormatDateTime";
-import { toBase64Image } from "react-chartjs-2";
+// import { toBase64Image } from "react-chartjs-2";
 
 import html2canvas from "html2canvas";
 import {
@@ -50,7 +50,7 @@ const Dashboard = ({}) => {
   const [togglePredicted, setTogglePredicted] = useState(true);
   const [keywords, setKeywords] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [baseImage, setBaseImage] = useState();
+  // const [baseImage, setBaseImage] = useState();
   const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
@@ -225,10 +225,10 @@ const Dashboard = ({}) => {
       `${activeTab === 1 ? "totalSales" : "quantity"}_data_file_${fileId}.csv`
     );
 
-    saveAs(
-      baseImage,
-      `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph.png`
-    );
+    // saveAs(
+    //   baseImage,
+    //   `${activeTab === 1 ? "totalSales" : "quantity"}_ForecastGraph.png`
+    // );
   };
 
   return (
@@ -320,9 +320,10 @@ const Dashboard = ({}) => {
                   togglePredicted={togglePredicted}
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
-                  getChartImage={(base64Image) => {
-                    setBaseImage(base64Image);
-                  }}
+                  // getChartImage={(base64Image) => {
+                  //   setBaseImage(base64Image);
+                  // }}
+                  fileId={fileId}
                 />
               )}
             </div>
@@ -433,9 +434,10 @@ const Dashboard = ({}) => {
                   togglePredicted={togglePredicted}
                   getR2score={getR2score()}
                   getMSEscore={getMSEscore()}
-                  getChartImage={(base64Image) => {
-                    setBaseImage(base64Image);
-                  }}
+                  // getChartImage={(base64Image) => {
+                  //   setBaseImage(base64Image);
+                  // }}
+                  fileId={fileId}
                 />
               )}
             </div>
