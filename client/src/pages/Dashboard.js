@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Chart from "../components/Dashboard/Chart";
-import { useLocation, NavLink } from "react-router-dom";
+import { useLocation, NavLink, useNavigate } from "react-router-dom";
 import RelatedNews from "../components/Dashboard/RelatedNews";
 import Goal from "../components/Dashboard/Goal";
 import ProductPieChart from "../components/Dashboard/ProductPieChart";
@@ -15,6 +15,7 @@ import ReAnalyzed from "../components/Dashboard/ReAnalyzed";
 import LoadingPage from "../components/LoadingPage";
 import { saveAs } from "file-saver";
 import { formatDateDDMMMYYYY } from "../utils/FormatDateTime";
+import GoBackButton from "../components/Button/GoBackButton";
 // import { toBase64Image } from "react-chartjs-2";
 
 import html2canvas from "html2canvas";
@@ -31,6 +32,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement);
 
 const Dashboard = ({}) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const fileId = location.state || {};
 
@@ -57,71 +59,45 @@ const Dashboard = ({}) => {
   useEffect(() => {
     setIsLoading(true);
     getUserHistory(fileId)
-    .then((res) => {
-      // console.log("analyzed data", res.data);
-      setAnalyzedData(res.data);
-      // setAnalyzedSalesData(res.data.historyData.history.predictedSalesValues);
-      // setAnalyzedQuantityData(
-      //   res.data.historyData.history.predictedQuantityValues
-      // );
-      // setActualSalesData(res.data.historyData.history.actualSalesValues);
-      // setActualQuantityData(
-      //   res.data.historyData.history.actualQuantityValues
-      // );
-      // const products = [
-      //   ...new Set(
-      //     res.data.historyData.history.actualSalesValues.map(
-      //       (item) => item.productName
-      //     )
-      //   ),
-      // ];
+      .then((res) => {
+        setAnalyzedData(res.data);
+        setIsLoading(false);
+        console.log(res.data);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.log("Error: ", error);
+        if (error.response && error.response.status === 404) {
+          console.log(error.response.data.ResponseMessage);
+        }
+      });
 
-      // setProducts(products);
-      // setKeywords(products);
-      setIsLoading(false);
-      console.log(res.data);
-    })
-    .catch((error) => {
-      setIsLoading(false);
-      console.log("Error: ", error);
-      if (error.response && error.response.status === 404) {
-        console.log(error.response.data.ResponseMessage);
-      }
-    });
+    getFile(`predicted_of_${fileId}.json`)
+      .then((res) => {
+        const decoder = new TextDecoder("utf-8");
+        const jsonString = decoder.decode(res);
+        const resData = JSON.parse(jsonString);
+        //setAnalyzedData(resData);
+        setAnalyzedSalesData(resData.predictedSalesValues);
+        setAnalyzedQuantityData(resData.predictedQuantityValues);
+        setActualSalesData(resData.actualSalesValues);
+        setActualQuantityData(resData.actualQuantityValues);
+        const products = [
+          ...new Set(resData.actualSalesValues.map((item) => item.productName)),
+        ];
 
-    getFile(`predicted_of_${fileId}.json`).then((res) => {
-      const decoder = new TextDecoder("utf-8");
-      const jsonString = decoder.decode(res);
-      const resData = JSON.parse(jsonString);
-      //setAnalyzedData(resData);
-      setAnalyzedSalesData(resData.predictedSalesValues);
-      setAnalyzedQuantityData(
-        resData.predictedQuantityValues
-      );
-      setActualSalesData(resData.actualSalesValues);
-      setActualQuantityData(
-        resData.actualQuantityValues
-      );
-      const products = [
-        ...new Set(
-          resData.actualSalesValues.map(
-            (item) => item.productName
-          )
-        ),
-      ];
-
-      setProducts(products);
-      setKeywords(products);
-      //setIsLoading(false);
-      console.log(JSON.parse(jsonString));
-    }).catch((error) => {
-      setIsLoading(false);
-      console.log("Error: ", error);
-      if (error.response && error.response.status === 404) {
-        console.log(error.response.data.ResponseMessage);
-      }
-    });
-  
+        setProducts(products);
+        setKeywords(products);
+        //setIsLoading(false);
+        console.log(JSON.parse(jsonString));
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.log("Error: ", error);
+        if (error.response && error.response.status === 404) {
+          console.log(error.response.data.ResponseMessage);
+        }
+      });
   }, []);
 
   const [news, setNews] = useState([]);
@@ -266,9 +242,46 @@ const Dashboard = ({}) => {
   };
 
   return (
-    <div>
+    <div className="pt-20">
       <LoadingPage isLoading={isLoading} />
-      <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 pt-20 pr-8 pl-8">
+      {analyzedData && (
+        <ul className="flex  ">
+          <li className="mr-2 pl-7">
+            <GoBackButton
+              onClick={() => {
+                navigate("/History", { state: { activeTab: 2 } });
+              }}
+            />
+          </li>
+          <li className="mr-2 ml-2">SLOT ID {analyzedData.historyData.fileId}: </li>
+          <li className="mr-2">{analyzedData.userData.fileName}</li>
+          <li className="ml-auto mr-0">
+            <button
+              className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5"
+              type="submit"
+              onClick={handleReAnalyzed}
+            >
+              Change Personalized Insights
+            </button>
+          </li>
+          <li className="ml-4 mr-4">
+            <DropdownFilter
+              products={products}
+              selectedProduct={selectedProduct}
+              onSelectProduct={handleSelectProduct}
+            />
+          </li>
+          <li className="end-1">
+            <TogglePrediction
+              defaultChecked={togglePredicted}
+              onToggle={handleTogglePrediction}
+              label={"Enable prediction"}
+            />
+          </li>
+        </ul>
+      )}
+
+      <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 pr-8 pl-8">
         <li className="mr-2">
           <button
             onClick={() => handleTabClick(1)}
@@ -293,29 +306,6 @@ const Dashboard = ({}) => {
             Inventory
           </button>
         </li>
-        <li className="ml-auto mr-0">
-          <button
-            className="inline-block text-white bg-[#0068D2] hover:bg-[#3386DB] rounded-lg px-1.5 py-0.5"
-            type="submit"
-            onClick={handleReAnalyzed}
-          >
-            Change Personalized Insights
-          </button>
-        </li>
-        <li className="ml-4 mr-4">
-          <DropdownFilter
-            products={products}
-            selectedProduct={selectedProduct}
-            onSelectProduct={handleSelectProduct}
-          />
-        </li>
-        <li className="end-1">
-          <TogglePrediction
-            defaultChecked={togglePredicted}
-            onToggle={handleTogglePrediction}
-            label={"Enable prediction"}
-          />
-        </li>
       </ul>
 
       {showPopup && (
@@ -329,7 +319,7 @@ const Dashboard = ({}) => {
             console.log(analyzedData.userData);
           }}
           justClose={() => {
-              setShowPopup(false);
+            setShowPopup(false);
           }}
           userData={analyzedData.userData}
           fileId={analyzedData.historyData.fileId}
@@ -492,7 +482,7 @@ const Dashboard = ({}) => {
           <div className="flex flex-col lg:flex-row">
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
-                {analyzedData && analyzedQuantityData && actualQuantityData &&(
+                {analyzedData && analyzedQuantityData && actualQuantityData && (
                   <Analyzed
                     predictedName={"Predicted Quantity"}
                     predictedData={
@@ -513,7 +503,7 @@ const Dashboard = ({}) => {
             </div>
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 h-40 overflow-x-auto">
-                {analyzedData && analyzedQuantityData && actualQuantityData &&(
+                {analyzedData && analyzedQuantityData && actualQuantityData && (
                   <ProductPieChart
                     predictedName={"Predicted Quantity"}
                     predictedData={
@@ -535,24 +525,26 @@ const Dashboard = ({}) => {
             <div className="box-content w-80 p-4 shadow-md flex-1">
               <div className="text-base text-left p-4 overflow-y-auto h-40">
                 <div>
-                  {analyzedData && analyzedQuantityData && actualQuantityData && (
-                    <NumberOfProducts
-                      predictedName={"Predicted Quantity"}
-                      predictedData={
-                        filteredAnalyzedQuantityData
-                          ? filteredAnalyzedQuantityData
-                          : analyzedQuantityData
-                      }
-                      userData={analyzedData.userData}
-                      actualData={
-                        filteredActualQuantityData
-                          ? filteredActualQuantityData
-                          : actualQuantityData
-                      }
-                      togglePredicted={togglePredicted}
-                      products={products}
-                    />
-                  )}
+                  {analyzedData &&
+                    analyzedQuantityData &&
+                    actualQuantityData && (
+                      <NumberOfProducts
+                        predictedName={"Predicted Quantity"}
+                        predictedData={
+                          filteredAnalyzedQuantityData
+                            ? filteredAnalyzedQuantityData
+                            : analyzedQuantityData
+                        }
+                        userData={analyzedData.userData}
+                        actualData={
+                          filteredActualQuantityData
+                            ? filteredActualQuantityData
+                            : actualQuantityData
+                        }
+                        togglePredicted={togglePredicted}
+                        products={products}
+                      />
+                    )}
                 </div>
               </div>
             </div>

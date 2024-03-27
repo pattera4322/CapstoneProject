@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Line } from "react-chartjs-2";
 import InfoPopup from "../../components/Home/InfoPopup";
 import ButtonComponent from "../Button/Button";
+import DownloadButton from "../Button/DownloadButton.js";
 import { formatDateDDMMMYYYY, formatStringToDate } from "../../utils/FormatDateTime";
 import FilterMonth from "./FilterMonth.js";
 import { saveAs } from "file-saver";
@@ -211,14 +212,15 @@ const Chart = ({
         <div className="flex items-center">
           <p className="mr-2 text-black text-sm text-gray-700 dark:text-gray-200">Filter Actual:</p>
           <FilterMonth months={maxMonths} onRangeChange={handleRangeChange} />
-          <span className="ml-2" onClick={handleDownload}>
-            <svg
+          <span className="ml-2">
+            <DownloadButton onClick={handleDownload} children={"Download chart image"}/>
+            {/* <svg
               className="fill-current w-4 h-4 inline"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
             >
               <path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z" />
-            </svg>
+            </svg> */}
           </span>
         </div>
       </div>

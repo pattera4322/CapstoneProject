@@ -12,6 +12,7 @@ import { getUserInsight } from "../api/userInsightApi";
 
 const History = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState(1);
 
   const [completedAnalyzed, setCompletedAnalyzed] = useState([]);
@@ -31,10 +32,15 @@ const History = () => {
   );
   const userId = JSON.parse(localStorage.getItem("user"));
   const progressInLocal = JSON.parse(localStorage.getItem("progress"));
-  const location = useLocation();
-  const historyId = location.state || {};
+  //const historyId = location.state || {};
+  const activeTabFromDashboard = location.state?.activeTab || null;
   socketJobProgress.connect();
-
+  useEffect(() => {
+    console.log(activeTabFromDashboard)
+    if (activeTabFromDashboard) {
+      setActiveTab(activeTabFromDashboard);
+    }
+  }, []);
   useEffect(() => {
     if (isStart === false) {
       setIsLoading(true);
@@ -53,7 +59,6 @@ const History = () => {
           }
           console.log(error);
         });
-
 
       setIsLoading(true);
       getUserHistories()
@@ -177,10 +182,11 @@ const History = () => {
       <li className="mr-6" key={tabNumber}>
         <button
           onClick={() => onTabClick(tabNumber)}
-          className={`relative inline-block p-2 ${activeTab === tabNumber
-            ? "text-white bg-[#0068D2] rounded-t-lg"
-            : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-            }`}
+          className={`relative inline-block p-2 ${
+            activeTab === tabNumber
+              ? "text-white bg-[#0068D2] rounded-t-lg"
+              : "rounded-t-lg hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+          }`}
         >
           {badge && (
             <span className="absolute top-0 right-0 mt-0 mr-0">
@@ -206,7 +212,7 @@ const History = () => {
       <div className="flex justify-end mx-16 mt-8">
         <div className="">
           <NavLink to="/">
-            <ButtonComponent onClick={() => { }} children={"Analyze More"} />
+            <ButtonComponent onClick={() => {}} children={"Analyze More"} />
           </NavLink>
         </div>
       </div>
