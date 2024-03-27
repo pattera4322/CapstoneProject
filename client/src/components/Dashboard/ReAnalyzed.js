@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Input} from "@material-tailwind/react";
 import { updateUserInsight } from "../../api/userInsightApi.js";
 
-const ReAnalyzed = ({ handleClose, userData, fileId}) => {
+const ReAnalyzed = ({ handleClose, justClose, userData, fileId}) => {
   const [formData, setFormData] = useState(
     localStorage.getItem("askingItems")? JSON.parse(localStorage.getItem("askingItems")) : {
     days: 90,
@@ -175,7 +175,7 @@ const ReAnalyzed = ({ handleClose, userData, fileId}) => {
             id="close-modal"
             type="button"
             className="mr-2 bg-gray-300 text-black"
-            onClick={handleClose}
+            onClick={justClose}
           >
             Cancel
           </Button>

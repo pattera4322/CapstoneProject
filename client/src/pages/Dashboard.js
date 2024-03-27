@@ -328,6 +328,9 @@ const Dashboard = ({}) => {
             }));
             console.log(analyzedData.userData);
           }}
+          justClose={() => {
+              setShowPopup(false);
+          }}
           userData={analyzedData.userData}
           fileId={analyzedData.historyData.fileId}
         />
