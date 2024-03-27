@@ -33,7 +33,7 @@ const JobComponent = ({ job, progressData, index, insightData }) => {
     }
   };
 
-  const handleCancelQueue = () => {};
+  const handleCancelQueue = () => { };
 
   return (
     <div
@@ -46,53 +46,62 @@ const JobComponent = ({ job, progressData, index, insightData }) => {
         </div>
       )}
 
-      {isJobProgress || isJobWaiting ? <div>IN QUEUE: {index + 1}</div> : null}
+      {isJobProgress || isJobWaiting ? <div><span className="font-semibold">QUEUE NUMBER:</span> {index + 1}</div> : null}
 
       <div>
-        <span className="font-semibold">SLOT ID:</span> {jobId}
+        <span className="font-semibold">FILE NUMBER:</span> {jobId}
+      </div>
+      <div style={{ wordWrap: "break-word" }}>
+        <span className="font-semibold">FILE NAME:</span>{" "} {insightData[jobId - 1].fileName || "Not found file name"}
       </div>
 
       {isJobCompleted || isJobFailed ? (
         <div>
-          <span className="font-semibold">STATE:</span>{" "}
-          <span
-            className={
-              isJobCompleted
-                ? "px-2 rounded-full bg-lime-100"
-                : "px-2 rounded-full bg-red-100"
-            }
-          >
-            {job.state}
-          </span>{" "}
-          on{" "}
+          <div className="inline">
+            <span className="font-semibold">STATE:</span>{" "}
+            <span
+              className={
+                isJobCompleted
+                  ? "px-2 rounded-full bg-lime-100"
+                  : "px-2 rounded-full bg-red-100"
+              }
+            >
+              {job.state}
+            </span>
+            {job.errorMessage && (
+              <div className="inline">
+                <span> with </span>
+                {job.errorMessage}
+              </div>
+            )}
+          </div><br />
+
+          {/* {job.errorMessage && <div><span className="font-semibold">ERROR WITH:</span>{" "}{job.errorMessage}</div>} */}
+          <span className="font-semibold">ANALYZED ON:</span>{" "}
           <span className="px-2 rounded-full bg-cyan-100">
             {formatDateTimeStamp(job.analyzedTime)}
           </span>
         </div>
       ) : null}
-      <div style={{ wordWrap: "break-word" }}>
-        FILE NAME: {insightData[jobId - 1].fileName || "Not found file name"}
-      </div>
       {showDetails && (
         <div>
-          <div>Sales Goal: {insightData[jobId - 1].salesGoal}</div>
-          <div>
-            Cost of storage per unit per year:{" "}
+          <div><span className="font-semibold">Sales Goal:</span> {insightData[jobId - 1].salesGoal}</div>
+          <div><span className="font-semibold">Cost of storage per unit per year:</span>
+            {" "}
             {insightData[jobId - 1].costPerProductStorage}
           </div>
-          <div>Cost per order: {insightData[jobId - 1].costPerOrder}</div>
-          <div>Lead time: {insightData[jobId - 1].leadTime}</div>
+          <div><span className="font-semibold">Cost per order:</span> {insightData[jobId - 1].costPerOrder}</div>
+          <div><span className="font-semibold">Lead time:</span> {insightData[jobId - 1].leadTime}</div>
         </div>
       )}
 
       <button
         onClick={handleToggleDetails}
-        className="mt-4 text-blue-500 focus:outline-none"
+        className="text-blue-500 focus:outline-none underline"
       >
-        {showDetails ? "Hide" : "Details"}
+        {showDetails ? "Hide" : "View Details"}
       </button>
 
-      {job.errorMessage && <div>{job.errorMessage}</div>}
       <div>
         {isJobProgress && progressData.progress !== 101 ? (
           <ProgressBar
