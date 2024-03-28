@@ -12,11 +12,11 @@ const FilterMonth = ({ months, onRangeChange }) => {
   //   onRangeChange(parseInt(e.target.value));
   // };
 
-  const [selectedMonth, setSelectedMonth] = useState(months);
+  const [selectedMonth, setSelectedMonth] = useState("Select Month");
 
   useEffect(() => {
-    setSelectedMonth(months);
-  }, [months]);
+    setSelectedMonth("Select Month");
+  }, []);
 
   const handleOnChange = (e) => {
     const selectedValue = parseInt(e.target.value);
@@ -49,6 +49,7 @@ const FilterMonth = ({ months, onRangeChange }) => {
         onChange={handleOnChange}
         className="block w-32 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring text-black text-sm text-gray-700 dark:text-gray-200"
       >
+        <option value="Select Month">Select Month</option>
         {Array.from({ length: months / 3 }, (_, index) => (
           <option key={index} value={(index + 1) * 3}>
             {(index + 1) * 3} months
