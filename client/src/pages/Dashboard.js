@@ -245,7 +245,7 @@ const Dashboard = ({}) => {
     <div className="pt-20">
       <LoadingPage isLoading={isLoading} />
       {analyzedData && (
-        <ul className="flex  ">
+        <ul className="flex">
           <li className="mr-2 pl-7">
             <GoBackButton
               onClick={() => {
@@ -253,7 +253,7 @@ const Dashboard = ({}) => {
               }}
             />
           </li>
-          <li className="mr-2 ml-2">SLOT ID {analyzedData.historyData.fileId}: </li>
+          <li className="mr-2 ml-2">FILE NUMBER {analyzedData.historyData.fileId}: </li>
           <li className="mr-2">{analyzedData.userData.fileName}</li>
           <li className="ml-auto mr-0">
             <button
