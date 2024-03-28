@@ -124,10 +124,11 @@ export const useAuthenticate = () => {
         await Swal.fire({
           // icon: "warning",
           title: "Are you sure you want \nto log out?",
-          confirmButtonColor: "red",
+          confirmButtonColor: "#F02833",
           showCancelButton: true,
           cancelButtonColor: "#DCDBDC",
-          confirmButtonText: "Log out",
+          confirmButtonText: "<span style='color: white'>Log out</span>",
+          cancelButtonText: "<span style='color: black'>Cancel</span>",
         }).then(async (result) => {
           if (result.isConfirmed) {
             await showSuccessAlert("You are now sign out!");

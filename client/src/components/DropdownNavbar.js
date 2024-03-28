@@ -69,7 +69,7 @@ const Dropdown = ({ isDivider = false, handleSignout, userName }) => {
           {isDivider && (
             <div className="py-2">
               <li
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-300 hover:text-white"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#F02833] hover:text-white"
                 onClick={handleSignout}
               >
                 Log out
